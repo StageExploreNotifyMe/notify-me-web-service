@@ -17,7 +17,7 @@ const OrganizationRequestUserDetail = (props) => {
         };
         setChosenOption(accepted)
 
-        postBase("/userorganisation/request/process", JSON.stringify(body)).then(() => {
+        postBase("/userorganization/request/process", JSON.stringify(body)).then(() => {
             setSubmitted(true)
         }).catch((e) => {
             console.log(e)

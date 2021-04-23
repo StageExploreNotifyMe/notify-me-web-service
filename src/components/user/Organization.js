@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { toast } from 'bulma-toast';
+import {toast} from 'bulma-toast';
 
 const Organization = (props) => {
 
@@ -27,7 +27,7 @@ const Organization = (props) => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({userId: localStorage.getItem('user.id'), organizationId: props.content.id})
+            body: JSON.stringify({user: {id: localStorage.getItem('user.id')}, organization: {id: props.content.id}})
         };
 
         fetch(process.env.REACT_APP_SERVER_URL + "/userorganization/request/join", requestOptions).then(resp => resp.json()).then(() => {

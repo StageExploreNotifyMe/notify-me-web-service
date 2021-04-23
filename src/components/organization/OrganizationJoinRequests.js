@@ -19,7 +19,7 @@ const OrganizationJoinRequests = (props) => {
 
     async function fetchJoinRequests() {
         try {
-            let result = await getBase("/userorganisation/requests/" + props.organization.id + "/pending/" + activePage);
+            let result = await getBase("/userorganization/requests/" + props.organization.id + "/pending/" + activePage);
             setJoinPageRequest(result)
             setLoading(false)
         } catch {
