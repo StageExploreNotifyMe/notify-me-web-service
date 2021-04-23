@@ -37,7 +37,10 @@ const OrganizationJoinRequests = (props) => {
 
     const RenderJoinRequests = () => {
         if (loading) return <Spinner/>
-        return joinPageRequest.content.map(req => <OrganizationRequestUserDetail key={req.id} request={req}/> );
+        if (joinPageRequest.content.length === 0) return <div className="panel-block">No pending join requests for your
+            organization!</div>
+
+        return joinPageRequest.content.map(req => <OrganizationRequestUserDetail key={req.id} request={req}/>);
     }
 
     function onPageChange(e) {
@@ -51,10 +54,13 @@ const OrganizationJoinRequests = (props) => {
             <h2 className=" title is-3">Open Join Requests</h2>
         </div>
         <RenderJoinRequests/>
-        <div className="control ">
-            <PageControls showButtons={true} pageSettings={joinPageRequest}
-                          changePage={(e) => onPageChange(e)}/>
-        </div>
+        {
+            joinPageRequest.content.length === 0 ? "" :
+                <div className="control">
+                    <PageControls showButtons={true} pageSettings={joinPageRequest}
+                                  changePage={(e) => onPageChange(e)}/>
+                </div>
+        }
     </div>
 
 };

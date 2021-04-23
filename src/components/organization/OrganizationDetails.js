@@ -33,7 +33,6 @@ const OrganizationDetails = () => {
         </div>;
     }
 
-
     return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
         <h2 className="title is-2">Organization {organizationState.name}</h2>
         <OrganizationJoinRequests organization={organizationState}/>
