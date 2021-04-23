@@ -18,7 +18,7 @@ export const getBase = (url) => {
 }
 
 export const postBase = (url, body) => {
-    if (body === "") throw Error("Cannot do a post with an empty body");
+    if (body == undefined) throw Error("Cannot do a post with an empty body");
     return fetchBase(url, "POST", body);
 }
 

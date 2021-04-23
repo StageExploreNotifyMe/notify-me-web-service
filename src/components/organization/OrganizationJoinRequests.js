@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
-import {getBase} from "../../js/fetch/FetchBase";
+import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import PageControls from "../util/PageControls";
 import OrganizationRequestUserDetail from "./OrganizationRequestUserDetail";

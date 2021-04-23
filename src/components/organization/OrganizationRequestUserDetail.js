@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {postBase} from "../../js/fetch/FetchBase";
+import {postBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import Spinner from "../util/Spinner";
 import { faCheck, faBan } from '@fortawesome/free-solid-svg-icons'

@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 
 import React, {useState, useEffect} from 'react';
-import {getBase} from "../../js/fetch/FetchBase";
+import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 
 import Spinner from "../util/Spinner";
