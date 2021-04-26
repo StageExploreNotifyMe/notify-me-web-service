@@ -1,17 +1,12 @@
 import Organization from "./Organization";
-//import Spinner from "../util/Spinner";
 
 const JoinOrganization = () => {
     let organizations = [
         {id: "1", name: "Company 1", hasJoined: false},
         {id: "2", name: "Company 2", hasJoined: true}
     ];
-    let loading = true;
-    //todo: fetch data
-    loading = false;
 
     const RenderOrganizations = () => {
-        //if (loading) return <Spinner/>
         return organizations.map(org =>
             <Organization className="panel-block" key={org.id} content={org}/>
         );
