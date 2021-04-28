@@ -7,7 +7,6 @@ import PageControls from "../util/PageControls";
 const Inbox = () => {
     let notificationDate = null;
     const [notification, setNotification] = useState(null)
-    const [activeIndex, setActiveIndex] = useState({index: 0})
     const [urgency, setUrgency] = useState({urgency: "URGENT"})
     const [activePage, setActivePage] = useState(0);
     const [notificationPage, setNotificationPage] = useState({
@@ -22,7 +21,6 @@ const Inbox = () => {
     async function fetchNotifications() {
         try {
             let result = await getBase("/user/inbox/" + localStorage.getItem('user.id') + "/pending/" + activePage);
-            console.log(result)
             setNotificationPage(result)
 
         } catch {
@@ -34,10 +32,8 @@ const Inbox = () => {
 
     function confirmUrgent(urgent) {
         if (urgent) {
-            setActiveIndex(0)
             setUrgency("URGENT")
         } else {
-            setActiveIndex(1)
             setUrgency("NORMAL")
         }
     }
@@ -98,11 +94,10 @@ const Inbox = () => {
                 <div className="panel-tabs">
                     <a onClick={() => {
                         confirmUrgent(true);
-                        setActiveIndex(0);
+                        setUrgency(0);
                     }}>Urgent</a>
                     <a onClick={() => {
                         confirmUrgent(false);
-                        setActiveIndex(1);
                     }}>Normal</a>
                 </div>
                 <RenderNotifications/>
@@ -119,8 +114,6 @@ const Inbox = () => {
                 </div>
         }
     </div>
-
-
 }
 
 
