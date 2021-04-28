@@ -10,7 +10,7 @@ const renderWithRouter = (ui, { route = '/' } = {}) => {
 test('Render App Component', () => {
     let route = ""
     renderWithRouter(<App />, {route})
-    expect(screen.getByText(/Home Placeholder/i)).toBeInTheDocument()
+    expect(screen.getByText(/Notify Me/i)).toBeInTheDocument()
 
     route = "/lqdfjsdksmdks";
     renderWithRouter(<App />, {route})
