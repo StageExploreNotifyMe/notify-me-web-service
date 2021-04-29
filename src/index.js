@@ -13,6 +13,7 @@ bulmaToast.setDefaults({
 })
 
 localStorage.setItem("user.id", "1"); //until auth is implemented
+localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"})); //until auth is implemented
 
 ReactDOM.render(
   <React.StrictMode>

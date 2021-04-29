@@ -48,8 +48,7 @@ test('Fetch - post - empty body', async () => {
     mockFetch();
     let wentInCatch = false
     try {
-        let resp = await postBase("test", null);
-        console.log(resp)
+        await postBase("test", null);
     } catch {
         wentInCatch = true
     }
