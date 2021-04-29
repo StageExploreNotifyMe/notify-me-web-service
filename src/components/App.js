@@ -1,4 +1,5 @@
 import UserDetails from './user/UserDetails';
+import OrganizationDetails from "./organization/OrganizationDetails";
 import Home from './Home';
 
 import '../style/App.scss';
@@ -10,6 +11,7 @@ function App() {
             <Router>
                 <Switch>
                     <Route path="/user"> <UserDetails/> </Route>
+                    <Route path="/organization/:id"> <OrganizationDetails/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
                         <div>404 placeholder</div>

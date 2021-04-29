@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { toast } from 'bulma-toast';
+import {toast} from 'bulma-toast';
 
 const Organization = (props) => {
 
@@ -30,7 +30,7 @@ const Organization = (props) => {
             body: JSON.stringify({userId: localStorage.getItem('user.id'), organizationId: props.content.id})
         };
 
-        fetch(process.env.REACT_APP_SERVER_URL + "/userorganisation/request/join", requestOptions).then(resp => resp.json()).then(() => {
+        fetch(process.env.REACT_APP_SERVER_URL + "/userorganization/request/join", requestOptions).then(resp => resp.json()).then(() => {
             toast({
                 message: `You've submitted a request to join ${props.content.name}!`,
                 type: 'is-success',

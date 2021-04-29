@@ -12,14 +12,12 @@ const JoinOrganization = () => {
         );
     }
 
-    return <div>
-        <div className="panel">
+    return <div className="panel">
             <div className="panel-heading has-text-centered-mobile">
                 <h2 className=" title is-3">Join Organizations</h2>
             </div>
             <RenderOrganizations/>
         </div>
-    </div>
 }
 
 export default JoinOrganization
