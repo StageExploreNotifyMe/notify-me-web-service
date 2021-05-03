@@ -29,6 +29,7 @@ const Home = () => {
             <div className="columns is-multiline">
                 <div className="column is-4 is-12-mobile"><NavigationCard cardData={{title: "User details", url: "/user"}}/></div>
                 <div className="column is-4 is-12-mobile"><NavigationCard cardData={{title: "Organization details", url: "/organization/1"}}/></div>
+                <div className="column is-4 is-12-mobile"><NavigationCard cardData={{title: "Venue details", url: "/venue/events"}}/></div>
             </div>
         </section>
     </div>

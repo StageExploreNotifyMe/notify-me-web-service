@@ -5,6 +5,7 @@ import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {sleep} from "../../js/Sleep";
 import OrganizationJoinRequests from "../../components/organization/OrganizationJoinRequests";
+import {waitForLoadingSpinner} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -67,13 +68,6 @@ function renderMemberManagement() {
         </Router>,
     );
     return container;
-}
-
-async function waitForLoadingSpinner(container) {
-    let loadingSpinner = container.querySelector('.loading');
-    expect(loadingSpinner).toBeInTheDocument()
-    await waitForElementToBeRemoved(loadingSpinner)
-    return loadingSpinner;
 }
 
 test('OrganizationJoinRequests - render', async () => {

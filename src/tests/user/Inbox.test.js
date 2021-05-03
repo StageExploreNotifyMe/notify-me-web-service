@@ -1,6 +1,7 @@
 import {fireEvent, render, screen} from '@testing-library/react';
 import Inbox from "../../components/user/Inbox";
 import {enableFetchMocks} from 'jest-fetch-mock'
+import {sleep} from "../../js/Sleep";
 
 
 enableFetchMocks()
@@ -57,7 +58,3 @@ test("RenderNotifications -success", async () => {
     fireEvent.click(normalButton);
     expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
 })
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
