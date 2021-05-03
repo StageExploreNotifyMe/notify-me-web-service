@@ -3,6 +3,8 @@ import {getBase, postBase} from "../../js/FetchBase";
 import React, {useEffect, useRef, useState} from 'react';
 import {toast} from "bulma-toast";
 import classnames from "classnames";
+import {useHistory} from "react-router-dom";
+
 
 const UserDetails = () => {
     const [notificationPreferences, setNotificationPreferences] = useState(null)
@@ -122,6 +124,22 @@ const UserDetails = () => {
         <JoinOrganization/>
     </div>
 
+        <div className="column is-one-fifth">
+            <InboxButton/>
+        </div>
+    </div>;
+
+}
+
+
+function InboxButton() {
+    const history = useHistory();
+
+    function handleClick() {
+        history.push("/inbox")
+    }
+
+    return (<button className="button is-warning" onClick={handleClick}>Inbox</button>);
 }
 
 export default UserDetails

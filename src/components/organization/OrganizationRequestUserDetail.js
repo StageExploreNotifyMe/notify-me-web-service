@@ -19,8 +19,7 @@ const OrganizationRequestUserDetail = (props) => {
 
         postBase("/userorganization/request/process", JSON.stringify(body)).then(() => {
             setSubmitted(true)
-        }).catch((e) => {
-            console.log(e)
+        }).catch(() => {
             toast({
                 message: 'Something went wrong while trying to save changes for ' + props.request.user.firstname + ' ' + props.request.user.lastname,
                 type: 'is-danger'
