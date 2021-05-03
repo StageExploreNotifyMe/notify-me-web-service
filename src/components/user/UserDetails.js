@@ -103,7 +103,7 @@ const UserDetails = () => {
             <label>Urgent Notifications: </label>
             <RenderUrgentPreferences/>
         </div>
-        <div ref={menu} class={classnames("dropdown", { "is-active": open })}>
+        <div ref={menu} class={classnames("dropdown", {"is-active": open})}>
             <div className="dropdown-trigger" onClick={e => {
                 e.preventDefault();
                 setOpen(!open)
@@ -122,8 +122,6 @@ const UserDetails = () => {
             </div>
         </div>
         <JoinOrganization/>
-    </div>
-
         <div className="column is-one-fifth">
             <InboxButton/>
         </div>
