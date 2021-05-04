@@ -44,8 +44,8 @@ test("onPreferenceChanged - normal", async () => {
         onChange={() => onPreferenceChanged("SMS", "normal")}
         type="radio" name={"normal"}/>)
     const radio = container.firstChild
-    fireEvent.click(radio)
-    expect(onPreferenceChanged).toHaveBeenCalledTimes(1)
+    fireEvent.click(radio, {target: {value: 'SMS'}})
+    expect(onPreferenceChanged.mock.calls.length).toBe(1)
 })
 
 test("onPreferenceChanged - urgent", async () => {
@@ -54,8 +54,23 @@ test("onPreferenceChanged - urgent", async () => {
         onChange={() => onPreferenceChanged("SMS", "urgent")}
         type="radio" name={"urgent"}/>)
     const radio = container.firstChild
+    fireEvent.click(radio, {target: {value: 'SMS'}})
+    expect(onPreferenceChanged.mock.calls.length).toBe(1)
+})
+
+test("click radiobutton", async ()=> {
+    mockFetch()
+    const {container} = render(<UserDetails/>)
+    let notRendered = screen.getAllByText(/no notifications rendered/i)
+    await waitForElementToBeRemoved(notRendered[0])
+    let radio = container.querySelector('#radioNormal')
     fireEvent.click(radio)
-    expect(onPreferenceChanged).toHaveBeenCalledTimes(1)
+},5000)
+
+test("dropdown", async () =>{
+    const {container} = render(<UserDetails/>)
+    let dropdown = container.querySelector('.dropdown-trigger')
+    fireEvent.click(dropdown)
 })
 
 function sleep(ms) {

@@ -64,9 +64,10 @@ const UserDetails = () => {
         return notificationPreferences.map(pref =>
             <label key={"normal-" + pref} className="radio">
                 <input
+                    aria-label="Radio Button"
                     checked={pref === channel.normalChannel}
                     onChange={() => onPreferenceChanged(pref, "normal")}
-                    type="radio" name={"normal"}/>
+                    type="radio" id={"radioNormal"}/>
                 {pref}
             </label>
         )
@@ -79,7 +80,7 @@ const UserDetails = () => {
                 <input
                     checked={pref === channel.urgentChannel}
                     onChange={() => onPreferenceChanged(pref, "urgent")}
-                    type="radio" name={"urgent"}/>
+                    type="radio" id={"radioUrgent"}/>
                 {pref}
             </label>
         )
