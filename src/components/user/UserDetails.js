@@ -25,7 +25,6 @@ const UserDetails = () => {
             setNotificationPreferences((await possibleChannelsProm).notificationChannels);
             setLoadingPreferences(false);
         } catch (e) {
-            console.log(e)
             toast({
                 message: 'Something went wrong while trying to fetch your notificationPreferences', type: 'is-danger'
             })
@@ -130,14 +129,11 @@ const UserDetails = () => {
 
 }
 
-
 function InboxButton() {
     const history = useHistory();
-
     function handleClick() {
         history.push("/inbox")
     }
-
     return (<button className="button is-warning" onClick={handleClick}>Inbox</button>);
 }
 
