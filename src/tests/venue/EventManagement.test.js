@@ -7,7 +7,12 @@ enableFetchMocks()
 
 test('Render Event management', async () => {
     mockFetch();
-    const {createButton} = await renderEventManagement();
+    const {container, createButton} = await renderEventManagement();
+    let icon = container.querySelector(".is-clickable");
+    expect(icon).toBeInTheDocument();
+    fireEvent.click(icon);
+    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/1');
+
     fireEvent.click(createButton)
     expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 }, 5000);
@@ -78,5 +83,5 @@ async function renderEventManagement(waitForRemoved = true) {
     expect(screen.getByText(/Venue /i)).toBeInTheDocument();
     const createButton = screen.getByText(/Create Event/i);
     expect(createButton).toBeInTheDocument();
-    return {createButton, spinner};
+    return {createButton, spinner, container};
 }
