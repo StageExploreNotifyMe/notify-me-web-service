@@ -1,27 +1,27 @@
-import JoinOrganization from "./JoinOrganization";
 import {useHistory} from "react-router-dom";
-
+import UserAssignedLines from "./UserAssignedLines";
 
 const UserDetails = () => {
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h1 className="title is-1">User Details Placeholder</h1>
-        <JoinOrganization/>
-        <div className="column is-one-fifth">
-            <InboxButton/>
-        </div>
-    </div>;
-
-}
-
-
-function InboxButton() {
     const history = useHistory();
 
-    function handleClick() {
-        history.push("/inbox")
-    }
+    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
+        <h1 className="title is-1">User Details</h1>
+        <div className="columns">
+            <div className="column">
+                <button className="button" onClick={() => history.push("/user/join/organization")}>
+                    Join Organization
+                </button>
+            </div>
+            <div className="column is-1">
+                <button className="button is-warning" onClick={() => history.push("/user/inbox")}>Inbox</button>
+            </div>
+        </div>
+        <section className="section">
+            <UserAssignedLines/>
+        </section>
 
-    return (<button className="button is-warning" onClick={handleClick}>Inbox</button>);
+    </div>;
+
 }
 
 export default UserDetails
