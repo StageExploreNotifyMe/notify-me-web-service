@@ -1,33 +1,20 @@
 import {useHistory} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
-import Spinner from "../util/Spinner";
-import PageControls from "../util/PageControls";
 import ReactTooltip from 'react-tooltip';
 import {dateArrayToDate, getRelativeTime} from "../../js/DateTime";
 import {faEdit} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import PagedList from "../util/PagedList";
 
 const EventManagement = () => {
     const venue = JSON.parse(localStorage.getItem("venue"));
     const history = useHistory();
 
-    const [eventPage, setEventPage] = useState({
-        content: [],
-        number: 0,
-        first: true,
-        last: false,
-        totalPages: 0
-    })
-    const [loading, setLoading] = useState(true);
-    const [activePage, setActivePage] = useState(0);
-
-    async function fetchEvents() {
+    async function fetchPageData(activePage) {
         try {
-            let result = await getBase("/event/venue/" + venue.id + "?page=" + activePage);
-            setEventPage(result)
-            setLoading(false)
+            return await getBase("/event/venue/" + venue.id + "?page=" + activePage);
         } catch {
             toast({
                 message: 'Something went wrong while trying to fetch open join requests',
@@ -36,22 +23,10 @@ const EventManagement = () => {
         }
     }
 
-    useEffect(() => {
-        fetchEvents();
-    }, [activePage]);
-
-    function onPageChange(e) {
-        setActivePage(e);
-        setLoading(true);
-        fetchEvents();
-    }
-
-    const RenderEventsList = () => {
-        if (loading) return <Spinner/>
-        if (eventPage.content.length === 0) return <div className="panel-block">No events scheduled yet. Schedule an
-            event now by clicking&nbsp;<span className="has-text-link is-clickable"
-                                             onClick={() => history.push("/venue/events/create")}>here</span>!</div>
-        return eventPage.content.map(ev => <div className="panel-block columns" key={ev.id}>
+    const RenderEventItems = (props) => {
+        console.log(props)
+        let ev = props.data;
+        return <div className="panel-block columns" key={ev.id}>
             <div className="column"> {ev.name}</div>
 
             <div className="column is-2" data-tip="" data-for={"event-date-" + ev.id}>
@@ -65,8 +40,18 @@ const EventManagement = () => {
                     <FontAwesomeIcon icon={faEdit}/>
                 </span>
             </div>
-        </div>);
+        </div>
     }
+
+    const RenderNoEvents = () => {
+        return <div className="panel-block">
+            No events scheduled yet. Schedule anevent now by clicking&nbsp;
+            <span className="has-text-link is-clickable" onClick={() => history.push("/venue/events/create")}>
+                here
+            </span>
+            !
+        </div>
+    };
 
     return <div className="container mt-2">
         <div className="level">
@@ -74,7 +59,8 @@ const EventManagement = () => {
             <div className="level-right">
                 <button onClick={() => {
                     history.push("/venue/events/create")
-                }} className="button is-link level-item">Create Event
+                }} className="button is-link level-item">
+                    Create Event
                 </button>
             </div>
         </div>
@@ -82,13 +68,7 @@ const EventManagement = () => {
             <div className="panel-heading has-text-centered-mobile">
                 <h2 className="title is-3">Events</h2>
             </div>
-            <RenderEventsList/>
-            {
-                eventPage.content.length === 0 ? "" :
-                    <div className="control">
-                        <PageControls showButtons={true} pageSettings={eventPage} changePage={(e) => onPageChange(e)}/>
-                    </div>
-            }
+            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderEventItems} IsEmptyComponent={RenderNoEvents}/>
         </div>
     </div>;
 }
