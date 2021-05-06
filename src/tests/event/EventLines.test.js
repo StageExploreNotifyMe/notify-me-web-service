@@ -91,6 +91,9 @@ test('Render event lines component - with lines & organization', async () => {
     let addButton =screen.getByText(new RegExp('Add'))
     expect(addButton).toBeInTheDocument()
     fireEvent.click(addButton);
+    let cancelButton = screen.getByText(new RegExp('Cancel'))
+    expect(cancelButton).toBeInTheDocument()
+    fireEvent.click(cancelButton)
 }, 5000);
 
 test('Render event lines component - with lines, without organization', async () => {
