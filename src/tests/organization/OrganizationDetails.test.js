@@ -1,9 +1,11 @@
-import {render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import OrganizationDetails from "../../components/organization/OrganizationDetails";
 
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from 'jest-fetch-mock'
+import {waitForLoadingSpinner} from "../TestUtilities";
+import {sleep} from "../../js/Sleep";
 
 enableFetchMocks()
 
@@ -37,12 +39,7 @@ function renderOrganizationDetails() {
 test('OrganizationDetails - Render & load', async () => {
     mockFetch();
     const container = renderOrganizationDetails();
-
-    let loadingSpinner = container.querySelector('.loading');
-    expect(loadingSpinner).toBeInTheDocument()
-    await waitForElementToBeRemoved(loadingSpinner)
-    expect(loadingSpinner).not.toBeInTheDocument()
-
+    await waitForLoadingSpinner(container)
     expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
 }, 5000);
@@ -53,10 +50,8 @@ test('OrganizationDetails - Error', async () => {
 
     let loadingSpinner = container.querySelector('.loading');
     expect(loadingSpinner).toBeInTheDocument()
-
-    setTimeout(() => {
-        expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
-    }, 50);
+    await sleep(50);
+    expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
 }, 5000);
 
 

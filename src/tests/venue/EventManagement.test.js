@@ -1,6 +1,7 @@
 import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import EventManagement from "../../components/venue/EventManagement";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {sleep} from "../../js/Sleep";
 
 enableFetchMocks()
 
@@ -8,7 +9,7 @@ test('Render Event management', async () => {
     mockFetch();
     const {createButton} = await renderEventManagement();
     fireEvent.click(createButton)
-    expect(mockHistoryPush).toHaveBeenCalledWith('/event/create');
+    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 }, 5000);
 
 test('Render Event management - no events', async () => {
@@ -18,7 +19,7 @@ test('Render Event management - no events', async () => {
     let createSpan = screen.getByText(/here/i);
     expect(createSpan).toBeInTheDocument()
     fireEvent.click(createSpan)
-    expect(mockHistoryPush).toHaveBeenCalledWith('/event/create');
+    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 }, 5000);
 
 test('Render Event management - network error', async () => {
@@ -79,8 +80,3 @@ async function renderEventManagement(waitForRemoved = true) {
     expect(createButton).toBeInTheDocument();
     return {createButton, spinner};
 }
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
