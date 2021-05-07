@@ -1,4 +1,4 @@
-import {render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
@@ -75,8 +75,6 @@ test('OrganizationJoinRequests - render', async () => {
     const container = renderMemberManagement();
     await waitForLoadingSpinner(container)
     expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-
-    await waitForLoadingSpinner(container);
     expect(screen.getByText(new RegExp(userOrg.user.firstname + " " + userOrg.user.lastname))).toBeInTheDocument()
 }, 5000);
 
@@ -85,8 +83,6 @@ test('OrganizationJoinRequests - no requests', async () => {
     const container = renderMemberManagement();
     await waitForLoadingSpinner(container)
     expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-
-    await waitForLoadingSpinner(container);
     expect(screen.getByText(new RegExp("No pending"))).toBeInTheDocument()
 }, 5000);
 
@@ -94,5 +90,5 @@ test('OrganizationJoinRequests - network error', async () => {
     mockFetch(true);
     renderMemberManagement();
     await sleep(20);
-    expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
+    expect(screen.getAllByText(new RegExp("Something went wrong"))[0]).toBeInTheDocument()
 }, 5000);

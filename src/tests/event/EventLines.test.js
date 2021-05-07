@@ -78,6 +78,7 @@ test('Render event lines component - no lines', async () => {
 test('Render event lines component - network error', async () => {
     mockFetch(true);
     renderComponent();
+    await sleep(20);
     expect(screen.getByText(new RegExp('Something went wrong'))).toBeInTheDocument()
 }, 5000);
 

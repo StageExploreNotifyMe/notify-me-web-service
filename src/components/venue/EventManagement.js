@@ -24,7 +24,6 @@ const EventManagement = () => {
     }
 
     const RenderEventItems = (props) => {
-        console.log(props)
         let ev = props.data;
         return <div className="panel-block columns" key={ev.id}>
             <div className="column"> {ev.name}</div>
@@ -45,7 +44,7 @@ const EventManagement = () => {
 
     const RenderNoEvents = () => {
         return <div className="panel-block">
-            No events scheduled yet. Schedule anevent now by clicking&nbsp;
+            No events scheduled yet. Schedule an event now by clicking&nbsp;
             <span className="has-text-link is-clickable" onClick={() => history.push("/venue/events/create")}>
                 here
             </span>
