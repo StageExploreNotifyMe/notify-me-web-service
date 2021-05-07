@@ -88,8 +88,8 @@ test('MemberManagement', async () => {
     mockFetch();
     const container = renderMemberManagement();
 
-    let loadingSpinner = await waitForLoadingSpinner(container);
-    expect(loadingSpinner).not.toBeInTheDocument()
+    await waitForLoadingSpinner(container);
+    await sleep(20);
     expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
     let promoteButton = screen.getByText(/Promote/i);
