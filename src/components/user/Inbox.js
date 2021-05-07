@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {toast} from "bulma-toast";
 import {getBase} from "../../js/FetchBase";
 import PageControls from "../util/PageControls";
+import {dateArrayToDate} from "../../js/DateTime";
 
 
 const Inbox = () => {
@@ -46,7 +47,7 @@ const Inbox = () => {
                 </div>
             </div>
         }
-        let date = dateArrayToDate(notification.dateTime);
+        let date = dateArrayToDate(notification.creationDate);
         notificationDate = date.toISOString().split('T')[0];
         return <div className="card">
             <div className="card-header">
@@ -58,11 +59,6 @@ const Inbox = () => {
                 <p>{notification.body}</p>
             </div>
         </div>
-
-    }
-
-    function dateArrayToDate(dateArray) {
-        return new Date(dateArray[0], dateArray[1] - 1, dateArray[2], dateArray[3], dateArray[4])
     }
 
     function onPageChange(e) {
@@ -74,13 +70,11 @@ const Inbox = () => {
         fetchNotifications();
     }, [activePage]);
 
-
     const RenderNotifications = () => {
         if (notificationPage.content.length === 0) return <div className="box">No notifications in your inbox</div>
         return notificationPage.content.filter(n => n.urgency === urgency).map(not =>
             <div onClick={() => {
                 setNotification(not);
-
             }} className="box is-clickable">
                 <p className="field">{not.title}</p>
                 <p className="field-body">{not.body}</p>

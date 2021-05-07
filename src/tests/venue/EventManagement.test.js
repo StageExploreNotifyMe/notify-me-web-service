@@ -15,6 +15,11 @@ test('Render Event management', async () => {
 
     fireEvent.click(createButton)
     expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
+
+    let editEventIcon = container.querySelector(".is-clickable");
+    expect(editEventIcon).toBeInTheDocument()
+    fireEvent.click(editEventIcon)
+    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/' + events.content[0].id);
 }, 5000);
 
 test('Render Event management - no events', async () => {
