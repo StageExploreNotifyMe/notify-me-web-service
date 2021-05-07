@@ -8,6 +8,7 @@ import Spinner from "../util/Spinner";
 const AddEventLines = () => {
     let {id} = useParams();
     const venue = JSON.parse(localStorage.getItem("venue"));
+    const userId = JSON.parse(localStorage.getItem("user.id"));
 
     const [linesPage, setLinesPage] = useState({
         content: [],
@@ -67,7 +68,7 @@ const AddEventLines = () => {
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id})).then(() => {
+        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, userId:userId})).then(() => {
             onPageChange(activePage)
         });
     }
