@@ -7,6 +7,7 @@ import PagedList from "../util/PagedList";
 const AddEventLines = () => {
     let {id} = useParams();
     const venue = JSON.parse(localStorage.getItem("venue"));
+    const userId = JSON.parse(localStorage.getItem("user.id"));
 
     const [modal, setModal] = useState({
         isActive: false,
@@ -22,7 +23,7 @@ const AddEventLines = () => {
             let addedLines = (await addedLinesProm).content;
             let venueLines = await venueLinesProm;
             venueLines.content.map(venueLine => {
-                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined);
+                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined && addedLines.find(addedLine => addedLine.eventLineStatus !== "CANCELED"));
                 return venueLine
             });
 
@@ -46,7 +47,7 @@ const AddEventLines = () => {
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id})).then(() => {
+        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, userId:userId})).then(() => {
             forceUpdateFnc();
         }).catch(() => {
             toast({

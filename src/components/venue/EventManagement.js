@@ -7,6 +7,9 @@ import {dateArrayToDate, getRelativeTime} from "../../js/DateTime";
 import {faEdit} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import PagedList from "../util/PagedList";
+import Spinner from "../util/Spinner";
+import PageControls from "../util/PageControls";
+import VenueEvent from "./VenueEvent";
 
 const EventManagement = () => {
     const venue = JSON.parse(localStorage.getItem("venue"));
@@ -17,7 +20,7 @@ const EventManagement = () => {
             return await getBase("/event/venue/" + venue.id + "?page=" + activePage);
         } catch {
             toast({
-                message: 'Something went wrong while trying to fetch open join requests',
+                message: 'Something went wrong while trying to fetch events',
                 type: 'is-danger'
             })
         }
@@ -26,20 +29,8 @@ const EventManagement = () => {
     const RenderEventItems = (props) => {
         let ev = props.data;
         return <div className="panel-block columns" key={ev.id}>
-            <div className="column"> {ev.name}</div>
-
-            <div className="column is-2" data-tip="" data-for={"event-date-" + ev.id}>
-                {getRelativeTime(dateArrayToDate(ev.date))}
-                <ReactTooltip id={"event-date-" + ev.id} place="top" type="dark" effect="solid">
-                    {dateArrayToDate(ev.date).toLocaleString()}
-                </ReactTooltip>
-            </div>
-            <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => history.push("/venue/events/" + ev.id)}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
-            </div>
-        </div>
+            <VenueEvent event={ev}/>
+    </div>
     }
 
     const RenderNoEvents = () => {

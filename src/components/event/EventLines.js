@@ -30,9 +30,21 @@ const EventLines = () => {
         setAssigningOrg(true);
     }
 
+    function setEventLineState(eventLine){
+        postBase("/line/" + eventLine.id + "/cancel", {}).then(() => onPageChange(activePage)).catch(() => {
+            toast({
+                message: 'Something went wrong while trying to cancel the eventLine',
+                type: 'is-danger'
+            })
+        })
+    }
+
     const RenderEventLines = (props) => {
         const eventLine = props.data;
         forceUpdateFnc = props.update;
+
+        if (eventLine.eventLineStatus === "CANCELED") return "";
+
         return <div className="panel-block columns" key={eventLine.id}>
             <div className="column">{eventLine.line.name}</div>
             <div className="column">Organization: {eventLine.organization === null ?
@@ -41,6 +53,7 @@ const EventLines = () => {
                     </span>
                 : eventLine.organization.name}</div>
             <div className="column">People assigned: {eventLine.assignedUsers.length}</div>
+            <div className="column is-1"><button className="button is-danger" onClick={() => setEventLineState(eventLine)}>Cancel</button></div>
         </div>
     }
 
