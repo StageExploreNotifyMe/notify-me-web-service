@@ -31,7 +31,7 @@ const EventLines = () => {
     }
 
     function setEventLineState(eventLine){
-        postBase("/line/" + eventLine.id + "/cancel", {}).then(() => onPageChange(activePage)).catch(() => {
+        postBase("/line/" + eventLine.id + "/cancel", {}).then(() => forceUpdateFnc()).catch(() => {
             toast({
                 message: 'Something went wrong while trying to cancel the eventLine',
                 type: 'is-danger'
