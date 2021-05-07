@@ -13,14 +13,16 @@ import EventDetails from "./event/EventDetails";
 import AddEventLines from "./event/AddEventLines";
 import OrganizationLines from "./organization/OrganizationLines";
 import AssignMembersToLine from "./organization/AssignMembersToLine";
+import JoinOrganization from "./user/JoinOrganization";
 
 function App() {
     return (
         <div className="App">
             <Router>
                 <Switch>
+                    <Route path="/user/join/organization"> <JoinOrganization/> </Route>
+                    <Route path="/user/inbox"> <Inbox/> </Route>
                     <Route path="/user"> <UserDetails/> </Route>
-                    <Route path="/inbox"> <Inbox/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
                     <Route path="/organization/:id/memberassignment/assign"> <AssignMembersToLine/> </Route>

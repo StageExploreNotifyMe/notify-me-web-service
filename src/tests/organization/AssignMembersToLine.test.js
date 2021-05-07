@@ -108,6 +108,7 @@ test('Assign members to line', async () => {
     const {container} = renderAssignMembersToLine();
     expect(screen.getByText(new RegExp('Assign members'))).toBeInTheDocument()
     await waitForLoadingSpinner(container)
+    await sleep(20);
     expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
     expect(screen.getByText(new RegExp('John Doe'))).toBeInTheDocument()
     let checkbox = container.querySelector("input");
