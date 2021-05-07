@@ -7,7 +7,12 @@ enableFetchMocks()
 
 test('Render Event management', async () => {
     mockFetch();
-    const {createButton, container} = await renderEventManagement();
+    const {container, createButton} = await renderEventManagement();
+    let icon = container.querySelector(".is-clickable");
+    expect(icon).toBeInTheDocument();
+    fireEvent.click(icon);
+    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/1');
+
     fireEvent.click(createButton)
     expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 
