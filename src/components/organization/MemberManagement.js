@@ -6,7 +6,6 @@ import PageControls from "../util/PageControls";
 import {useParams} from "react-router-dom";
 
 const MemberManagement = () => {
-
     let {id} = useParams();
 
     const [usersPage, setUsersPage] = useState({
