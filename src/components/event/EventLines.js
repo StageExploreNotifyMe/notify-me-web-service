@@ -51,11 +51,20 @@ const EventLines = () => {
         setAssigningOrg(true);
     }
 
+    function setEventLineState(eventLine){
+        postBase("/line/" + eventLine.id + "/cancel", {}).then(() => onPageChange(activePage)).catch(() => {
+            toast({
+                message: 'Something went wrong while trying to cancel the eventLine',
+                type: 'is-danger'
+            })
+        })
+    }
+
     const RenderEventLines = () => {
         if (loading) return <Spinner/>
         if (eventLinesPage.content.length === 0) return <div className="panel-block">No lines assigned to this
             event.</div>
-        return <> {eventLinesPage.content.map(eventLine => <div className="panel-block columns" key={eventLine.id}>
+        return <> {eventLinesPage.content.filter(e => e.eventLineStatus !== "CANCELED").map(eventLine =><div className="panel-block columns" key={eventLine.id}>
                 <div className="column">{eventLine.line.name}</div>
                 <div className="column">Organization: {eventLine.organization === null ?
                     <span className="is-clickable" onClick={() => assignOrganizationToLine(eventLine)}>Unassigned
@@ -63,6 +72,7 @@ const EventLines = () => {
                     </span>
                     : eventLine.organization.name}</div>
                 <div className="column">People assigned: {eventLine.assignedUsers.length}</div>
+            <div className="column is-1"><button className="button is-danger" onClick={() => setEventLineState(eventLine)}>Cancel</button></div>
             </div>
         )}
             <div className="control">

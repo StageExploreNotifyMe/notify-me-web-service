@@ -33,7 +33,7 @@ const AddEventLines = () => {
             let addedLines = (await addedLinesProm).content;
             let venueLines = await venueLinesProm;
             venueLines.content.map(venueLine => {
-                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined);
+                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined && addedLines.find(addedLine => addedLine.eventLineStatus !== "CANCELED"));
                 return venueLine
             });
 
