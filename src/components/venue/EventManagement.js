@@ -2,13 +2,7 @@ import {useHistory} from "react-router-dom";
 import React from "react";
 import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
-import ReactTooltip from 'react-tooltip';
-import {dateArrayToDate, getRelativeTime} from "../../js/DateTime";
-import {faEdit} from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import PagedList from "../util/PagedList";
-import Spinner from "../util/Spinner";
-import PageControls from "../util/PageControls";
 import VenueEvent from "./VenueEvent";
 
 const EventManagement = () => {
@@ -30,7 +24,7 @@ const EventManagement = () => {
         let ev = props.data;
         return <div className="panel-block columns" key={ev.id}>
             <VenueEvent event={ev}/>
-    </div>
+        </div>
     }
 
     const RenderNoEvents = () => {
@@ -58,7 +52,8 @@ const EventManagement = () => {
             <div className="panel-heading has-text-centered-mobile">
                 <h2 className="title is-3">Events</h2>
             </div>
-            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderEventItems} IsEmptyComponent={RenderNoEvents}/>
+            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderEventItems}
+                       IsEmptyComponent={RenderNoEvents}/>
         </div>
     </div>;
 }

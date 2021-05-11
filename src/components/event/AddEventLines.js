@@ -47,7 +47,7 @@ const AddEventLines = () => {
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, userId:userId})).then(() => {
+        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, lineManagerId:userId})).then(() => {
             forceUpdateFnc();
         }).catch(() => {
             toast({
