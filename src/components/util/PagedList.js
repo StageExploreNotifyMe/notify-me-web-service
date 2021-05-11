@@ -13,6 +13,14 @@ const PagedList = (props) => {
     const [loading, setLoading] = useState(true);
     const [hasErrored, setHasErrored] = useState(false);
     const [activePage, setActivePage] = useState(0);
+    let pageControlSettings = {
+        showButtons: true,
+        sizeModifier : "is-medium"
+    }
+
+    if (props.pageControls !== undefined) {
+        pageControlSettings = props.pageControls
+    }
 
     async function internalFetchData() {
         try {
@@ -21,7 +29,7 @@ const PagedList = (props) => {
             setHasErrored(false);
             setLoading(false);
             return activePage;
-        } catch  {
+        } catch {
             setHasErrored(true);
         }
 
@@ -52,7 +60,7 @@ const PagedList = (props) => {
         if (page.content.length === 0) return "";
         if (page.totalPages === 1) return "";
         return <div className="control">
-            <PageControls showButtons={true} pageSettings={page}
+            <PageControls showButtons={pageControlSettings.showButtons} sizeModifier={pageControlSettings.sizeModifier} pageSettings={page}
                           changePage={(e) => onPageChange(e)}/>
         </div>
     }
