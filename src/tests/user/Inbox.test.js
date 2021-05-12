@@ -3,7 +3,6 @@ import Inbox from "../../components/user/Inbox";
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {sleep} from "../../js/Sleep";
 
-
 enableFetchMocks()
 fetch.enableMocks();
 
@@ -26,7 +25,6 @@ let request = {
     userId: "1"
 }
 
-
 function mockFetch(content = pageSettings) {
     fetch.resetMocks();
     let json = JSON.stringify(content);
@@ -46,7 +44,6 @@ test("buttons", () => {
     expect(normalButton).toBeInTheDocument()
     fireEvent.click(urgentButton);
     fireEvent.click(normalButton);
-
 }, 5000);
 
 test("RenderNotifications -success", async () => {
@@ -65,5 +62,4 @@ test("RenderNotifications -success", async () => {
     let normalButton = screen.queryByText(/All/i)
     expect(normalButton).toBeInTheDocument()
     fireEvent.click(normalButton);
-
-}, 50000000000000000)
+}, 5000)
