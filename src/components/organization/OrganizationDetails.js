@@ -58,9 +58,9 @@ const OrganizationDetails = () => {
         <h2 className="title is-2">Organization {organizationState.name}</h2>
         <div className="columns is-multiline">
             <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
-                title: "Member Assignment",
-                body: "Assign members to lines",
-                link: "/organization/" + id + "/memberassignment"
+                title: "Line management",
+                body: "Manage the lines assigned to your organization",
+                link: "/organization/" + id + "/linemanagement"
             }}/></div>
             <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
                 title: "Member Management",
