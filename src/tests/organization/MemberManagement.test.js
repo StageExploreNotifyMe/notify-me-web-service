@@ -88,11 +88,9 @@ test('MemberManagement', async () => {
     mockFetch();
     const container = renderMemberManagement();
 
-    let loadingSpinner = await waitForLoadingSpinner(container);
-    expect(loadingSpinner).not.toBeInTheDocument()
-    expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-
     await waitForLoadingSpinner(container);
+    await sleep(20);
+    expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
     let promoteButton = screen.getByText(/Promote/i);
     expect(promoteButton).toBeInTheDocument()
@@ -115,13 +113,12 @@ test('MemberManagement - loading failed', async () => {
     renderMemberManagement();
     await sleep(20);
 
-    expect(screen.getByText(new RegExp('Something went wrong'))).toBeInTheDocument()
+    expect(screen.getAllByText(new RegExp('Something went wrong'))[0]).toBeInTheDocument()
 }, 5000);
 
 test('MemberManagement - No users', async () => {
     mockFetch(false, true);
-    const container = renderMemberManagement();
+    renderMemberManagement();
     await sleep(20);
-    await waitForLoadingSpinner(container);
     expect(screen.getByText(new RegExp('No users'))).toBeInTheDocument()
 }, 5000);

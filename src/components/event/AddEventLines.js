@@ -1,24 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {getBase, postBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import {useParams} from "react-router-dom";
-import PageControls from "../util/PageControls";
-import Spinner from "../util/Spinner";
+import PagedList from "../util/PagedList";
 
 const AddEventLines = () => {
     let {id} = useParams();
     const venue = JSON.parse(localStorage.getItem("venue"));
     const userId = JSON.parse(localStorage.getItem("user.id"));
 
-    const [linesPage, setLinesPage] = useState({
-        content: [],
-        number: 0,
-        first: true,
-        last: false,
-        totalPages: 0
-    })
-    const [loading, setLoading] = useState(true);
-    const [activePage, setActivePage] = useState(0);
     const [modal, setModal] = useState({
         isActive: false,
         title: "",
@@ -37,8 +27,7 @@ const AddEventLines = () => {
                 return venueLine
             });
 
-            setLinesPage(venueLines)
-            setLoading(false)
+            return venueLines;
         } catch {
             toast({
                 message: 'Something went wrong while trying to fetch the lines for your venue',
@@ -47,17 +36,7 @@ const AddEventLines = () => {
         }
     }
 
-    useEffect(() => {
-        fetchVenueLines();
-    }, [activePage]);
-
-    function onPageChange(e) {
-        setActivePage(e);
-        setLoading(true);
-        fetchVenueLines();
-    }
-
-    function onLineChange(e, line) {
+    function onLineChange(e, line, forceUpdateFnc) {
         let added = e.target.checked;
         if (!added) {
             toast({
@@ -68,31 +47,35 @@ const AddEventLines = () => {
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, userId:userId})).then(() => {
-            onPageChange(activePage)
+        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, lineManagerId:userId})).then(() => {
+            forceUpdateFnc();
+        }).catch(() => {
+            toast({
+                message: 'Something went wrong while trying to fetch the lines for your venue',
+                type: 'is-danger'
+            })
         });
     }
 
-    const RenderVenueLines = () => {
-        if (loading) return <Spinner/>
-        if (linesPage.content.length === 0) return <div className="panel-block">No lines found for your venue.</div>
-        return linesPage.content.map(line => {
-            return <div className="panel-block columns" key={line.id}>
-                <div className="column is-1">
-                    <input type="checkbox"
-                           className="switch is-success" checked={line.alreadyAdded}
-                           onChange={(e) => onLineChange(e, line)}/>
-                    <label className="is-hidden"> Add {line.name}</label>
-                </div>
-
-                <div className="is-clickable column"
-                     onClick={() => setModal(() => ({
-                         title: line.name,
-                         content: line.description,
-                         isActive: true
-                     }))}>{line.name}</div>
+    const RenderVenueLines = (props) => {
+        const line = props.data
+        if (line === undefined) return "";
+        return <div className="panel-block columns" key={line.id}>
+            <div className="column is-1">
+                <input type="checkbox"
+                       className="switch is-success" checked={line.alreadyAdded}
+                       onChange={(e) => onLineChange(e, line, props.update)}/>
+                <label className="is-hidden"> Add {line.name}</label>
             </div>
-        });
+
+            <div className="is-clickable column"
+                 onClick={() => setModal(() => ({
+                     title: line.name,
+                     content: line.description,
+                     isActive: true
+                 }))}>{line.name}</div>
+        </div>
+
     }
 
     const RenderDescriptionModal = () => {
@@ -118,13 +101,8 @@ const AddEventLines = () => {
         </div>
         <RenderDescriptionModal/>
         <RenderVenueLines/>
-        {
-            linesPage.content.length === 0 ? "" :
-                <div className="control">
-                    <PageControls showButtons={true} pageSettings={linesPage}
-                                  changePage={(e) => onPageChange(e)}/>
-                </div>
-        }
+        <PagedList fetchDataFnc={fetchVenueLines} RenderListItem={RenderVenueLines}
+                   IsEmptyComponent={() => <p>No lines found for your venue</p>}/>
     </div>
 };
 

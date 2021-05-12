@@ -17,7 +17,7 @@ let pageSettings = {
 
 let request = {
     body: "test user",
-    dateTime: [2021, 4, 28, 10, 59, 57, 509317000],
+    creationDate: [2021, 4, 28, 10, 59, 57, 509317000],
     id: "1",
     title: "Request to join KdG ACCEPTED",
     type: "USER_JOINED",
@@ -35,14 +35,14 @@ function mockFetch(content = pageSettings) {
 
 test("inbox", () => {
     render(<Inbox/>)
-    expect(screen.getByText(/inbox/)).toBeInTheDocument()
+    expect(screen.getByText(/Inbox/)).toBeInTheDocument()
 }, 5000);
 
 test("buttons", () => {
     render(<Inbox/>)
     let urgentButton = screen.queryByText(/Urgent/i)
     expect(urgentButton).toBeInTheDocument()
-    let normalButton = screen.queryByText(/Normal/i)
+    let normalButton = screen.queryByText(/All/i)
     expect(normalButton).toBeInTheDocument()
     fireEvent.click(urgentButton);
     fireEvent.click(normalButton);
@@ -51,10 +51,19 @@ test("buttons", () => {
 
 test("RenderNotifications -success", async () => {
     mockFetch({...pageSettings, content: [request]})
-    render(<Inbox/>);
-    await sleep(50)
-    let normalButton = screen.queryByText(/Normal/i)
+    const {container} =  render(<Inbox/>);
+    await sleep(40)
+    expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
+
+
+    let notification = container.querySelectorAll("div.is-clickable");
+    expect(notification.length).toBe(1);
+    expect(notification[0]).toBeInTheDocument();
+    fireEvent.click(notification[0]);
+    await sleep(40);
+
+    let normalButton = screen.queryByText(/All/i)
     expect(normalButton).toBeInTheDocument()
     fireEvent.click(normalButton);
-    expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
-})
+
+}, 50000000000000000)

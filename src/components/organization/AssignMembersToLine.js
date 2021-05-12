@@ -1,26 +1,17 @@
 import {useParams} from "react-router-dom";
 import {getBase, postBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
-import PageControls from "../util/PageControls";
-import Spinner from "../util/Spinner";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {dateArrayToDate} from "../../js/DateTime";
+import PagedList from "../util/PagedList";
 
 const AssignMembersToLine = () => {
     let {id} = useParams();
 
-    const [userPage, setUserPage] = useState({
-        content: [],
-        number: 0,
-        first: true,
-        last: false,
-        totalPages: 0
-    })
-    const [line, setLine] = useState(JSON.parse(localStorage.getItem("organization.memberassignment.line")))
-    const [loading, setLoading] = useState(true);
-    const [activePage, setActivePage] = useState(0);
 
-    async function fetchData() {
+    const [line, setLine] = useState(JSON.parse(localStorage.getItem("organization.memberassignment.line")))
+
+    async function fetchData(activePage) {
         try {
             let lineProm = getBase("/line/" + line.id);
             let usersProm = getBase("/userorganization/" + id + "/users?page=" + activePage)
@@ -32,8 +23,7 @@ const AssignMembersToLine = () => {
                 return user
             });
 
-            setUserPage(users)
-            setLoading(false)
+            return users;
         } catch {
             toast({
                 message: 'Something went wrong while trying to fetch the users in your organization',
@@ -42,30 +32,16 @@ const AssignMembersToLine = () => {
         }
     }
 
-    useEffect(() => {
-        fetchData();
-    }, [activePage]);
-
-    function onPageChange(e) {
-        setActivePage(e);
-        setLoading(true);
-        fetchData();
-    }
-
-    const RenderJoinRequests = () => {
-        if (loading) return <Spinner/>
-        if (userPage.content.length === 0) return <div className="panel-block">
-            No users in your organization
-        </div>
-
-        return userPage.content.map(user => <div className="columns" key={user.id}>
+    const RenderJoinRequests = (props) => {
+        const user = props.data;
+        return <div className="columns" key={user.id}>
             <input className="column is-1" type="checkbox" checked={user.alreadyAssigned}
-                                              onChange={() => assignUser(user)}/>
+                   onChange={() => assignUser(user, props.update)}/>
             <p className="column">{user.user.firstname} {user.user.lastname}</p>
-        </div>);
+        </div>
     }
 
-    function assignUser(user) {
+    function assignUser(user, forceUpdateFnc) {
         if (user.alreadyAssigned) {
             toast({
                 message: 'Not implemented',
@@ -77,10 +53,12 @@ const AssignMembersToLine = () => {
         postBase("/line/" + line.id + "/assign/member", JSON.stringify({
             eventLineId: line.id,
             memberId: user.user.id
-        })).then(() => onPageChange(activePage)).catch(() => toast({
-            message: 'Something went wrong while trying to assign member to line',
-            type: 'is-danger'
-        }))
+        })).then(() => forceUpdateFnc()).catch(() =>
+            toast({
+                message: 'Something went wrong while trying to assign member to line',
+                type: 'is-danger'
+            })
+        )
     }
 
     return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
@@ -90,14 +68,8 @@ const AssignMembersToLine = () => {
             <div className="panel-heading has-text-centered-mobile">
                 <h2 className=" title is-3">Users</h2>
             </div>
-            <RenderJoinRequests/>
-            {
-                userPage.content.length === 0 ? "" :
-                    <div className="control">
-                        <PageControls showButtons={true} pageSettings={userPage}
-                                      changePage={(e) => onPageChange(e)}/>
-                    </div>
-            }
+            <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
+                       IsEmptyComponent={() => <p>No users in your organization</p>}/>
         </div>
     </div>
 }

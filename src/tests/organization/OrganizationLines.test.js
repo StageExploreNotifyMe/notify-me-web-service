@@ -76,13 +76,13 @@ function renderAssignMembersToLine() {
             <OrganizationLines/>
         </Router>,
     );
+    expect(screen.getByText(new RegExp('Manage lines'))).toBeInTheDocument()
     return {container};
 }
 
 test('OrganizationLines - empty', async () => {
     mockFetch(false, false);
     const {container} = renderAssignMembersToLine();
-    expect(screen.getByText(new RegExp('Assign members to lines'))).toBeInTheDocument()
     await waitForLoadingSpinner(container)
     expect(screen.getByText(new RegExp('No lines assigned to your organization'))).toBeInTheDocument()
 }, 5000);
@@ -90,7 +90,6 @@ test('OrganizationLines - empty', async () => {
 test('OrganizationLines - with network error', async () => {
     mockFetch(true, false);
     renderAssignMembersToLine();
-    expect(screen.getByText(new RegExp('Assign members to lines'))).toBeInTheDocument()
     await sleep(20)
     expect(screen.getByText(new RegExp('Something went wrong'))).toBeInTheDocument()
 }, 5000);
@@ -98,7 +97,6 @@ test('OrganizationLines - with network error', async () => {
 test('OrganizationLines - with data', async () => {
     mockFetch();
     const {container} = renderAssignMembersToLine();
-    expect(screen.getByText(new RegExp('Assign members to lines'))).toBeInTheDocument()
     await waitForLoadingSpinner(container)
     expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
     let assignMembersButton = container.querySelector(".is-clickable");
