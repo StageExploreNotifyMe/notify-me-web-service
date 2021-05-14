@@ -82,6 +82,7 @@ test('OrganizationJoinRequests - no requests', async () => {
     mockFetch(false, true);
     const container = renderMemberManagement();
     await waitForLoadingSpinner(container)
+    await sleep(5);
     expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
     expect(screen.getByText(new RegExp("No pending"))).toBeInTheDocument()
 }, 5000);

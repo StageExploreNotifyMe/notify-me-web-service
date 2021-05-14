@@ -49,7 +49,7 @@ test('Render addEventLines component - created event', async () => {
     await waitForLoadingSpinner(container);
     expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
     expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
-    let cancelButton = screen.getByText(new RegExp("Cancel"));
+    let cancelButton = screen.getAllByText(new RegExp("Cancel"))[0];
     expect(cancelButton).toBeVisible()
     fireEvent.click(cancelButton)
 }, 5000);
@@ -60,7 +60,7 @@ test('Render addEventLines component - public event', async () => {
     const {container} =renderComponent();
     await waitForLoadingSpinner(container);
     expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp("Cancel"))).toBeVisible()
+    expect(screen.getAllByText(new RegExp("Cancel"))[0]).toBeVisible()
     let makePrivateButton = screen.getByText(new RegExp("Make Private"));
     expect(makePrivateButton).toBeVisible()
     fireEvent.click(makePrivateButton)
