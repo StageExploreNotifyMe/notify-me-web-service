@@ -5,6 +5,7 @@ import EventDetails from "../../components/event/EventDetails";
 import {waitForLoadingSpinner} from "../TestUtilities";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 const history = createMemoryHistory();
@@ -44,37 +45,43 @@ test('Render addEventLines component - network error', async () => {
 }, 5000);
 
 test('Render addEventLines component - created event', async () => {
-    mockFetch()
-    const {container} =renderComponent();
-    await waitForLoadingSpinner(container);
-    expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
-    let cancelButton = screen.getByText(new RegExp("Cancel"));
-    expect(cancelButton).toBeVisible()
-    fireEvent.click(cancelButton)
+    await act(async () => {
+        mockFetch()
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container);
+        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
+        let cancelButton = screen.getByText(new RegExp("Cancel"));
+        expect(cancelButton).toBeVisible()
+        fireEvent.click(cancelButton)
+    })
 }, 5000);
 
 test('Render addEventLines component - public event', async () => {
-    let pubEvent = {...event, eventStatus: "PUBLIC"};
-    mockFetch(false, pubEvent)
-    const {container} =renderComponent();
-    await waitForLoadingSpinner(container);
-    expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp("Cancel"))).toBeVisible()
-    let makePrivateButton = screen.getByText(new RegExp("Make Private"));
-    expect(makePrivateButton).toBeVisible()
-    fireEvent.click(makePrivateButton)
+    await act(async () => {
+        let pubEvent = {...event, eventStatus: "PUBLIC"};
+        mockFetch(false, pubEvent)
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container);
+        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp("Cancel"))).toBeVisible()
+        let makePrivateButton = screen.getByText(new RegExp("Make Private"));
+        expect(makePrivateButton).toBeVisible()
+        fireEvent.click(makePrivateButton)
+    })
 }, 5000);
 
 test('Render addEventLines component - canceled event', async () => {
-    let canEvent = {...event, eventStatus: "CANCELED"};
-    mockFetch(false, canEvent)
-    const {container} =renderComponent();
-    await waitForLoadingSpinner(container);
-    expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp("Make Private"))).toBeVisible()
-    let makePublicButton = screen.getByText(new RegExp("Make Public"));
-    expect(makePublicButton).toBeVisible()
-    mockFetch(true)
-    fireEvent.click(makePublicButton)
+    await act(async () => {
+        let canEvent = {...event, eventStatus: "CANCELED"};
+        mockFetch(false, canEvent)
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container);
+        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp("Make Private"))).toBeVisible()
+        let makePublicButton = screen.getByText(new RegExp("Make Public"));
+        expect(makePublicButton).toBeVisible()
+        mockFetch(true)
+        fireEvent.click(makePublicButton)
+    })
 }, 5000);

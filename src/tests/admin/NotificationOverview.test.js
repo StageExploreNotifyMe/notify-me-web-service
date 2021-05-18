@@ -35,8 +35,8 @@ let notificationTypes = {
 }
 
 
-function mockFetch(content = pageSettings) {
-    fetch.enableMocks() ;
+function mockFetch(content = pageSettings, simulateNetworkError=false) {
+    fetch.enableMocks();
     fetch.resetMocks();
     fetch.mockResponse(async request => {
         if (request.url.includes("/admin/eventId")) {
@@ -44,26 +44,33 @@ function mockFetch(content = pageSettings) {
         } else if (request.url.includes("/admin/notificationTypes")) {
             return Promise.resolve(JSON.stringify(notificationTypes))
         } else if (request.url.includes("/admin/notifications")) {
+            if (simulateNetworkError)  return Promise.resolve("hjgj")
             return Promise.resolve(JSON.stringify(content))
-        }
-        else
+        } else
             return Promise.reject(new Error("unknown URL"))
     })
 }
 
 test("dropdown", async () => {
-    const {container} = render(<NotificationOverview/>)
-    let types = container.querySelector(".select")
-    expect(types).toBeInTheDocument();
-    fireEvent.click(types)
-
+    await act(async () => {
+        mockFetch()
+        const {container} = render(<NotificationOverview/>)
+        let types = container.querySelector(".select")
+        await sleep(20)
+        expect(types).toBeInTheDocument();
+        fireEvent.click(types)
+    })
 }, 5000)
 
 
 test("RenderNotification - fail", async () => {
-    render(<NotificationOverview/>)
-    let notRendered = screen.getAllByText(/Something went wrong while fetching all notifications/i)
-    expect(notRendered[0]).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(pageSettings, true)
+        render(<NotificationOverview/>)
+        await sleep(50)
+        let notRendered = screen.getAllByText(/Something went wrong while fetching all notifications/i)
+        expect(notRendered[0]).toBeInTheDocument()
+    })
 }, 5000)
 
 

@@ -6,6 +6,7 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 import {sleep} from "../../js/Sleep";
 import OrganizationJoinRequests from "../../components/organization/OrganizationJoinRequests";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 
@@ -71,24 +72,32 @@ function renderMemberManagement() {
 }
 
 test('OrganizationJoinRequests - render', async () => {
-    mockFetch();
-    const container = renderMemberManagement();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(userOrg.user.firstname + " " + userOrg.user.lastname))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch();
+        const container = renderMemberManagement();
+        await waitForLoadingSpinner(container)
+        await sleep(20)
+        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp(userOrg.user.firstname + " " + userOrg.user.lastname))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('OrganizationJoinRequests - no requests', async () => {
-    mockFetch(false, true);
-    const container = renderMemberManagement();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp("No pending"))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(false, true);
+        const container = renderMemberManagement();
+        await waitForLoadingSpinner(container)
+        await sleep(20)
+        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp("No pending"))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('OrganizationJoinRequests - network error', async () => {
-    mockFetch(true);
-    renderMemberManagement();
-    await sleep(20);
-    expect(screen.getAllByText(new RegExp("Something went wrong"))[0]).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(true);
+        renderMemberManagement();
+        await sleep(20);
+        expect(screen.getAllByText(new RegExp("Something went wrong"))[0]).toBeInTheDocument()
+    })
 }, 5000);
