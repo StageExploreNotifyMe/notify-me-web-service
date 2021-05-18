@@ -4,7 +4,6 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
 
-
 enableFetchMocks()
 fetch.enableMocks();
 
@@ -26,7 +25,6 @@ let request = {
     usedChannel: "EMAIL",
     userId: "1"
 }
-
 
 function mockFetch(content = pageSettings) {
     fetch.resetMocks();

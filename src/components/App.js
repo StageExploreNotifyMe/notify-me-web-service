@@ -28,7 +28,7 @@ function App() {
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
                     <Route path="/organization/:id/memberassignment/assign"> <AssignMembersToLine/> </Route>
-                    <Route path="/organization/:id/memberassignment"> <OrganizationLines/> </Route>
+                    <Route path="/organization/:id/linemanagement"> <OrganizationLines/> </Route>
                     <Route path="/organization/:id"> <OrganizationDetails/> </Route>
                     <Route path="/venue/events/create"> <CreateEvent/> </Route>
                     <Route path="/venue/events/:id/lines"> <AddEventLines/> </Route>

@@ -98,11 +98,33 @@ test('Render event lines component - with lines & organization', async () => {
         let addButton = screen.getByText(new RegExp('Add'))
         expect(addButton).toBeInTheDocument()
         fireEvent.click(addButton);
-        let cancelButton = screen.getByText(new RegExp('Cancel'))
+
+        openModal();
+        let closeModal = container.querySelector(".modal-background");
+        expect(closeModal).toBeVisible();
+        fireEvent.click(closeModal);
+        openModal();
+
+        let textArea = container.querySelector("textarea");
+        expect(textArea).toBeVisible();
+
+        let sendReminder = screen.getAllByText(new RegExp("Send"))[1];
+        expect(sendReminder).toBeVisible();
+        fireEvent.click(sendReminder);
+        await sleep(40);
+        expect(screen.getByText(new RegExp('Something went wrong while trying to send your reminder'))).toBeInTheDocument()
+
+        let cancelButton = screen.getAllByText(new RegExp('Cancel'))[1]
         expect(cancelButton).toBeInTheDocument()
         fireEvent.click(cancelButton)
     })
 }, 5000);
+
+function openModal() {
+    let staffingReminder = screen.getByText(new RegExp("Send staffing reminder"));
+    expect(staffingReminder).toBeInTheDocument();
+    fireEvent.click(staffingReminder);
+}
 
 test('Render event lines component - with lines, without organization', async () => {
     await act(async () => {
