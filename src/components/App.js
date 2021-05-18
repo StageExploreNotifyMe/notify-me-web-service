@@ -15,6 +15,7 @@ import OrganizationLines from "./organization/OrganizationLines";
 import AssignMembersToLine from "./organization/AssignMembersToLine";
 import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
+import ChannelOverview from "./admin/ChannelOverview";
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/user/inbox"> <Inbox/> </Route>
                     <Route path="/user"> <UserDetails/> </Route>
                     <Route path="/admin"> <NotificationOverview/> </Route>
+                    <Route path="/channels"> <ChannelOverview/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
                     <Route path="/organization/:id/memberassignment/assign"> <AssignMembersToLine/> </Route>
