@@ -47,11 +47,11 @@ test('Render addEventLines component - network error', async () => {
 test('Render addEventLines component - created event', async () => {
     await act(async () => {
         mockFetch()
-        const {container} = renderComponent();
+        const {container} =renderComponent();
         await waitForLoadingSpinner(container);
         expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
         expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
-        let cancelButton = screen.getByText(new RegExp("Cancel"));
+        let cancelButton = screen.getAllByText(new RegExp("Cancel"))[0];
         expect(cancelButton).toBeVisible()
         fireEvent.click(cancelButton)
     })
@@ -61,10 +61,10 @@ test('Render addEventLines component - public event', async () => {
     await act(async () => {
         let pubEvent = {...event, eventStatus: "PUBLIC"};
         mockFetch(false, pubEvent)
-        const {container} = renderComponent();
+        const {container} =renderComponent();
         await waitForLoadingSpinner(container);
         expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-        expect(screen.getByText(new RegExp("Cancel"))).toBeVisible()
+        expect(screen.getAllByText(new RegExp("Cancel"))[0]).toBeVisible()
         let makePrivateButton = screen.getByText(new RegExp("Make Private"));
         expect(makePrivateButton).toBeVisible()
         fireEvent.click(makePrivateButton)
