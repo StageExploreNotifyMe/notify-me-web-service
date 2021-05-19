@@ -8,15 +8,59 @@ enableFetchMocks()
 test('Render Admin Org management', async () => {
     await act(async () => {
         mockFetch({...orgPage, content: [org]});
-        const {container, createButton} = await renderAdminOrgMngmt();
+        const {createButton} = await renderAdminOrgMngmt();
         expect(screen.getByText(new RegExp(org.name))).toBeInTheDocument();
-        let icon = container.querySelector(".is-clickable");
-        expect(icon).toBeInTheDocument();
-        fireEvent.click(icon);
-        expect(mockHistoryPush).toHaveBeenCalledWith('/admin/organizationManagement/1/edit');
-
         fireEvent.click(createButton)
         expect(mockHistoryPush).toHaveBeenCalledWith('/admin/organizationManagement/create');
+    })
+}, 5000);
+
+test('Render Admin Org management - close modal - 1', async () => {
+    await act(async () => {
+        mockFetch({...orgPage, content: [org]});
+        const {container} = await renderAdminOrgMngmt();
+        let editIcon = container.querySelector(".is-clickable");
+        expect(editIcon).toBeInTheDocument();
+        await openModal(editIcon, container);
+        await closeModal(container, ".modal-background");
+    })
+}, 5000);
+
+test('Render Admin Org management - close modal - 2', async () => {
+    await act(async () => {
+        mockFetch({...orgPage, content: [org]});
+        const {container} = await renderAdminOrgMngmt();
+        let editIcon = container.querySelector(".is-clickable");
+        expect(editIcon).toBeInTheDocument();
+        await openModal(editIcon, container);
+        await closeModal(container, ".modal-close");
+    })
+}, 5000);
+
+test('Render Admin Org management - close modal - 3', async () => {
+    await act(async () => {
+        mockFetch({...orgPage, content: [org]});
+        const {container} = await renderAdminOrgMngmt();
+        let editIcon = container.querySelector(".is-clickable");
+        expect(editIcon).toBeInTheDocument();
+        await openModal(editIcon, container);
+        await closeModal(container, ".is-danger");
+    })
+}, 5000);
+
+test('Render Admin Org management - edit', async () => {
+    await act(async () => {
+        mockFetch({...orgPage, content: [org]});
+        const {container} = await renderAdminOrgMngmt();
+        let editIcon = container.querySelector(".is-clickable");
+        expect(editIcon).toBeInTheDocument();
+        await openModal(editIcon, container);
+        let changeNameField = container.querySelector("input");
+        await typeInInput(changeNameField, "This is a test");
+        let submitButton = container.querySelector(".is-success");
+        fireEvent.click(submitButton);
+        await sleep(20);
+        expect(screen.getByText(/Something went wrong while trying to update this organization/i)).toBeInTheDocument();
     })
 }, 5000);
 
@@ -37,7 +81,7 @@ test('Render Admin Org management - network error', async () => {
         mockFetch(orgPage, true);
         await renderAdminOrgMngmt(false);
         await sleep(50)
-        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+        expect(screen.getByText(/Something went wrong while trying to fetch/i)).toBeInTheDocument();
     })
 }, 5000);
 
@@ -82,4 +126,24 @@ async function renderAdminOrgMngmt(waitForRemoved = true) {
     const createButton = screen.getByText(/Create Organization/i);
     expect(createButton).toBeInTheDocument();
     return {createButton, spinner, container};
+}
+
+async function openModal(icon, container) {
+    fireEvent.click(icon);
+    await sleep(20);
+    let modal = container.querySelector(".is-active");
+    expect(modal).toBeInTheDocument();
+}
+
+async function closeModal(container, className) {
+    fireEvent.click(container.querySelector(className))
+    await sleep(20);
+    expect(container.querySelectorAll(".is-active").length).toBe(0);
+}
+
+
+async function typeInInput(inputElement, toType = "") {
+    fireEvent.change(inputElement, {target: {value: toType}})
+    await sleep(40);
+    expect(inputElement.value).toBe(toType)
 }
