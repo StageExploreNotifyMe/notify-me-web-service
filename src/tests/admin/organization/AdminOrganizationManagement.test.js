@@ -1,7 +1,7 @@
 import {act, fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import {enableFetchMocks} from "jest-fetch-mock";
-import {sleep} from "../../js/Sleep";
-import AdminOrganizationManagement from "../../components/admin/AdminOrganizationManagement";
+import {sleep} from "../../../js/Sleep";
+import AdminOrganizationManagement from "../../../components/admin/organization/AdminOrganizationManagement";
 
 enableFetchMocks()
 
@@ -52,7 +52,6 @@ let orgPage = {
     first: true,
     numberOfElements: 0
 };
-
 
 function mockFetch(data = orgPage, simulateNetworkError = false) {
     fetch.enableMocks()
