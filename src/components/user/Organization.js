@@ -3,7 +3,11 @@ import {toast} from 'bulma-toast';
 
 const Organization = (props) => {
 
-    const [joinedState, setJoinedState] = useState({joined: props.content.hasJoined, showConfirmButtons: false})
+    const [joinedState, setJoinedState] = useState({
+        joined: props.content.hasJoined,
+        showConfirmButtons: false,
+        disableCheckbox: (props.content.status === "PENDING" || props.content.status === "DECLINED")
+    })
 
     function checkboxClicked(e) {
         let currVal = e.target.checked;
@@ -52,19 +56,23 @@ const Organization = (props) => {
     }
 
     return (
-        <label className="panel-block">
+        <div className="panel-block">
             <div className="column">
-                <input type="checkbox" disabled={joinedState.showConfirmButtons} checked={joinedState.joined}
-                       onChange={checkboxClicked}/>
+                <input type="checkbox" disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}
+                       checked={joinedState.joined} onChange={checkboxClicked}
+                />
                 {props.content.name}
             </div>
-
+            <div
+                className={(props.content.status === "PENDING" || props.content.status === "DECLINED") ? "column is-2" : "is-hidden"}>
+                {props.content.status}
+            </div>
             <div className={joinedState.showConfirmButtons ? "column is-2" : "is-hidden"}>
                 <button className="button is-success is-small ml-2" onClick={() => confirmClicked(true)}>Save</button>
                 <button className="button is-danger is-small ml-2" onClick={() => confirmClicked(false)}>Cancel</button>
             </div>
 
-        </label>
+        </div>
     )
 }
 

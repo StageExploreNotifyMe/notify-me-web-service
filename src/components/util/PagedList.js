@@ -25,14 +25,17 @@ const PagedList = (props) => {
     async function internalFetchData() {
         try {
             let data = await props.fetchDataFnc(activePage);
-            setPage(data);
-            setHasErrored(false);
-            setLoading(false);
+            if (data === undefined) {
+                setHasErrored(true);
+            } else {
+                setPage(data);
+                setHasErrored(false);
+                setLoading(false);
+            }
             return activePage;
         } catch {
             setHasErrored(true);
         }
-
     }
 
     useEffect(() => {
