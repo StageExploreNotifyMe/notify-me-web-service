@@ -39,6 +39,11 @@ const AdminDetails = () => {
                 body: "Manage the organizations known in the system",
                 link: "/admin/organizationManagement"
             }}/></div>
+            <div className="column is-4 is-12-mobile"><AdminNavCard card={{
+                title: "Sent notifications overview",
+                body: "See how many messages have been sent via which channels",
+                link: "/admin/channels"
+            }}/></div>
         </div>
     </div>
 
