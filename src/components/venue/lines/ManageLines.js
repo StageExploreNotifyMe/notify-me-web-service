@@ -18,7 +18,7 @@ const ManageLines = () => {
             return await getBase("/line/venue/" + venue.id + "?page=" + activePage);
         } catch {
             toast({
-                message: 'Something went wrong while trying to fetch the lines of your lines',
+                message: 'Something went wrong while trying to fetch your lines',
                 type: 'is-danger'
             })
         }
