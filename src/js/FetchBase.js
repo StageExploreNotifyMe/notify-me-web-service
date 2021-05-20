@@ -10,7 +10,21 @@ const fetchBase = (url, method = "GET", body) => {
 
     if (!url.startsWith("/")) url = "/" + url;
 
-    return fetch(process.env.REACT_APP_SERVER_URL + url, requestOptions).then(resp => resp.json())
+    return fetch(process.env.REACT_APP_SERVER_URL + url, requestOptions).then(resp => handleErrors(resp)).then(resp =>resp.json())
+}
+function handleErrors(response) {
+    if (response.ok) return response;
+
+    const responseError = {
+        type: 'Error',
+        status: response.status || 500,
+        statusText: response.statusText || ''
+    };
+
+    const error = new Error();
+    error.info = responseError;
+
+    throw error;
 }
 
 export const getBase = (url) => {
