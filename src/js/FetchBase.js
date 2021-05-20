@@ -4,7 +4,7 @@ const fetchBase = (url, method = "GET", body) => {
         headers: {'Content-Type': 'application/json'},
     };
 
-    if (method === "POST" || method === "PUT") {
+    if (method === "POST" || method === "PUT" || method === "PATCH") {
         requestOptions.body = body;
     }
 
@@ -20,6 +20,10 @@ export const getBase = (url) => {
 export const postBase = (url, body) => {
     if (body == undefined) throw Error("Cannot do a post with an empty body");
     return fetchBase(url, "POST", body);
+}
+
+export const patchBase = (url, body = {}) => {
+    return fetchBase(url, "PATCH", body);
 }
 
 export default fetchBase

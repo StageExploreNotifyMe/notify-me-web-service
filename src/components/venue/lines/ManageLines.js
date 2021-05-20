@@ -33,7 +33,10 @@ const ManageLines = () => {
                 </ReactTooltip></div>
             <div className="column">Required people: {line.numberOfRequiredPeople}</div>
             <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => history.push("/venue/lines/" + line.id + "/edit")}>
+                <span className="icon is-clickable" onClick={() => {
+                    localStorage.setItem("editLine", JSON.stringify(line));
+                    history.push("/venue/lines/edit");
+                }}>
                     <FontAwesomeIcon icon={faEdit}/>
                 </span>
             </div>

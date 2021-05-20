@@ -2,19 +2,28 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
-import {postBase} from "../../../js/FetchBase";
+import {patchBase, postBase} from "../../../js/FetchBase";
 import {toast} from "bulma-toast";
 
-const CreateLine = () => {
+const CreateLine = (props) => {
     const history = useHistory();
     const venue = JSON.parse(localStorage.getItem("venue"));
-
-    const [lineDto, setLineDto] = useState({
+    let isCreating = ( props.action === "create");
+    let editLine = {
         name: "",
         description: "",
         numberOfRequiredPeople: 0,
         venueId: venue.id
-    })
+    };
+    if (!isCreating) {
+        editLine = JSON.parse(localStorage.getItem("editLine"));
+        editLine = {
+            ...editLine,
+            venueId: editLine.venueDto.id
+        };
+    }
+
+    const [lineDto, setLineDto] = useState(editLine)
     const [validationState, setValidationState] = useState({
         noName: false,
         numberInvalid: false
@@ -34,20 +43,24 @@ const CreateLine = () => {
         e.preventDefault();
 
         if (!isValidDto()) return;
+        let remoteCall;
+        if (isCreating) {
+            remoteCall = postBase("/line/create", JSON.stringify(lineDto));
+        } else {
+            remoteCall = patchBase("/line/edit", JSON.stringify(lineDto));
+        }
 
-
-        postBase("/line/create", JSON.stringify(lineDto)).then(() => history.goBack()).catch(() => {
+        remoteCall.then(() => history.goBack()).catch(() => {
             toast({
-                message: 'Something went wrong while trying to create your line',
+                message: 'Something went wrong while trying to submitting your line',
                 type: 'is-danger'
             })
         });
-
     }
 
     return <div className="container mt-2">
         <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Create Event</h2></div>
+            <div className="level-left"><h2 className="title is-2 level-item">{isCreating ? "Create": "Edit"} Line</h2></div>
         </div>
         <form>
             <div className="field">
@@ -112,8 +125,8 @@ const CreateLine = () => {
 
             <div className="field is-grouped">
                 <div className="control">
-                    <button onClick={(e) => submitEvent(e)} className="button is-link"
-                            disabled={validationState.noName}>Submit
+                    <button onClick={(e) => submitEvent(e)} className="button is-link" disabled={validationState.noName}>
+                        {isCreating ? "Create" : "Update"}
                     </button>
                 </div>
                 <div className="control">
