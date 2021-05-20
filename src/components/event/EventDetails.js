@@ -41,7 +41,8 @@ const EventDetails = () => {
 
     if (loading) return <Spinner/>
 
-    return <div>
+    return <article>
+        <h1 className="is-hidden">Manage event</h1>
         <section className="hero is-primary">
             <div className="hero-body">
                 <h1 className="title">
@@ -56,7 +57,7 @@ const EventDetails = () => {
             <h2 className="title is-3">Change event status</h2>
             <div><p>{event.eventStatus}</p></div>
             <div className="buttons">
-                <button className={`button ${event.eventStatus === "CREATED" ? "is-hidden" : ""}`}
+                <button className={`button ${event.eventStatus === "CREATED" || event.eventStatus === "PRIVATE" ? "is-hidden" : ""}`}
                         onClick={() => setEventState('private')}>Make Private
                 </button>
                 <button className={`button ${event.eventStatus === "PUBLIC" ? "is-hidden" : ""}`}
@@ -71,7 +72,7 @@ const EventDetails = () => {
         <section>
             <EventLines/>
         </section>
-    </div>
+    </article>
 }
 
 export default EventDetails
