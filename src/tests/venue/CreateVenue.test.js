@@ -53,10 +53,12 @@ test("Create Venue - no name", async () => {
     await act(async () => {
         mockFetch(page, false)
         const {container} = render(<CreateVenue/>)
+        await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
         let submit = screen.queryByText(/Submit/i)
         fireEvent.click(submit)
+        expect(mockHistoryPush).not.toHaveBeenCalled()
         await sleep(20)
         expect(screen.getByText(/A venue must have a name/i)).toBeInTheDocument()
     })
@@ -66,13 +68,12 @@ test("Create Venue - name - no venueManager", async () => {
     await act(async () => {
         mockFetch(page, false)
         const {container} = render(<CreateVenue/>)
+        await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
         await fireEvent.change(name, {target: {value: "Groenplaats"}})
-        await sleep(20)
         let submit = screen.queryByText(/Submit/i)
         fireEvent.click(submit)
-        await sleep(20)
         expect(screen.getByText(/Please select/i)).toBeInTheDocument()
     })
 }, 5000)
@@ -113,7 +114,7 @@ function mockFetch(data, simulateNetworkError) {
     fetch.mockResponse(async request => {
         if (simulateNetworkError) return Promise.reject("Simulated network error")
         await sleep(20)
-        if (request.url.includes("/user?page=")) return Promise.resolve(JSON.stringify(data))
-        return Promise.reject(new Error("unknown URL"))
+        if (request.url.includes("/user?page=")) return Promise.resolve({body: JSON.stringify(data) ,status:200, ok:true})
+        return Promise.resolve({body: null ,status:409, ok:false})
     })
 }
