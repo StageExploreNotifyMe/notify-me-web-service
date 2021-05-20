@@ -39,6 +39,11 @@ const AdminDetails = () => {
                 body: "Manage the organizations known in the system",
                 link: "/admin/organizationManagement"
             }}/></div>
+            <div className="column is-4 is-12-mobile"><AdminNavCard card={{
+                title: "Venue Management",
+                body: "Manage the venues known in the system",
+                link: "/admin/venueManagement"
+            }}/></div>
         </div>
     </div>
 

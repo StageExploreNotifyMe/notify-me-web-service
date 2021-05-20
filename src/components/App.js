@@ -17,6 +17,8 @@ import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
 import AdminDetails from "./admin/AdminDetails";
 import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
+import AdminVenueManagement from "./admin/AdminVenueManagement";
+import CreateVenue from "./venue/CreateVenue";
 
 function App() {
     return (
@@ -27,6 +29,8 @@ function App() {
                     <Route path="/user/inbox"> <Inbox/> </Route>
                     <Route path="/user"> <UserDetails/> </Route>
                     <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
+                    <Route path="/admin/venueManagement"> <AdminVenueManagement/> </Route>
+                    <Route path="/admin/venue/create"> <CreateVenue/> </Route>
                     <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
                     <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
