@@ -32,11 +32,19 @@ const CreateVenue = () => {
             venueManagerId: venueDto.venueManagerId
         })).then(() => {
             history.push("/admin/venueManagement")
-        }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to create your venue',
-                type: 'is-danger'
-            })
+        }).catch((error) => {
+            if (error.info.status === 409) {
+                toast({
+                    message: 'There is already a venue with the name ' + venueDto.name,
+                    type: 'is-danger',
+                    duration: 5000
+                })
+            } else {
+                toast({
+                    message: 'Something went wrong while trying to create your venue',
+                    type: 'is-danger'
+                })
+            }
         })
     }
 
@@ -60,8 +68,7 @@ const CreateVenue = () => {
                         ...prevState,
                         venueManagerId: user.id,
                         users: user
-                    }))}
-        >
+                    }))}>
             {user.firstname} {user.lastname}
         </div>
     }

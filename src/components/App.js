@@ -34,9 +34,9 @@ function App() {
                     <Route path="/admin/organizationManagement/create"> <AdminCreateOrganization/> </Route>
                     <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
                     <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
-                    <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/admin/venueManagement"> <AdminVenueManagement/> </Route>
                     <Route path="/admin/venue/create"> <CreateVenue/> </Route>
+                    <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
                     <Route path="/organization/:id/memberassignment/assign"> <AssignMembersToLine/> </Route>
