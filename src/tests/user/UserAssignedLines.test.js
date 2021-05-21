@@ -3,6 +3,7 @@ import UserAssignedLines from "../../components/user/UserAssignedLines";
 import {sleep} from "../../js/Sleep";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks();
 
@@ -74,22 +75,26 @@ function renderComponent() {
 }
 
 test('User assigned lines', async () => {
-    mockFetch()
-    const {container} = renderComponent();
-    expect(screen.getByText(/Your assigned lines/i)).toBeInTheDocument();
-    await waitForLoadingSpinner(container);
-    expect(screen.getByText(/Main Entrance Bar/i)).toBeInTheDocument();
-    let cancelButton = screen.getByText(/Cancel/i);
-    expect(cancelButton).toBeInTheDocument();
-    fireEvent.click(cancelButton);
-    await sleep(10);
-    await waitForLoadingSpinner(container);
-    expect(screen.getByText(/no lines assigned to/i)).toBeInTheDocument();
+    await act(async () => {
+        mockFetch()
+        const {container} = renderComponent();
+        expect(screen.getByText(/Your assigned lines/i)).toBeInTheDocument();
+        await waitForLoadingSpinner(container);
+        expect(screen.getByText(/Main Entrance Bar/i)).toBeInTheDocument();
+        let cancelButton = screen.getByText(/Cancel/i);
+        expect(cancelButton).toBeInTheDocument();
+        fireEvent.click(cancelButton);
+        await sleep(10);
+        await waitForLoadingSpinner(container);
+        expect(screen.getByText(/no lines assigned to/i)).toBeInTheDocument();
+    })
 }, 5000);
 
 test('User assigned lines - network error', async () => {
-    mockFetch(true)
-    renderComponent();
-    await sleep(20);
-    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+    await act(async () => {
+        mockFetch(true)
+        renderComponent();
+        await sleep(20);
+        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+    })
 }, 5000);
