@@ -2,7 +2,7 @@ import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import {useState} from "react";
-import {getBase, postBase} from "../../js/FetchBase";
+import {getBase, patchBase, postBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import PagedList from "../util/PagedList";
 
@@ -44,9 +44,8 @@ const CreateVenue = (props) => {
                 name: venueDto.name,
                 venueManagerIds: venueDto.venueManagerIds
             }))
-            console.log(venueDto.venueManagerIds)
         } else {
-            call = postBase("/admin/venue/edit", JSON.stringify({
+            call = patchBase("/admin/venue/edit", JSON.stringify({
                 name: venueDto.name,
                 id: venueDto.id,
                 venueManagers: venueDto.users
