@@ -5,6 +5,7 @@ import OrganizationLines from "../../components/organization/OrganizationLines";
 import {sleep} from "../../js/Sleep";
 import {waitForLoadingSpinner} from "../TestUtilities";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks();
 let mockHistoryPush = jest.fn();
@@ -81,10 +82,12 @@ function renderAssignMembersToLine() {
 }
 
 test('OrganizationLines - empty', async () => {
-    mockFetch(false, false);
-    const {container} = renderAssignMembersToLine();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('No lines assigned to your organization'))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(false, false);
+        const {container} = renderAssignMembersToLine();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('No lines assigned to your organization'))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('OrganizationLines - with network error', async () => {
@@ -95,12 +98,14 @@ test('OrganizationLines - with network error', async () => {
 }, 5000);
 
 test('OrganizationLines - with data', async () => {
-    mockFetch();
-    const {container} = renderAssignMembersToLine();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
-    let assignMembersButton = container.querySelector(".is-clickable");
-    expect(assignMembersButton).toBeInTheDocument();
-    fireEvent.click(assignMembersButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith("/organization/" + line.id + "/memberassignment/assign")
+    await act(async () => {
+        mockFetch();
+        const {container} = renderAssignMembersToLine();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
+        let assignMembersButton = container.querySelector(".is-clickable");
+        expect(assignMembersButton).toBeInTheDocument();
+        fireEvent.click(assignMembersButton);
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/" + line.id + "/memberassignment/assign")
+    })
 }, 5000);
