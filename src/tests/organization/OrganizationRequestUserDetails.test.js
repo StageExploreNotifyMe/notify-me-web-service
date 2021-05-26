@@ -2,6 +2,7 @@ import {fireEvent, render, screen} from '@testing-library/react';
 import OrganizationRequestUserDetail from "../../components/organization/OrganizationRequestUserDetail";
 
 import {enableFetchMocks} from 'jest-fetch-mock'
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 fetch.enableMocks();
@@ -51,24 +52,30 @@ function renderOrganizationRequestUserDetail() {
 }
 
 test('OrganizationRequestUserDetail - accept', async () => {
-    mockFetch();
-    const {acceptButton} = renderOrganizationRequestUserDetail();
-    fireEvent.click(acceptButton)
+    await act(async () => {
+        mockFetch();
+        const {acceptButton} = renderOrganizationRequestUserDetail();
+        fireEvent.click(acceptButton)
+    })
 }, 5000);
 
 test('OrganizationRequestUserDetail - decline', async () => {
-    mockFetch();
-    const {rejectButton} = renderOrganizationRequestUserDetail();
-    fireEvent.click(rejectButton)
+    await act(async () => {
+        mockFetch();
+        const {rejectButton} = renderOrganizationRequestUserDetail();
+        fireEvent.click(rejectButton)
+    })
 }, 5000);
 
 test('OrganizationRequestUserDetail - accept - fail', async () => {
-    mockFetch(true);
-    const { acceptButton} = renderOrganizationRequestUserDetail();
-    fireEvent.click(acceptButton)
-    setTimeout(() => {
-        expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
-    }, 50);
+    await act(async () => {
+        mockFetch(true);
+        const {acceptButton} = renderOrganizationRequestUserDetail();
+        fireEvent.click(acceptButton)
+        setTimeout(() => {
+            expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
+        }, 50);
+    })
 }, 5000);
 
 
