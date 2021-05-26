@@ -1,4 +1,4 @@
-import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
@@ -6,6 +6,7 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 import MemberManagement from "../../components/organization/MemberManagement";
 import {sleep} from "../../js/Sleep";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 
@@ -85,40 +86,45 @@ function renderMemberManagement() {
 }
 
 test('MemberManagement', async () => {
-    mockFetch();
-    const container = renderMemberManagement();
+    await act(async () => {
+        mockFetch();
+        const container = renderMemberManagement();
 
-    await waitForLoadingSpinner(container);
-    await sleep(20);
-    expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
+        await waitForLoadingSpinner(container);
+        await sleep(20);
+        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
-    let promoteButton = screen.getByText(/Promote/i);
-    expect(promoteButton).toBeInTheDocument()
-    fireEvent.click(promoteButton);
-    await sleep(20);
-    expect(promoteButton).not.toBeInTheDocument();
+        let promoteButton = screen.getByText(/Promote/i);
+        expect(promoteButton).toBeInTheDocument()
+        fireEvent.click(promoteButton);
+        await sleep(20);
+        expect(promoteButton).not.toBeInTheDocument();
 
-    await waitForLoadingSpinner(container);
+        await waitForLoadingSpinner(container);
 
-    let demoteButton = screen.getByText(/Demote/i);
-    expect(demoteButton).toBeInTheDocument();
-    fireEvent.click(demoteButton);
-    await sleep(20);
-    expect(demoteButton).not.toBeInTheDocument();
-    await waitForLoadingSpinner(container);
+        let demoteButton = screen.getByText(/Demote/i);
+        expect(demoteButton).toBeInTheDocument();
+        fireEvent.click(demoteButton);
+        await sleep(20);
+        expect(demoteButton).not.toBeInTheDocument();
+        await waitForLoadingSpinner(container);
+    })
 }, 5000);
 
 test('MemberManagement - loading failed', async () => {
-    mockFetch(true);
-    renderMemberManagement();
-    await sleep(20);
-
-    expect(screen.getAllByText(new RegExp('Something went wrong'))[0]).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(true);
+        renderMemberManagement();
+        await sleep(20);
+        expect(screen.getAllByText(new RegExp('Something went wrong'))[0]).toBeInTheDocument()
+    })
 }, 5000);
 
 test('MemberManagement - No users', async () => {
-    mockFetch(false, true);
-    renderMemberManagement();
-    await sleep(20);
-    expect(screen.getByText(new RegExp('No users'))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(false, true);
+        renderMemberManagement();
+        await sleep(20);
+        expect(screen.getByText(new RegExp('No users'))).toBeInTheDocument()
+    })
 }, 5000);

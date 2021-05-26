@@ -1,6 +1,8 @@
 import { enableFetchMocks } from 'jest-fetch-mock'
 import {fireEvent, render} from '@testing-library/react';
 import Organization from '../../components/user/Organization';
+import {act} from "react-dom/test-utils";
+import {sleep} from "../../js/Sleep";
 
 enableFetchMocks()
 
@@ -12,7 +14,7 @@ function mockFetch(simulateNetworkError = false) {
     fetch.mockResponses(response)
 }
 
-function Render(hasAlreadyJoined = false) {
+async function Render(hasAlreadyJoined = false) {
     let data = {id: "1", name: "Company 1", hasJoined: hasAlreadyJoined};
     const {container} = render(<Organization content={data}/>)
 
@@ -25,36 +27,42 @@ function Render(hasAlreadyJoined = false) {
     expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
 
     fireEvent.click(input)
-
+    await sleep(50)
     expect(input.checked).toBe(!data.hasJoined)
     expect(button.parentNode.classList.contains('is-hidden')).toBe(false)
 
-    return {data, input, button, button2};
+    return Promise.resolve({data, input, button, button2});
 }
 
-test('Render Organization Component - SuccessCase', () => {
-    mockFetch();
-    let {data, input, button} = Render();
+test('Render Organization Component - SuccessCase', async () => {
+  await act(async () => {
+        mockFetch();
+        let {data, input, button} = await Render();
 
-    fireEvent.click(button)
-    expect(input.checked).toBe(!data.hasJoined)
-    expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+        fireEvent.click(button)
+        expect(input.checked).toBe(!data.hasJoined)
+        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+    })
 }, 5000);
 
-test('Render Organization Component - CancelCase', () => {
-    mockFetch();
-    let {data, input, button, button2} = Render();
+test('Render Organization Component - CancelCase', async () => {
+   await act(async () => {
+        mockFetch();
+        let {data, input, button, button2} = await Render();
 
-    fireEvent.click(button2)
-    expect(input.checked).toBe(data.hasJoined)
-    expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+        fireEvent.click(button2)
+        expect(input.checked).toBe(data.hasJoined)
+        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+    })
 }, 5000);
 
-test('Render Organization Component - Leave', () => {
-    mockFetch();
-    let {button} = Render(true);
+test('Render Organization Component - Leave', async () => {
+    await act(async () => {
+        mockFetch();
+        let {button} =  await Render(true);
 
-    fireEvent.click(button)
-    expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+        fireEvent.click(button)
+        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
+    })
 }, 5000);
 
