@@ -16,6 +16,7 @@ import AssignMembersToLine from "./organization/AssignMembersToLine";
 import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
 import ChannelOverview from "./admin/ChannelOverview";
+import Registration from "./authentication/Registration";
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/venue/events/:id/lines"> <AddEventLines/> </Route>
                     <Route path="/venue/events/:id"> <EventDetails/> </Route>
                     <Route path="/venue/events"> <EventManagement/> </Route>
+                    <Route path="/register"> <Registration/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
                         <div>404 placeholder</div>
