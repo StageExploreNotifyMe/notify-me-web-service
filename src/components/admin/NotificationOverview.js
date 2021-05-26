@@ -14,12 +14,31 @@ const NotificationOverview = () => {
         type: "",
         urgency: "",
         usedChannel: "",
-        userId: ""
+        userId: "",
+        eventId: ""
     });
+    const [notificationType, setNotificationType] = useState([])
+    const [event, setEvent] = useState([])
+    const [chosenType, setChosenType] = useState('ALL')
+    const [chosenEvent, setChosenEvent] = useState('ALL')
+    const [loadingEvents, setLoadingEvents] = useState(true)
+    const [loadingType, setLoadingType] = useState(true)
+    let forceRerender = () => {
+    };
+
 
     async function fetchNotifications(activePage) {
         try {
-            return await getBase("/admin/notifications/" + activePage);
+            if (chosenType !== 'ALL' && chosenEvent === 'ALL') {
+                return await getBase("/admin/notifications/type/" + chosenType + "?page=" + activePage);
+            }
+            if (chosenEvent !== 'ALL' && chosenType === 'ALL') {
+                return await getBase("/admin/notifications/event/" + chosenEvent + "?page=" + activePage)
+            }
+            if (chosenType !== 'ALL' && chosenEvent !== 'ALL') {
+                return await getBase("/admin/notifications/type/" + chosenType + "/event/" + chosenEvent + "?page=" + activePage)
+            }
+            return await getBase("/admin/notifications?page=" + activePage);
         } catch {
             toast({
                 message: 'Something went wrong while fetching all notifications',
@@ -28,16 +47,60 @@ const NotificationOverview = () => {
         }
     }
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+    async function fetchNotificationTypes() {
+        const result = await getBase("/admin/notificationTypes")
+        result.notificationTypes.unshift("ALL")
+        setNotificationType(result);
+        setLoadingType(false)
+        return result;
+    }
 
+    async function fetchEvents() {
+        const result = await getBase("/admin/eventId")
+        let set = [...new Set(result.event)]
+        set = set.filter(s => s !== null)
+        set.unshift("ALL")
+        setEvent(set)
+        setLoadingEvents(false)
+        return result
+    }
+
+    useEffect(() => {
+        fetchNotificationTypes();
+    }, [loadingType]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [loadingEvents]);
+
+    useEffect(() => {
+        forceRerender();
+    }, [chosenType]);
+
+    useEffect(() => {
+        forceRerender();
+    }, [chosenEvent]);
+
+    const RenderNotificationType = () => {
+        if (loadingType) return <option>Notification Types</option>
+        return notificationType.notificationTypes.map(t =>
+            <option>{t}</option>
+        )
+    }
+
+    const RenderEvents = () => {
+        if (loadingEvents) return <option>Events</option>
+        return event.map(t =>
+            <option>{t}</option>
+        )
+    }
     const RenderNotifications = (props) => {
         const not = props.data;
+        forceRerender = props.update
         let date = dateArrayToDate(not.creationDate).toLocaleDateString();
         let time = dateArrayToDate(not.creationDate).toLocaleTimeString();
         return <div key={props.key} className="panel-block columns">
-            <div className="column is-one-quarter">
+            <div className="column is-one-fifth">
                 <p>{date}</p>
             </div>
             <div className="column is-one-quarter">
@@ -45,6 +108,9 @@ const NotificationOverview = () => {
             </div>
             <div className="column is-1">
                 <p>{not.userId}</p>
+            </div>
+            <div className="column is-1">
+                <p>{not.eventId}</p>
             </div>
             <div className="column is-one-fifth">
                 <p>{not.type}</p>
@@ -63,6 +129,7 @@ const NotificationOverview = () => {
                             urgency: not.urgency,
                             usedChannel: not.usedChannel,
                             userId: not.userId,
+                            eventId: not.eventId,
                             isActive: true
                         }))}>Details
                 </button>
@@ -81,6 +148,7 @@ const NotificationOverview = () => {
                     <div className="card-content">
                         <p>Date: {modal.creationDate} Time: {modal.creationTime}</p>
                         <p>UserId: {modal.userId}</p>
+                        <p>EventId: {modal.eventId}</p>
                         <p>Type: {modal.type}</p>
                         <p>Urgency: {modal.urgency}</p>
                         <p>Channel: {modal.usedChannel}</p>
@@ -93,7 +161,10 @@ const NotificationOverview = () => {
         </div>
     }
 
-    const RenderNoNotifications = () => <p>No notifications in your overview</p>;
+    const RenderNoNotifications = (props) => {
+        forceRerender = props.update
+        return <p>No notifications in your overview</p>;
+    }
 
     return <article>
         <div className="container mt-2">
@@ -102,7 +173,7 @@ const NotificationOverview = () => {
                     <h2 className="title is-3">Overview Notifications</h2>
                 </div>
                 <div className="panel-block columns">
-                    <div className="column is-one-quarter">
+                    <div className="column is-one-fifth">
                         <p>Date</p>
                     </div>
                     <div className="column is-one-quarter">
@@ -111,8 +182,25 @@ const NotificationOverview = () => {
                     <div className="column is-1">
                         <p>UserId</p>
                     </div>
+                    <div className="column is-2">
+                        <div className="select">
+                            <select onChange={async e => {
+                                await setChosenEvent(e.target.value)
+                            }}
+                                    value={chosenEvent}>
+                                <RenderEvents/>
+                            </select>
+                        </div>
+                    </div>
                     <div className="column is-one-fifth">
-                        <p>Type</p>
+                        <div className="select">
+                            <select onChange={async e => {
+                                await setChosenType(e.target.value)
+                            }}
+                                    value={chosenType}>
+                                <RenderNotificationType/>
+                            </select>
+                        </div>
                     </div>
                     <div className="column">
                         <p>Channel</p>

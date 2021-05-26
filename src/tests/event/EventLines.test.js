@@ -6,6 +6,7 @@ import EventLines from "../../components/event/EventLines";
 import {sleep} from "../../js/Sleep";
 import React from "react";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 const history = createMemoryHistory();
@@ -69,48 +70,54 @@ function renderComponent() {
 }
 
 test('Render event lines component - no lines', async () => {
-    mockFetch();
-    const {container} = renderComponent();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('No lines assigned to this event'))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch();
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('No lines assigned to this event'))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('Render event lines component - network error', async () => {
-    mockFetch(true);
-    renderComponent();
-    await sleep(20);
-    expect(screen.getByText(new RegExp('Something went wrong'))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(true);
+        renderComponent();
+        await sleep(20);
+        expect(screen.getByText(new RegExp('Something went wrong'))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('Render event lines component - with lines & organization', async () => {
-    let lineWithOrg = {...line, organization: org};
-    let data = {...page, content: [lineWithOrg]}
-    mockFetch(false, data);
-    const {container} = renderComponent();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('Organization: ' + org.name))).toBeInTheDocument()
-    let addButton =screen.getByText(new RegExp('Add'))
-    expect(addButton).toBeInTheDocument()
-    fireEvent.click(addButton);
+    await act(async () => {
+        let lineWithOrg = {...line, organization: org};
+        let data = {...page, content: [lineWithOrg]}
+        mockFetch(false, data);
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('Organization: ' + org.name))).toBeInTheDocument()
+        let addButton = screen.getByText(new RegExp('Add'))
+        expect(addButton).toBeInTheDocument()
+        fireEvent.click(addButton);
 
-    openModal();
-    let closeModal = container.querySelector(".modal-background");
-    expect(closeModal).toBeVisible();
-    fireEvent.click(closeModal);
-    openModal();
+        openModal();
+        let closeModal = container.querySelector(".modal-background");
+        expect(closeModal).toBeVisible();
+        fireEvent.click(closeModal);
+        openModal();
 
-    let textArea = container.querySelector("textarea");
-    expect(textArea).toBeVisible();
+        let textArea = container.querySelector("textarea");
+        expect(textArea).toBeVisible();
 
-    let sendReminder = screen.getAllByText(new RegExp("Send"))[1];
-    expect(sendReminder).toBeVisible();
-    fireEvent.click(sendReminder);
-    await sleep(40);
-    expect(screen.getByText(new RegExp('Something went wrong while trying to send your reminder'))).toBeInTheDocument()
+        let sendReminder = screen.getAllByText(new RegExp("Send"))[1];
+        expect(sendReminder).toBeVisible();
+        fireEvent.click(sendReminder);
+        await sleep(40);
+        expect(screen.getByText(new RegExp('Something went wrong while trying to send your reminder'))).toBeInTheDocument()
 
-    let cancelButton = screen.getAllByText(new RegExp('Cancel'))[1]
-    expect(cancelButton).toBeInTheDocument()
-    fireEvent.click(cancelButton)
+        let cancelButton = screen.getAllByText(new RegExp('Cancel'))[1]
+        expect(cancelButton).toBeInTheDocument()
+        fireEvent.click(cancelButton)
+    })
 }, 5000);
 
 function openModal() {
@@ -120,12 +127,14 @@ function openModal() {
 }
 
 test('Render event lines component - with lines, without organization', async () => {
-    let data = {...page, content: [line]}
-    mockFetch(false, data);
-    const {container} = renderComponent();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('Unassigned'))).toBeInTheDocument()
-    let assignButton = container.querySelector('.is-clickable')
-    expect(assignButton).toBeInTheDocument()
-    fireEvent.click(assignButton);
+    await act(async () => {
+        let data = {...page, content: [line]}
+        mockFetch(false, data);
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('Unassigned'))).toBeInTheDocument()
+        let assignButton = container.querySelector('.is-clickable')
+        expect(assignButton).toBeInTheDocument()
+        fireEvent.click(assignButton);
+    })
 }, 5000);

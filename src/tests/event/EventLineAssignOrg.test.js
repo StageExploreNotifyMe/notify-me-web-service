@@ -1,10 +1,11 @@
-import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
 import EventLineAssignOrganization from "../../components/event/EventLineAssignOrganization";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 const history = createMemoryHistory();
@@ -59,28 +60,33 @@ function renderComponent() {
     let mockCancel = jest.fn();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
     localStorage.setItem("event.line.assign", JSON.stringify(line));
-    const {container} = render(<Router history={history}><EventLineAssignOrganization assignOrg={mockAssign} cancel={mockCancel}/></Router>);
+    const {container} = render(<Router history={history}><EventLineAssignOrganization assignOrg={mockAssign}
+                                                                                      cancel={mockCancel}/></Router>);
     return {container, mockAssign, mockCancel};
 }
 
 test('Render EventLineAssignOrg component - no organizations', async () => {
-    mockFetch();
-    const {container} = renderComponent();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('No organizations found'))).toBeInTheDocument()
-    let cancelButton = screen.getByText(new RegExp("Cancel"));
-    expect(cancelButton).toBeInTheDocument()
-    fireEvent.click(cancelButton);
+    await act(async () => {
+        mockFetch();
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp('No organizations found'))).toBeInTheDocument()
+        let cancelButton = screen.getByText(new RegExp("Cancel"));
+        expect(cancelButton).toBeInTheDocument()
+        fireEvent.click(cancelButton);
+    })
 }, 5000);
 
 test('Render EventLineAssignOrg component - with organizations', async () => {
-    let data = {...page, content: [org]};
-    mockFetch(false, data);
-    const {container} = renderComponent();
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp(org.name))).toBeInTheDocument()
+    await act(async () => {
+        let data = {...page, content: [org]};
+        mockFetch(false, data);
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        expect(screen.getByText(new RegExp(org.name))).toBeInTheDocument()
 
-    let assignButton = screen.getAllByText(new RegExp("Assign"))[1];
-    expect(assignButton).toBeInTheDocument()
-    fireEvent.click(assignButton);
+        let assignButton = screen.getAllByText(new RegExp("Assign"))[1];
+        expect(assignButton).toBeInTheDocument()
+        fireEvent.click(assignButton);
+    })
 }, 5000);
