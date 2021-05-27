@@ -63,7 +63,7 @@ const AssignMembersToLine = () => {
 
     return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
         <h2 className="title is-2">Assign members</h2>
-        <p className="subtitle">{line.event.name} - {line.line.name} - {dateArrayToDate(line.event.date).toISOString()}</p>
+        <p className="subtitle">{line.event.name} - {line.line.name} - {dateArrayToDate(line.event.date).toLocaleTimeString()} {dateArrayToDate(line.event.date).toLocaleDateString()}</p>
         <div className="panel">
             <div className="panel-heading has-text-centered-mobile">
                 <h2 className=" title is-3">Users</h2>

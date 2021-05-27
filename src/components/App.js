@@ -15,10 +15,15 @@ import OrganizationLines from "./organization/OrganizationLines";
 import AssignMembersToLine from "./organization/AssignMembersToLine";
 import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
-import ChannelOverview from "./admin/ChannelOverview";
 import Registration from "./authentication/Registration";
 import AdminDetails from "./admin/AdminDetails";
+import AdminCreateOrganization from "./admin/organization/AdminCreateOrganization";
+import ChannelOverview from "./admin/ChannelOverview";
+import AdminVenueManagement from "./admin/AdminVenueManagement";
+import CreateVenue from "./venue/CreateVenue";
 import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
+import ManageLines from "./venue/lines/ManageLines";
+import CreateLine from "./venue/lines/CreateLine";
 import Navbar from "./Navbar";
 import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
@@ -32,9 +37,12 @@ function App() {
                     <Route path="/user/join/organization"> <JoinOrganization/> </Route>
                     <Route path="/user/inbox"> <Inbox/> </Route>
                     <Route path="/user"> <UserDetails/> </Route>
-                    <Route path="/channels"> <ChannelOverview/> </Route>
+                    <Route path="/admin/channels"> <ChannelOverview/> </Route>
+                    <Route path="/admin/organizationManagement/create"> <AdminCreateOrganization/> </Route>
                     <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
                     <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
+                    <Route path="/admin/venueManagement"> <AdminVenueManagement/> </Route>
+                    <Route path="/admin/venue/create"> <CreateVenue/> </Route>
                     <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
@@ -45,6 +53,9 @@ function App() {
                     <Route path="/venue/events/:id/lines"> <AddEventLines/> </Route>
                     <Route path="/venue/events/:id"> <EventDetails/> </Route>
                     <Route path="/venue/events"> <EventManagement/> </Route>
+                    <Route path="/venue/lines/edit"> <CreateLine action={"edit"}/> </Route>
+                    <Route path="/venue/lines/create"> <CreateLine  action={"create"}/> </Route>
+                    <Route path="/venue/lines"> <ManageLines/> </Route>
                     <Route path="/register"> <Registration/> </Route>
                     <Route path="/logout"> <Logout/> </Route>
                     <Route path="/login"> <Login/> </Route>
@@ -57,6 +68,5 @@ function App() {
         </div>
     );
 }
-
 
 export default App;

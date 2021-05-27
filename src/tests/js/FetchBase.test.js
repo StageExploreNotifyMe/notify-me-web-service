@@ -6,6 +6,7 @@ function mockFetch() {
     let mockFn = jest.fn(() =>
         Promise.resolve({
             json: () => Promise.resolve({ result: true }),
+            ok: true
         })
     );
 
