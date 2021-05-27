@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import * as bulmaToast from 'bulma-toast'
 
 bulmaToast.setDefaults({
-    duration: 1000,
+    duration: 3000,
     position: 'top-right',
     dismissible: true,
     pauseOnHover: true

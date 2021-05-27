@@ -15,6 +15,7 @@ import OrganizationLines from "./organization/OrganizationLines";
 import AssignMembersToLine from "./organization/AssignMembersToLine";
 import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
+import Registration from "./authentication/Registration";
 import AdminDetails from "./admin/AdminDetails";
 import AdminCreateOrganization from "./admin/organization/AdminCreateOrganization";
 import ChannelOverview from "./admin/ChannelOverview";
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/venue/lines/edit"> <CreateLine action={"edit"}/> </Route>
                     <Route path="/venue/lines/create"> <CreateLine  action={"create"}/> </Route>
                     <Route path="/venue/lines"> <ManageLines/> </Route>
+                    <Route path="/register"> <Registration/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
                         <div>404 placeholder</div>
