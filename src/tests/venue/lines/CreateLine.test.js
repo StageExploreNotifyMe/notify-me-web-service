@@ -18,11 +18,20 @@ function resetMockFuncs() {
     mockHistoryGoBack = jest.fn();
 }
 
-function renderComponent() {
+let lineToEdit = {
+    "id": "2",
+    "name": "Catering",
+    "description": "The catering during events",
+    "venueDto": {"id": "1", "name": "Groenplaats"},
+    "numberOfRequiredPeople": 1
+};
+
+function renderComponent(isEdit) {
     resetMockFuncs();
+    localStorage.setItem("editLine", JSON.stringify(lineToEdit));
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<CreateLine/>);
-    let submitButton = screen.queryByText(/Submit/i);
+    const {container} = render(<CreateLine action={isEdit ? "edit" : "create"}/>);
+    let submitButton = container.querySelectorAll("button")[0];
     expect(submitButton).toBeInTheDocument()
     let cancelButton = screen.queryByText(/Cancel/i);
     expect(cancelButton).toBeInTheDocument()
@@ -34,6 +43,12 @@ async function typeInInput(inputElement, toType = "", expected = toType) {
     await sleep(20);
     expect(inputElement.value).toBe(expected)
 }
+
+test('Edit line - go back', () => {
+    const {cancelButton} = renderComponent(true);
+    fireEvent.click(cancelButton)
+    expect(mockHistoryGoBack).toHaveBeenCalled();
+}, 5000);
 
 test('Create line - go back', () => {
     const {cancelButton} = renderComponent();

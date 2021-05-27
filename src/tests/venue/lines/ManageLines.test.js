@@ -13,7 +13,7 @@ test('Render Line management', async () => {
         let icon = container.querySelector(".is-clickable");
         expect(icon).toBeInTheDocument();
         fireEvent.click(icon);
-        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/lines/2/edit');
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/lines/edit');
 
         fireEvent.click(createButton)
         expect(mockHistoryPush).toHaveBeenCalledWith('/venue/lines/create');

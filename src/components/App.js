@@ -48,7 +48,8 @@ function App() {
                     <Route path="/venue/events/:id/lines"> <AddEventLines/> </Route>
                     <Route path="/venue/events/:id"> <EventDetails/> </Route>
                     <Route path="/venue/events"> <EventManagement/> </Route>
-                    <Route path="/venue/lines/create"> <CreateLine/> </Route>
+                    <Route path="/venue/lines/edit"> <CreateLine action={"edit"}/> </Route>
+                    <Route path="/venue/lines/create"> <CreateLine  action={"create"}/> </Route>
                     <Route path="/venue/lines"> <ManageLines/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
