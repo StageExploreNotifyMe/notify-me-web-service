@@ -22,6 +22,7 @@ import AdminVenueManagement from "./admin/AdminVenueManagement";
 import CreateVenue from "./venue/CreateVenue";
 import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
 import ManageLines from "./venue/lines/ManageLines";
+import CreateLine from "./venue/lines/CreateLine";
 
 function App() {
     return (
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/venue/events/:id/lines"> <AddEventLines/> </Route>
                     <Route path="/venue/events/:id"> <EventDetails/> </Route>
                     <Route path="/venue/events"> <EventManagement/> </Route>
+                    <Route path="/venue/lines/create"> <CreateLine/> </Route>
                     <Route path="/venue/lines"> <ManageLines/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
