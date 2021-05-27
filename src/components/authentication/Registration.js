@@ -197,7 +197,7 @@ const Registration = () => {
                     </label>
 
                     <div className={`control has-icons-left ${validationState.noPassword ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.noPassword ? 'is-danger' : ''}`}
+                        <input id="passwordInput" className={`input ${validationState.noPassword ? 'is-danger' : ''}`}
                                type={`${registerDto.showPassword ? "text" : "password"}`}
                                placeholder="Password" value={registerDto.password}
                                onChange={e => {
@@ -225,7 +225,7 @@ const Registration = () => {
                     <div
                         className={`control has-icons-left ${validationState.passwordsDontMatch ? 'has-icons-right' : ''}`}>
                         <input className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
-                               type={`${validationState.showPassword ? "text" : "password"}`} placeholder="Password"
+                               type={`${registerDto.showPassword ? "text" : "password"}`} placeholder="Password"
                                value={registerDto.confirmPassword}
                                onChange={e => {
                                    setRegisterDto(prevState => ({

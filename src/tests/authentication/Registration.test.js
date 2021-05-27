@@ -42,10 +42,11 @@ test('Register', async () => {
         const {container, submitButton} = renderComponent();
 
         let showIcon = container.querySelectorAll("span.icon")[6];
-        expect(container.querySelectorAll("input")[5].type).toBe("password")
+        let passwordInput = container.querySelector("#passwordInput");
+        expect(passwordInput.type).toBe("password")
         fireEvent.click(showIcon);
         await sleep(20);
-        //expect(container.querySelectorAll("input")[5].type).toBe("text")
+        expect(passwordInput.type).toBe("text")
 
         fireEvent.click(submitButton)
         expect(mockHistoryPush).not.toHaveBeenCalled()
@@ -54,8 +55,8 @@ test('Register', async () => {
         for (let i = 0; i < inputs; i++) {
             let input = container.querySelectorAll("input")[i];
             fireEvent.change(input, {target: {value: "AFirstName"}})
-            // await sleep(5);
-            // expect(input.value).toBe("AFirstName")
+            await sleep(5);
+            //expect(input.value).toBe("AFirstName")
         }
 
         fireEvent.click(submitButton)
