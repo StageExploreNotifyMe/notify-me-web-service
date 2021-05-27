@@ -18,6 +18,8 @@ import NotificationOverview from "./admin/NotificationOverview";
 import AdminDetails from "./admin/AdminDetails";
 import AdminCreateOrganization from "./admin/organization/AdminCreateOrganization";
 import ChannelOverview from "./admin/ChannelOverview";
+import AdminVenueManagement from "./admin/AdminVenueManagement";
+import CreateVenue from "./venue/CreateVenue";
 import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
 import ManageLines from "./venue/lines/ManageLines";
 
@@ -33,6 +35,8 @@ function App() {
                     <Route path="/admin/organizationManagement/create"> <AdminCreateOrganization/> </Route>
                     <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
                     <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
+                    <Route path="/admin/venueManagement"> <AdminVenueManagement/> </Route>
+                    <Route path="/admin/venue/create"> <CreateVenue/> </Route>
                     <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
