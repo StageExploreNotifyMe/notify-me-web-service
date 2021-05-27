@@ -88,10 +88,13 @@ test("Create Venue - name - no venueManager", async () => {
 }, 5000)
 
 test("Render network error", async () => {
-    setLocalStorage();
-    render(<CreateVenue action={"create"}/>)
-    mockFetch(page, true)
-    expect(screen.getByText(/Something went wrong while fetching all users/i)).toBeInTheDocument()
+    await act(async () => {
+        setLocalStorage();
+        mockFetch(page, true)
+        render(<CreateVenue action={"create"}/>)
+        await sleep(20);
+        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    })
 }, 5000)
 
 test("Create Venue - name -  venueManager", async () => {

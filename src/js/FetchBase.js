@@ -1,7 +1,10 @@
-const fetchBase = (url, method = "GET", body) => {
+const fetchBase = async (url, method = "GET", body) => {
     const requestOptions = {
         method: method,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem("Authorization") || ''
+        },
     };
 
     if (method === "POST" || method === "PUT" || method === "PATCH") {

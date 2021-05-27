@@ -24,11 +24,15 @@ import CreateVenue from "./venue/CreateVenue";
 import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
 import ManageLines from "./venue/lines/ManageLines";
 import CreateLine from "./venue/lines/CreateLine";
+import Navbar from "./Navbar";
+import Login from "./authentication/Login";
+import Logout from "./authentication/Logout";
 
 function App() {
     return (
         <div className="App">
             <Router>
+                <Navbar/>
                 <Switch>
                     <Route path="/user/join/organization"> <JoinOrganization/> </Route>
                     <Route path="/user/inbox"> <Inbox/> </Route>
@@ -53,6 +57,9 @@ function App() {
                     <Route path="/venue/lines/edit"> <CreateLine action={"edit"}/> </Route>
                     <Route path="/venue/lines/create"> <CreateLine  action={"create"}/> </Route>
                     <Route path="/venue/lines"> <ManageLines/> </Route>
+                    <Route path="/register"> <Registration/> </Route>
+                    <Route path="/logout"> <Logout/> </Route>
+                    <Route path="/login"> <Login/> </Route>
                     <Route path="/register"> <Registration/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
