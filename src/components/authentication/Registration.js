@@ -61,11 +61,9 @@ const Registration = () => {
             passwordsDontMatch: registerDto.password !== registerDto.confirmPassword
         };
         let isFullyValid = true;
-        for (let validStateKey in Object.keys(validState)) {
-            if (!validState[validStateKey]) continue;
-            isFullyValid = false;
-            break;
-        }
+        Object.keys(validState).forEach(key => {
+            if (validState[key]) {isFullyValid = false;}
+        });
         validState.isFullyValid = isFullyValid;
 
         setValidationState(validState);
@@ -86,7 +84,7 @@ const Registration = () => {
                 <label className="label">Name</label>
                 <div className="field is-grouped">
                     <div className={`control ${validationState.noFirstName ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.noFirstName ? 'is-danger' : ''}`} type="text"
+                        <input id="firstNameInput" className={`input ${validationState.noFirstName ? 'is-danger' : ''}`} type="text"
                                placeholder="First name" value={registerDto.firstName}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -95,7 +93,8 @@ const Registration = () => {
                                    }))
                                    setValidationState(prevState => ({
                                        ...prevState,
-                                       noFirstName: e.target.value === ""
+                                       noFirstName: e.target.value === "",
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span
@@ -107,7 +106,7 @@ const Registration = () => {
                     </div>
 
                     <div className={`control ${validationState.noLastName ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.noLastName ? 'is-danger' : ''}`} type="text"
+                        <input id="lastNameInput" className={`input ${validationState.noLastName ? 'is-danger' : ''}`} type="text"
                                placeholder="Last name" value={registerDto.lastName}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -116,7 +115,8 @@ const Registration = () => {
                                    }))
                                    setValidationState(prevState => ({
                                        ...prevState,
-                                       noLastName: e.target.value === ""
+                                       noLastName: e.target.value === "",
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span
@@ -131,7 +131,7 @@ const Registration = () => {
                 <div className="field">
                     <label className="label">Email</label>
                     <div className={`control has-icons-left ${validationState.noMail ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.noMail ? 'is-danger' : ''}`} type="text"
+                        <input id="emailInput" className={`input ${validationState.noMail ? 'is-danger' : ''}`} type="text"
                                placeholder="Email" value={registerDto.email}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -140,7 +140,8 @@ const Registration = () => {
                                    }))
                                    setValidationState(prevState => ({
                                        ...prevState,
-                                       noMail: !checkMailIsValid(e.target.value)
+                                       noMail: !checkMailIsValid(e.target.value),
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span className="icon is-small is-left">
@@ -158,7 +159,7 @@ const Registration = () => {
                 <div className="field">
                     <label className="label">Mobile Number</label>
                     <div className={`control has-icons-left ${validationState.noPhone ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.noPhone ? 'is-danger' : ''}`} type="text"
+                        <input id="phoneInput" className={`input ${validationState.noPhone ? 'is-danger' : ''}`} type="text"
                                placeholder="Mobile Number" value={registerDto.phone}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -167,7 +168,8 @@ const Registration = () => {
                                    }))
                                    setValidationState(prevState => ({
                                        ...prevState,
-                                       noPhone: e.target.value === ""
+                                       noPhone: e.target.value === "",
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span className="icon is-small is-left">
@@ -186,7 +188,7 @@ const Registration = () => {
 
                     <label className="label">
                         Password
-                        <span className="icon is-small is-clickable ml-2" onClick={() => {
+                        <span id="togglePwVisibilitySpan" className="icon is-small is-clickable ml-2" onClick={() => {
                             setRegisterDto(prevState => ({
                                 ...prevState,
                                 showPassword: !registerDto.showPassword,
@@ -208,7 +210,8 @@ const Registration = () => {
                                    setValidationState(prevState => ({
                                        ...prevState,
                                        noPassword: e.target.value === "",
-                                       passwordsDontMatch: e.target.value !== registerDto.password
+                                       passwordsDontMatch: e.target.value !== registerDto.password,
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span className="icon is-small is-left">
@@ -224,7 +227,7 @@ const Registration = () => {
                     <p className="help">Re-enter your password</p>
                     <div
                         className={`control has-icons-left ${validationState.passwordsDontMatch ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
+                        <input id="passwordRepeatInput" className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
                                type={`${registerDto.showPassword ? "text" : "password"}`} placeholder="Password"
                                value={registerDto.confirmPassword}
                                onChange={e => {
@@ -234,7 +237,8 @@ const Registration = () => {
                                    }))
                                    setValidationState(prevState => ({
                                        ...prevState,
-                                       passwordsDontMatch: e.target.value !== registerDto.password
+                                       passwordsDontMatch: e.target.value !== registerDto.password,
+                                       isFullyValid: true
                                    }))
                                }}/>
                         <span className="icon is-small is-left">
