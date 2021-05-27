@@ -34,12 +34,20 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
+function setLocalStorage() {
+    localStorage.setItem("editVenue", JSON.stringify({
+        id: "1",
+        name: "TestVenue",
+        venueManagers: [{id: "1", userPreferences: null, firstname: "John", lastname: "Doe"}]
+    }));
+}
+
 test("Render Create Venue", async () => {
     await act(async () => {
         mockFetch(page, false)
-        render(<CreateVenue/>)
+        const {container} = render(<CreateVenue action={"create"}/>)
         expect(screen.getByText(/Create Venue/i)).toBeInTheDocument()
-        let submit = screen.queryByText(/Submit/i)
+        let submit = container.querySelectorAll("button")[0]
         expect(submit).toBeInTheDocument()
         let cancel = screen.queryByText(/Cancel/i)
         expect(cancel).toBeInTheDocument()
@@ -52,11 +60,11 @@ test("Render Create Venue", async () => {
 test("Create Venue - no name", async () => {
     await act(async () => {
         mockFetch(page, false)
-        const {container} = render(<CreateVenue/>)
+        const {container} = render(<CreateVenue action={"create"}/>)
         await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
-        let submit = screen.queryByText(/Submit/i)
+        let submit = container.querySelectorAll("button")[0]
         fireEvent.click(submit)
         expect(mockHistoryPush).not.toHaveBeenCalled()
         await sleep(20)
@@ -67,49 +75,56 @@ test("Create Venue - no name", async () => {
 test("Create Venue - name - no venueManager", async () => {
     await act(async () => {
         mockFetch(page, false)
-        const {container} = render(<CreateVenue/>)
+        const {container} = render(<CreateVenue action={"create"}/>)
         await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
         await fireEvent.change(name, {target: {value: "Groenplaats"}})
-        let submit = screen.queryByText(/Submit/i)
+        let submit = container.querySelectorAll("button")[0]
+        await sleep(20)
         fireEvent.click(submit)
         expect(screen.getByText(/Please select/i)).toBeInTheDocument()
     })
 }, 5000)
 
 test("Render network error", async () => {
-    await act(async () => {
-        mockFetch(page, true)
-        render(<CreateVenue/>)
-        await sleep(20);
-        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
-    });
+    setLocalStorage();
+    render(<CreateVenue action={"create"}/>)
+    mockFetch(page, true)
+    expect(screen.getByText(/Something went wrong while fetching all users/i)).toBeInTheDocument()
 }, 5000)
 
 test("Create Venue - name -  venueManager", async () => {
     await act(async () => {
         mockFetch({...page, content: [user]})
-        const {container} = render(<CreateVenue/>)
-        let name = container.querySelectorAll("input")[0]
-        expect(name).toBeInTheDocument()
-        await fireEvent.change(name, {target: {value: "Groenplaats"}})
+        const {container} = render(<CreateVenue action={"create"}/>)
+        await fillNameAndManager(container)
         await sleep(20)
-        expect(name.value).toBe("Groenplaats")
-        let userDiv = container.querySelectorAll(".panel-block")[0]
-        expect(userDiv).toBeInTheDocument();
-        await fireEvent.click(userDiv);
-        await sleep(50);
-        expect(userDiv).toHaveTextContent(user.firstname)
-        let u = screen.getByText(/: John Doe/i)
+        let u = screen.getAllByText(/John/i)[0]
         expect(u).toBeInTheDocument()
-        let submit = screen.queryByText(/Submit/i)
+        let submit = container.querySelectorAll("button")[0]
         expect(submit).toBeInTheDocument()
         await sleep(20)
         fireEvent.click(submit)
     })
 }, 5000)
 
+test("Edit Venue - name -  venueManager", async () => {
+    await act(async () => {
+        mockFetch({...page, content: [user]})
+        setLocalStorage();
+        const {container} = render(<CreateVenue/>)
+        await fillNameAndManager(container);
+        let selected = container.querySelectorAll(".panel-block")[2]
+        expect(selected).toBeInTheDocument();
+        await fireEvent.click(selected);
+        await sleep(50);
+        let submit = container.querySelectorAll("button")[0]
+        expect(submit).toBeInTheDocument()
+        await sleep(20)
+        fireEvent.click(submit)
+    })
+}, 5000)
 
 function mockFetch(data, simulateNetworkError) {
     fetch.enableMocks()
@@ -124,4 +139,17 @@ function mockFetch(data, simulateNetworkError) {
         })
         return Promise.resolve({body: null, status: 409, ok: false})
     })
+}
+
+async function fillNameAndManager(container) {
+    let name = container.querySelectorAll("input")[0]
+    expect(name).toBeInTheDocument()
+    await fireEvent.change(name, {target: {value: "Groenplaats"}})
+    await sleep(20)
+    expect(name.value).toBe("Groenplaats")
+    let userDiv = container.querySelectorAll(".panel-block")[0]
+    expect(userDiv).toBeInTheDocument();
+    await fireEvent.click(userDiv);
+    await sleep(50);
+    expect(userDiv).toHaveTextContent(user.firstname)
 }

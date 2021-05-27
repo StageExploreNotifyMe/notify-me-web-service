@@ -52,7 +52,7 @@ test("Render VenueManagement", async () => {
         let edit = container.querySelector(".is-clickable")
         expect(edit).toBeInTheDocument()
         fireEvent.click(edit)
-        expect(mockHistoryPush).toHaveBeenCalledWith("/admin/venue/1/edit")
+        expect(mockHistoryPush).toHaveBeenCalledWith("/admin/venue/edit")
         fireEvent.click(create)
         expect(mockHistoryPush).toHaveBeenCalledWith('/admin/venue/create')
     })

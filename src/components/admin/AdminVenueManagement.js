@@ -27,7 +27,10 @@ const AdminVenueManagement = () => {
         return <div className="panel-block columns" key={venue.id}>
             <div className="column"> {venue.name}</div>
             <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => history.push("/admin/venue/" + venue.id + "/edit")}>
+                <span className="icon is-clickable" onClick={() => {
+                    localStorage.setItem("editVenue", JSON.stringify(venue));
+                    history.push("/admin/venue/edit")
+                }}>
                     <FontAwesomeIcon icon={faEdit}/>
                 </span>
             </div>

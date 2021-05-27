@@ -42,7 +42,8 @@ function App() {
                     <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
                     <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
                     <Route path="/admin/venueManagement"> <AdminVenueManagement/> </Route>
-                    <Route path="/admin/venue/create"> <CreateVenue/> </Route>
+                    <Route path="/admin/venue/create"> <CreateVenue action={'create'}/> </Route>
+                    <Route path="/admin/venue/edit"> <CreateVenue action={'edit'}/> </Route>
                     <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
@@ -59,6 +60,7 @@ function App() {
                     <Route path="/register"> <Registration/> </Route>
                     <Route path="/logout"> <Logout/> </Route>
                     <Route path="/login"> <Login/> </Route>
+                    <Route path="/register"> <Registration/> </Route>
                     <Route exact path="/"> <Home/> </Route>
                     <Route path="*">
                         <div>404 placeholder</div>
