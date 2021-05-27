@@ -79,9 +79,12 @@ test("Create Venue - name - no venueManager", async () => {
 }, 5000)
 
 test("Render network error", async () => {
-    render(<CreateVenue/>)
-    mockFetch(page, true)
-    expect(screen.getByText(/Something went wrong while fetching all users/i)).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(page, true)
+        render(<CreateVenue/>)
+        await sleep(20);
+        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    });
 }, 5000)
 
 test("Create Venue - name -  venueManager", async () => {
@@ -114,7 +117,11 @@ function mockFetch(data, simulateNetworkError) {
     fetch.mockResponse(async request => {
         if (simulateNetworkError) return Promise.reject("Simulated network error")
         await sleep(20)
-        if (request.url.includes("/user?page=")) return Promise.resolve({body: JSON.stringify(data) ,status:200, ok:true})
-        return Promise.resolve({body: null ,status:409, ok:false})
+        if (request.url.includes("/user?page=")) return Promise.resolve({
+            body: JSON.stringify(data),
+            status: 200,
+            ok: true
+        })
+        return Promise.resolve({body: null, status: 409, ok: false})
     })
 }

@@ -2,6 +2,7 @@ import {enableFetchMocks} from "jest-fetch-mock";
 import {act} from "react-dom/test-utils";
 import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import AdminVenueManagement from "../../components/admin/AdminVenueManagement";
+import {sleep} from "../../js/Sleep";
 
 enableFetchMocks()
 
@@ -58,9 +59,12 @@ test("Render VenueManagement", async () => {
 }, 5000)
 
 test("Render network error", async () => {
-    render(<AdminVenueManagement/>)
-    mockFetch(page, true)
-    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(page, true)
+        render(<AdminVenueManagement/>)
+        await sleep(20);
+        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    })
 }, 5000)
 
 test("Render no venues", async () => {
