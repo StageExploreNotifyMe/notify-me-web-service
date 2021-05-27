@@ -26,8 +26,7 @@ const JoinOrganization = () => {
             });
 
             return {...organizations, content: content};
-        } catch(e) {
-            console.log(e);
+        } catch {
             toast({
                 message: 'Something went wrong while trying to save your data',
                 type: 'is-danger'
