@@ -14,10 +14,15 @@ let userPref = {
 
 let notificationsDTO = {notificationChannels: ["EMAIL", "SMS", "WHATSAPP", "APP"]}
 
+function RenderComponent() {
+    mockFetch()
+    return render(<UserPreferences/>);
+}
+
 test('UserPreferences changed', async () => {
     await act(async () => {
         mockFetch()
-        const {container} = render(<UserPreferences/>)
+        const {container} = RenderComponent()
         let notRendered = screen.getAllByText(/no notifications rendered/i)
         expect(notRendered[0]).toBeInTheDocument()
         await waitForElementToBeRemoved(notRendered[0])
@@ -57,8 +62,7 @@ test("onPreferenceChanged - urgent", async () => {
 
 test("click radiobutton", async () => {
     await act(async () => {
-        mockFetch()
-        const {container} = render(<UserPreferences/>)
+        const {container} = RenderComponent()
         let notRendered = screen.getAllByText(/no notifications rendered/i)
         await waitForElementToBeRemoved(notRendered[0])
         let radio = container.querySelector('#radioNormal')
@@ -68,27 +72,26 @@ test("click radiobutton", async () => {
 
 test("dropdown", async () => {
     await act(async () => {
-        const {container} = render(<UserPreferences/>)
+        const {container} = RenderComponent()
         let dropdown = container.querySelector('.dropdown-trigger')
         fireEvent.click(dropdown)
     })
+})
+
+function mockFetch(simulateNetworkError = false) {
+    fetch.enableMocks()
+    fetch.resetMocks()
+    fetch.mockResponse(async request => {
+        if (simulateNetworkError) return Promise.resolve(new Error("Simulated error"));
+        await sleep(10)
+        if (request.url.includes("/user/preferences")) {
+            return Promise.resolve(JSON.stringify(notificationsDTO))
+        } else if (request.url.includes("/user/")) {
+            return Promise.resolve(JSON.stringify(userPref))
+        } else if (request.url.includes("/preferences/channel")) {
+            return Promise.resolve(JSON.stringify(""))
+        }
+
+        return Promise.resolve(new Error("Unknown URL"))
     })
-
-    function mockFetch(simulateNetworkError = false) {
-        fetch.enableMocks()
-        fetch.resetMocks()
-        fetch.mockResponse(async request => {
-            if (simulateNetworkError) return Promise.reject(new Error("Simulated error"));
-            await sleep(10)
-            if (request.url.includes("/user/preferences")) {
-                return Promise.resolve(JSON.stringify(notificationsDTO))
-            } else if (request.url.includes("/user/")) {
-                return Promise.resolve(JSON.stringify(userPref))
-            } else if (request.url.includes("/preferences/channel")) {
-                return Promise.resolve(JSON.stringify(""))
-
-            }
-
-            return Promise.reject(new Error("Unknown URL"))
-        })
-    }
+}
