@@ -5,6 +5,7 @@ import AssignMembersToLine from "../../components/organization/AssignMembersToLi
 import {sleep} from "../../js/Sleep";
 import {waitForLoadingSpinner} from "../TestUtilities";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks();
 const line = {
@@ -96,28 +97,35 @@ function renderAssignMembersToLine() {
 }
 
 test('Assign members to line - no users', async () => {
-    mockFetch(false, false);
-    const {container} = renderAssignMembersToLine();
-    expect(screen.getByText(new RegExp('Assign members'))).toBeInTheDocument()
-    await waitForLoadingSpinner(container)
-    expect(screen.getByText(new RegExp('No users in your organization'))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(false, false);
+        const {container} = renderAssignMembersToLine();
+        expect(screen.getByText(new RegExp('Assign members'))).toBeInTheDocument()
+        await waitForLoadingSpinner(container)
+        await sleep(20);
+        expect(screen.getByText(new RegExp('No users in your organization'))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('Assign members to line', async () => {
-    mockFetch(false, true);
-    const {container} = renderAssignMembersToLine();
-    expect(screen.getByText(new RegExp('Assign members'))).toBeInTheDocument()
-    await waitForLoadingSpinner(container)
-    await sleep(20);
-    expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
-    expect(screen.getByText(new RegExp('John Doe'))).toBeInTheDocument()
-    let checkbox = container.querySelector("input");
-    expect(checkbox).toBeInTheDocument()
-    expect(checkbox).not.toBeChecked()
-    fireEvent.click(checkbox);
-    await sleep(20);
-    await waitForLoadingSpinner(container)
-    checkbox = container.querySelector("input");
-    expect(checkbox).toBeChecked()
-    fireEvent.click(checkbox);
+    await act(async () => {
+        mockFetch(false, true);
+        const {container} = renderAssignMembersToLine();
+        expect(screen.getByText(new RegExp('Assign members'))).toBeInTheDocument()
+        await waitForLoadingSpinner(container)
+        await sleep(20);
+        expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
+        expect(screen.getByText(new RegExp('John Doe'))).toBeInTheDocument()
+        let checkbox = container.querySelector("input");
+        await sleep(20)
+        expect(checkbox).toBeInTheDocument()
+        expect(checkbox).not.toBeChecked()
+        fireEvent.click(checkbox);
+        await sleep(20)
+        await waitForLoadingSpinner(container)
+        await sleep(20);
+        checkbox = container.querySelector("input");
+        expect(checkbox).toBeChecked()
+        fireEvent.click(checkbox);
+    })
 }, 5000);

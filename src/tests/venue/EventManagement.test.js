@@ -2,41 +2,48 @@ import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-lib
 import EventManagement from "../../components/venue/EventManagement";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
+import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
 
 test('Render Event management', async () => {
-    mockFetch();
-    const {container, createButton} = await renderEventManagement();
-    let icon = container.querySelector(".is-clickable");
-    expect(icon).toBeInTheDocument();
-    fireEvent.click(icon);
-    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/1');
+    await act(async () => {
+        mockFetch();
+        const {container, createButton} = await renderEventManagement();
+        let icon = container.querySelector(".is-clickable");
+        expect(icon).toBeInTheDocument();
+        fireEvent.click(icon);
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/1');
 
-    fireEvent.click(createButton)
-    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
+        fireEvent.click(createButton)
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 
-    let editEventIcon = container.querySelector(".is-clickable");
-    expect(editEventIcon).toBeInTheDocument()
-    fireEvent.click(editEventIcon)
-    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/' + events.content[0].id);
+        let editEventIcon = container.querySelector(".is-clickable");
+        expect(editEventIcon).toBeInTheDocument()
+        fireEvent.click(editEventIcon)
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/' + events.content[0].id);
+    })
 }, 5000);
 
 test('Render Event management - no events', async () => {
-    mockFetch({...events, content: []});
-    await renderEventManagement();
-    expect(screen.getByText(/No events scheduled/i)).toBeInTheDocument();
-    let createSpan = screen.getByText(/here/i);
-    expect(createSpan).toBeInTheDocument()
-    fireEvent.click(createSpan)
-    expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
+    await act(async () => {
+        mockFetch({...events, content: []});
+        await renderEventManagement();
+        expect(screen.getByText(/No events scheduled/i)).toBeInTheDocument();
+        let createSpan = screen.getByText(/here/i);
+        expect(createSpan).toBeInTheDocument()
+        fireEvent.click(createSpan)
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
+    })
 }, 5000);
 
 test('Render Event management - network error', async () => {
-    mockFetch(events, true);
-    await renderEventManagement(false);
-    await sleep(50)
-    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+    await act(async () => {
+        mockFetch(events, true);
+        await renderEventManagement(false);
+        await sleep(50)
+        expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+    })
 }, 5000);
 
 let venue = {name: "TestVenue", id: "1"}

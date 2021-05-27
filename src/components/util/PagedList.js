@@ -51,7 +51,8 @@ const PagedList = (props) => {
 
     const RenderList = () => {
         if (loading) return <Spinner/>
-        if (page.content.length === 0) return <div className="panel-block">{props.IsEmptyComponent()}</div>
+        if (hasErrored) return "";
+        if (page.content.length === 0) return <div className="panel-block">{props.IsEmptyComponent({update: forceUpdate})}</div>
         return page.content.map(data => props.RenderListItem({key: data.id, data: data, update: forceUpdate}));
     }
 

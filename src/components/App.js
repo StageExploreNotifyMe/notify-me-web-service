@@ -16,6 +16,8 @@ import AssignMembersToLine from "./organization/AssignMembersToLine";
 import JoinOrganization from "./user/JoinOrganization";
 import NotificationOverview from "./admin/NotificationOverview";
 import ChannelOverview from "./admin/ChannelOverview";
+import AdminDetails from "./admin/AdminDetails";
+import AdminOrganizationManagement from "./admin/AdminOrganizationManagement";
 import ManageLines from "./venue/lines/ManageLines";
 
 function App() {
@@ -26,8 +28,10 @@ function App() {
                     <Route path="/user/join/organization"> <JoinOrganization/> </Route>
                     <Route path="/user/inbox"> <Inbox/> </Route>
                     <Route path="/user"> <UserDetails/> </Route>
-                    <Route path="/admin"> <NotificationOverview/> </Route>
                     <Route path="/channels"> <ChannelOverview/> </Route>
+                    <Route path="/admin/organizationManagement"> <AdminOrganizationManagement/> </Route>
+                    <Route path="/admin/NotificationOverview"> <NotificationOverview/> </Route>
+                    <Route path="/admin"> <AdminDetails/> </Route>
                     <Route path="/organization/:id/pendingrequests"> <OrganizationJoinRequests/> </Route>
                     <Route path="/organization/:id/membermanagement"> <MemberManagement/> </Route>
                     <Route path="/organization/:id/memberassignment/assign"> <AssignMembersToLine/> </Route>
