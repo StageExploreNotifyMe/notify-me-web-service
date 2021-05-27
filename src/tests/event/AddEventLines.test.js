@@ -1,10 +1,11 @@
-import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import AddEventLines from "../../components/event/AddEventLines";
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
 import {waitForLoadingSpinner} from "../TestUtilities";
+import {act} from "react-dom/test-utils";
 
 const history = createMemoryHistory();
 const route = '/venue/events/1/lines';
@@ -112,31 +113,34 @@ function renderComponent() {
 }
 
 test('Render addEventLines component - empty', async () => {
-    mockFetch(false, true);
-    const {container} = renderComponent();
-    expect(screen.getByText(/Add Lines to this event/i)).toBeInTheDocument()
-    await waitForLoadingSpinner(container)
+    await act(async () => {
+        mockFetch(false, true);
+        const {container} = renderComponent();
+        expect(screen.getByText(/Add Lines to this event/i)).toBeInTheDocument()
+        await waitForLoadingSpinner(container)
+    })
 }, 5000);
 
 test('Render addEventLines component', async () => {
-    mockFetch();
-    const {container} = renderComponent();
-    expect(screen.getByText(/Add Lines to this event/i)).toBeInTheDocument()
-    await waitForLoadingSpinner(container)
+    await act(async () => {
+        mockFetch();
+        const {container} = renderComponent();
+        expect(screen.getByText(/Add Lines to this event/i)).toBeInTheDocument()
+        await waitForLoadingSpinner(container)
 
-    openModal(container);
-    closeModal(container, '.modal-close');
-    openModal(container)
-    closeModal(container, '.modal-background');
-    let input = container.querySelectorAll('input')[0]
-    expect(input).toBeInTheDocument()
-    fireEvent.click(input);
-    expect(screen.getByText(/Not Implemented/i)).toBeInTheDocument()
+        openModal(container);
+        closeModal(container, '.modal-close');
+        openModal(container)
+        closeModal(container, '.modal-background');
+        let input = container.querySelectorAll('input')[0]
+        expect(input).toBeInTheDocument()
+        fireEvent.click(input);
+        expect(screen.getByText(/Not Implemented/i)).toBeInTheDocument()
 
-    let input2 = container.querySelectorAll('input')[1]
-    expect(input2).toBeInTheDocument()
-    fireEvent.click(input2);
-
+        let input2 = container.querySelectorAll('input')[1]
+        expect(input2).toBeInTheDocument()
+        fireEvent.click(input2);
+    })
 }, 5000);
 
 function openModal(container) {

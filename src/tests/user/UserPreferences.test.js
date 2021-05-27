@@ -3,7 +3,6 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 import React from "react";
 import {sleep} from "../../js/Sleep";
 import UserPreferences from "../../components/user/UserPreferences";
-import {waitForLoadingSpinner} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -33,55 +32,63 @@ test('UserPreferences changed', async () => {
 }, 5000);
 
 test("onPreferenceChanged - normal", async () => {
-    let onPreferenceChanged = jest.fn()
-    const {container} = render(<input
-        onChange={() => onPreferenceChanged("SMS", "normal")}
-        type="radio" name={"normal"}/>)
-    const radio = container.firstChild
-    fireEvent.click(radio, {target: {value: 'SMS'}})
-    expect(onPreferenceChanged.mock.calls.length).toBe(1)
+    await act(async () => {
+        let onPreferenceChanged = jest.fn()
+        const {container} = render(<input
+            onChange={() => onPreferenceChanged("SMS", "normal")}
+            type="radio" name={"normal"}/>)
+        const radio = container.firstChild
+        fireEvent.click(radio, {target: {value: 'SMS'}})
+        expect(onPreferenceChanged.mock.calls.length).toBe(1)
+    })
 })
 
 test("onPreferenceChanged - urgent", async () => {
-    let onPreferenceChanged = jest.fn()
-    const {container} = render(<input
-        onChange={() => onPreferenceChanged("SMS", "urgent")}
-        type="radio" name={"urgent"}/>)
-    const radio = container.firstChild
-    fireEvent.click(radio, {target: {value: 'SMS'}})
-    expect(onPreferenceChanged.mock.calls.length).toBe(1)
-})
-
-test("click radiobutton", async ()=> {
-    mockFetch()
-    const {container} = render(<UserPreferences/>)
-    let notRendered = screen.getAllByText(/no notifications rendered/i)
-    await waitForElementToBeRemoved(notRendered[0])
-    let radio = container.querySelector('#radioNormal')
-    fireEvent.click(radio)
-},5000)
-
-test("dropdown", async () =>{
-    const {container} = render(<UserPreferences/>)
-    let dropdown = container.querySelector('.dropdown-trigger')
-    fireEvent.click(dropdown)
-})
-
-function mockFetch(simulateNetworkError = false) {
-    fetch.enableMocks()
-    fetch.resetMocks()
-    fetch.mockResponse(async request => {
-        if (simulateNetworkError) return Promise.reject(new Error("Simulated error"));
-        await sleep(10)
-        if (request.url.includes("/user/preferences")) {
-            return Promise.resolve(JSON.stringify(notificationsDTO))
-        } else if (request.url.includes("/user/")) {
-            return Promise.resolve(JSON.stringify(userPref))
-        } else if (request.url.includes("/preferences/channel")) {
-            return Promise.resolve(JSON.stringify(""))
-
-        }
-
-        return Promise.reject(new Error("Unknown URL"))
+    await act(async () => {
+        let onPreferenceChanged = jest.fn()
+        const {container} = render(<input
+            onChange={() => onPreferenceChanged("SMS", "urgent")}
+            type="radio" name={"urgent"}/>)
+        const radio = container.firstChild
+        fireEvent.click(radio, {target: {value: 'SMS'}})
+        expect(onPreferenceChanged.mock.calls.length).toBe(1)
     })
-}
+})
+
+test("click radiobutton", async () => {
+    await act(async () => {
+        mockFetch()
+        const {container} = render(<UserPreferences/>)
+        let notRendered = screen.getAllByText(/no notifications rendered/i)
+        await waitForElementToBeRemoved(notRendered[0])
+        let radio = container.querySelector('#radioNormal')
+        fireEvent.click(radio)
+    })
+}, 5000)
+
+test("dropdown", async () => {
+    await act(async () => {
+        const {container} = render(<UserPreferences/>)
+        let dropdown = container.querySelector('.dropdown-trigger')
+        fireEvent.click(dropdown)
+    })
+    })
+
+    function mockFetch(simulateNetworkError = false) {
+        fetch.enableMocks()
+        fetch.resetMocks()
+        fetch.mockResponse(async request => {
+            if (simulateNetworkError) return Promise.reject(new Error("Simulated error"));
+            await sleep(10)
+            if (request.url.includes("/user/preferences")) {
+                return Promise.resolve(JSON.stringify(notificationsDTO))
+            } else if (request.url.includes("/user/")) {
+                return Promise.resolve(JSON.stringify(userPref))
+            } else if (request.url.includes("/preferences/channel")) {
+                return Promise.resolve(JSON.stringify(""))
+
+            }
+
+            return Promise.reject(new Error("Unknown URL"))
+        })
+    }
