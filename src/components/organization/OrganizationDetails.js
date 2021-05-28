@@ -5,6 +5,7 @@ import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 
 import Spinner from "../util/Spinner";
+import UnlockAccess from "../authentication/UnlockAccess";
 
 const OrganizationDetails = () => {
     let {id} = useParams();
@@ -54,27 +55,28 @@ const OrganizationDetails = () => {
         </div>);
     }
 
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h2 className="title is-2">Organization {organizationState.name}</h2>
-        <div className="columns is-multiline">
-            <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
-                title: "Line management",
-                body: "Manage the lines assigned to your organization",
-                link: "/organization/" + id + "/linemanagement"
-            }}/></div>
-            <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
-                title: "Member Management",
-                body: "Promote and demote members",
-                link: "/organization/" + id + "/membermanagement"
-            }}/></div>
-            <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
-                title: "Join Requests",
-                body: "See all the pending join requests for your organization",
-                link: "/organization/" + id + "/pendingrequests"
-            }}/></div>
+    return <UnlockAccess request={['ORGANIZATION_LEADER']}>
+        <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
+            <h2 className="title is-2">Organization {organizationState.name}</h2>
+            <div className="columns is-multiline">
+                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+                    title: "Line management",
+                    body: "Manage the lines assigned to your organization",
+                    link: "/organization/" + id + "/linemanagement"
+                }}/></div>
+                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+                    title: "Member Management",
+                    body: "Promote and demote members",
+                    link: "/organization/" + id + "/membermanagement"
+                }}/></div>
+                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+                    title: "Join Requests",
+                    body: "See all the pending join requests for your organization",
+                    link: "/organization/" + id + "/pendingrequests"
+                }}/></div>
+            </div>
         </div>
-    </div>
-
+    </UnlockAccess>
 }
 
 export default OrganizationDetails

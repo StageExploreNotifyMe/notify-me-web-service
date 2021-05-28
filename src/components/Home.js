@@ -28,15 +28,25 @@ const Home = () => {
         </section>
         <section className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-4">
             <div className="columns is-multiline">
+                <UnlockAccess request={['ANY']}>
                 <div className="column is-4 is-12-mobile"><NavigationCard
                     cardData={{title: "User details", url: "/user"}}/></div>
+                </UnlockAccess>
+                <UnlockAccess request={['MEMBER']}>
                 <div className="column is-4 is-12-mobile"><NavigationCard
                     cardData={{title: "Organization details", url: "/organization/1"}}/></div>
-                <div className="column is-4 is-12-mobile"><NavigationCard
+                </UnlockAccess>
+                    <UnlockAccess request={['VENUE_MANAGER', 'LINE_MANAGER']}>
+                    <div className="column is-4 is-12-mobile"><NavigationCard
                     cardData={{title: "Venue details", url: "/venue/events"}}/></div>
+                    </UnlockAccess>
                 <UnlockAccess request={['ADMIN']}>
                     <div className="column is-4 is-12-mobile"><NavigationCard
                         cardData={{title: "Admin Page", url: "/admin"}}/></div>
+                </UnlockAccess>
+                <UnlockAccess request={['NONE']}>
+                    <div className="column is-4 is-12-mobile"><NavigationCard
+                        cardData={{title: "Log in", url: "/login"}}/></div>
                 </UnlockAccess>
             </div>
         </section>

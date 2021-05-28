@@ -31,6 +31,7 @@ function mockFetch(simulateNetworkError = false, data = event) {
 
 function renderComponent() {
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
+    localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
     const {container} = render(<Router history={history}><EventDetails/></Router>);
     return {container};
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import {useHistory} from "react-router-dom";
 import UserAssignedLines from "./UserAssignedLines";
 import UserPreferences from "./UserPreferences";
+import UnlockAccess from "../authentication/UnlockAccess";
 
 const UserDetails = () => {
     const history = useHistory();
@@ -14,16 +15,19 @@ const UserDetails = () => {
                     Join Organization
                 </button>
             </div>
+            <UnlockAccess request={['MEMBER']}>
             <div className="column is-1">
                 <button className="button is-warning" onClick={() => history.push("/user/inbox")}>Inbox</button>
             </div>
+            </UnlockAccess>
         </div>
 
         <UserPreferences/>
-        <section className="section">
-            <UserAssignedLines/>
-        </section>
-
+        <UnlockAccess request={['MEMBER']}>
+            <section className="section">
+                <UserAssignedLines/>
+            </section>
+        </UnlockAccess>
     </div>;
 
 }
