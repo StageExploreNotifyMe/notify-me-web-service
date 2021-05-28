@@ -11,10 +11,10 @@ const Logout = (props) => {
         <h1 className="title">You have been logged out</h1>
         <p>You've been successfully logged out.</p>
         <button className="button is-link" onClick={() => {
-            history.push("/");
-            if (props.closeModal) {
-                props.closeModal()
+            if (props.onSuccess) {
+                props.onSuccess(Math.random())
             }
+            history.push("/");
         }}>
             Go Home
         </button>

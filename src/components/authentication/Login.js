@@ -18,8 +18,10 @@ const Login = (props) => {
             localStorage.setItem("user.id", resp.userDto.id);
             localStorage.setItem("user", JSON.stringify(resp.userDto));
             localStorage.setItem("IsLoggedIn", "true");
+            if (props.onSuccess) {
+                props.onSuccess(Math.random());
+            }
             history.push("/");
-            props.closeModal();
         }).catch(() => {
             toast({
                 message: 'Something went wrong while trying to log in',
