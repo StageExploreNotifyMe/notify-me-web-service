@@ -11,17 +11,29 @@ const Login = (props) => {
     const [loginDetails, setLoginDetails] = useState({id: '', password: ''});
     const history = useHistory();
 
+    function onLogin(resp) {
+        let route = "/";
+        localStorage.setItem("Authorization", resp.jwt);
+        let user = resp.userDto;
+        localStorage.setItem("user.id", user.id);
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("IsLoggedIn", "true");
+
+        if (user.roles.includes("LINE_MANAGER") || user.roles.includes("VENUE_MANAGER") || user.roles.includes("ADMIN")) {
+            route = "/venue/select"
+        }
+
+        return route;
+    }
+
     function performLogin(e) {
         e.preventDefault();
         postBase("/login", JSON.stringify(loginDetails)).then((resp) => {
-            localStorage.setItem("Authorization", resp.jwt);
-            localStorage.setItem("user.id", resp.userDto.id);
-            localStorage.setItem("user", JSON.stringify(resp.userDto));
-            localStorage.setItem("IsLoggedIn", "true");
+            let route = onLogin(resp);
             if (props.onSuccess) {
                 props.onSuccess(Math.random());
             }
-            history.push("/");
+            history.push(route);
         }).catch(() => {
             toast({
                 message: 'Something went wrong while trying to log in',

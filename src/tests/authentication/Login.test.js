@@ -23,7 +23,7 @@ function mockFetch(successfulLogin = true) {
     fetch.resetMocks()
 
     fetch.mockResponse(() => {
-        if (successfulLogin) return Promise.resolve(JSON.stringify({jwt: "", userDto: {}}))
+        if (successfulLogin) return Promise.resolve(JSON.stringify({jwt: "", userDto: {roles: [], id: ""}}))
         return Promise.resolve();
     })
 }

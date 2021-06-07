@@ -41,6 +41,7 @@ function mockFetch(simulateNetworkError = false) {
 }
 
 function renderOrganizationRequestUserDetail() {
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
     const {container} = render(<OrganizationRequestUserDetail request={request}/>);
     expect(screen.getByText(new RegExp(request.user.firstname + " " + request.user.lastname))).toBeInTheDocument()
     let acceptButton = screen.queryByText(/Accept/i);

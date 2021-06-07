@@ -60,9 +60,9 @@ function mockFetch(simulateNetworkError = false, noUsers = false) {
 
 function renderMemberManagement() {
     const history = createMemoryHistory();
-    const route = '/organization/1/pendingrequests';
+    const route = '/organization/pendingrequests';
     history.push(route);
-
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
     const {container} = render(
         <Router history={history}>
             <OrganizationJoinRequests/>

@@ -29,17 +29,21 @@ const Home = () => {
         <section className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-4">
             <div className="columns is-multiline">
                 <UnlockAccess request={['ANY']}>
-                <div className="column is-4 is-12-mobile"><NavigationCard
-                    cardData={{title: "User details", url: "/user"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['MEMBER']}>
-                <div className="column is-4 is-12-mobile"><NavigationCard
-                    cardData={{title: "Organization details", url: "/organization/1"}}/></div>
-                </UnlockAccess>
-                    <UnlockAccess request={['VENUE_MANAGER', 'LINE_MANAGER']}>
                     <div className="column is-4 is-12-mobile"><NavigationCard
-                    cardData={{title: "Venue details", url: "/venue/events"}}/></div>
-                    </UnlockAccess>
+                        cardData={{title: "User details", url: "/user"}}/></div>
+                </UnlockAccess>
+                <UnlockAccess request={['MEMBER', 'ORGANIZATION_LEADER']}>
+                    <div className="column is-4 is-12-mobile"><NavigationCard
+                        cardData={{title: "Organization details", url: "/organizations"}}/></div>
+                </UnlockAccess>
+                <UnlockAccess request={['VENUE_MANAGER', 'LINE_MANAGER']}>
+                    <div className="column is-4 is-12-mobile"><NavigationCard
+                        cardData={{title: "Event Management", url: "/venue/events"}}/></div>
+                </UnlockAccess>
+                <UnlockAccess request={['VENUE_MANAGER']}>
+                    <div className="column is-4 is-12-mobile"><NavigationCard
+                        cardData={{title: "Line Management", url: "/venue/lines"}}/></div>
+                </UnlockAccess>
                 <UnlockAccess request={['ADMIN']}>
                     <div className="column is-4 is-12-mobile"><NavigationCard
                         cardData={{title: "Admin Page", url: "/admin"}}/></div>

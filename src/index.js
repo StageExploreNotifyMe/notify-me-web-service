@@ -12,7 +12,7 @@ bulmaToast.setDefaults({
     pauseOnHover: true
 })
 
-localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"})); //until auth is implemented
+
 
 ReactDOM.render(
   <React.StrictMode>

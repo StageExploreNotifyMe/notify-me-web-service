@@ -84,9 +84,11 @@ function mockFetch(simulateNetworkError = false, withUsers = true) {
 
 function renderAssignMembersToLine() {
     const history = createMemoryHistory();
-    const route = '/organization/1/memberassignment/assign';
+    const route = '/organization/memberassignment/assign';
     history.push(route);
     localStorage.setItem("organization.memberassignment.line", JSON.stringify(line));
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
+
     memberAssigned = false;
     const {container} = render(
         <Router history={history}>

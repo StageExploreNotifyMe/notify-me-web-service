@@ -15,8 +15,7 @@ test('User details page', () => {
     act(() => {
         localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
         render(<UserDetails/>)
-        expect(screen.getByText(/User Details Placeholder/i)).toBeInTheDocument()
-        expect(screen.getByText(/User Details/i)).toBeInTheDocument()
+        expect(screen.getByText(/Test Test/i)).toBeInTheDocument()
         let joinOrgButton = screen.getByText(/Join Organization/i)
         expect(joinOrgButton).toBeInTheDocument();
         fireEvent.click(joinOrgButton);

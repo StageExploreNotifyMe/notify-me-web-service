@@ -4,6 +4,8 @@ const Logout = (props) => {
     localStorage.setItem("Authorization", "");
     localStorage.setItem("user.id", "");
     localStorage.setItem("user", JSON.stringify({}));
+    localStorage.setItem("userorganization", JSON.stringify({}));
+    localStorage.setItem("organization", JSON.stringify({}));
     localStorage.setItem("IsLoggedIn", "false");
 
     const history = useHistory();

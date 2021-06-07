@@ -69,9 +69,10 @@ function mockFetch(simulateNetworkError = false, withLine = true) {
 
 function renderAssignMembersToLine() {
     const history = createMemoryHistory();
-    const route = '/organization/1/memberassignment';
+    const route = '/organization/memberassignment';
     history.push(route);
     localStorage.setItem("organization.memberassignment.line", JSON.stringify(organizationLines));
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
     const {container} = render(
         <Router history={history}>
             <OrganizationLines/>
@@ -106,6 +107,6 @@ test('OrganizationLines - with data', async () => {
         let assignMembersButton = container.querySelector(".is-clickable");
         expect(assignMembersButton).toBeInTheDocument();
         fireEvent.click(assignMembersButton);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/" + line.id + "/memberassignment/assign")
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/memberassignment/assign")
     })
 }, 5000);

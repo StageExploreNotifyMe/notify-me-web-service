@@ -1,12 +1,11 @@
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import OrganizationDetails from "../../components/organization/OrganizationDetails";
 
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from 'jest-fetch-mock'
-import {waitForLoadingSpinner} from "../TestUtilities";
-import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
+import {sleep} from "../../js/Sleep";
 
 enableFetchMocks()
 
@@ -24,12 +23,20 @@ function mockFetch(simulateNetworkError = false) {
     fetch.mockResponses([response, status])
 }
 
+const mockHistoryPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useHistory: () => ({
+        push: mockHistoryPush
+    }),
+}));
+
 function renderOrganizationDetails() {
     localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
     const history = createMemoryHistory();
-    const route = '/organization/1';
+    const route = '/organization';
     history.push(route);
-
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
     const {container} = render(
         <Router history={history}>
             <OrganizationDetails/>
@@ -38,24 +45,23 @@ function renderOrganizationDetails() {
     return container;
 }
 
-test('OrganizationDetails - Render & load', async () => {
+test('OrganizationDetails - Render', async () => {
     await act(async () => {
         mockFetch();
         const container = renderOrganizationDetails();
-        await waitForLoadingSpinner(container)
         expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
-    })
-}, 5000);
 
-test('OrganizationDetails - Error', async () => {
-    await act(async () => {
-        mockFetch(true);
-        const container = renderOrganizationDetails();
+        let navButton = container.querySelector(".card-footer-item");
+        expect(navButton).toBeInTheDocument();
+        fireEvent.click(navButton);
+        await sleep(20);
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/linemanagement")
 
-        let loadingSpinner = container.querySelector('.loading');
-        expect(loadingSpinner).toBeInTheDocument()
-        await sleep(50);
-        expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
+        let changeButton = (screen.getByText(new RegExp("Change Organization")));
+        expect(changeButton).toBeInTheDocument();
+        fireEvent.click(changeButton);
+        await sleep(20);
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organizations")
     })
 }, 5000);
 

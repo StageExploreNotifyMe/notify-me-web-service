@@ -34,7 +34,6 @@ let notificationTypes = {
     notificationTypes: ["USER_CREATED", "USER_JOINED", "USER_ACCEPTED", "USER_DECLINED", "USER_PROMOTED", "USER_DEMOTED", "USER_CANCELED", "EVENT_CREATED", "EVENT_PUBLISHED", "EVENT_CONFIRMED", "EVENT_CANCELED", "WEEKLY_DIGEST", "STAFFING_REMINDER", "LINE_ASSIGNED", "LINE_CANCELED"]
 }
 
-
 function mockFetch(content = pageSettings, simulateNetworkError=false) {
     fetch.enableMocks();
     fetch.resetMocks();

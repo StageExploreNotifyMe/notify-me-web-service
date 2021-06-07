@@ -1,4 +1,3 @@
-import {useParams} from "react-router-dom";
 import {getBase, postBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import React, {useState} from "react";
@@ -6,8 +5,8 @@ import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 
 const AssignMembersToLine = () => {
-    let {id} = useParams();
-
+    const org = JSON.parse(localStorage.getItem("organization"));
+    const id = org.id;
 
     const [line, setLine] = useState(JSON.parse(localStorage.getItem("organization.memberassignment.line")))
 
