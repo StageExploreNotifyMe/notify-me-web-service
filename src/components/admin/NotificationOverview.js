@@ -15,7 +15,11 @@ const NotificationOverview = () => {
         urgency: "",
         usedChannel: "",
         userId: "",
-        eventId: ""
+        eventId: "",
+        price: "",
+        priceCurrency: "",
+
+
     });
     const [notificationType, setNotificationType] = useState([])
     const [event, setEvent] = useState([])
@@ -99,6 +103,10 @@ const NotificationOverview = () => {
         forceRerender = props.update
         let date = dateArrayToDate(not.creationDate).toLocaleDateString();
         let time = dateArrayToDate(not.creationDate).toLocaleTimeString();
+        let price = '-'
+        if (not.price !== null){
+            price = not.price
+        }
         return <div key={props.key} className="panel-block columns">
             <div className="column is-one-fifth">
                 <p>{date}</p>
@@ -130,6 +138,8 @@ const NotificationOverview = () => {
                             usedChannel: not.usedChannel,
                             userId: not.userId,
                             eventId: not.eventId,
+                            price: price,
+                            priceCurrency: not.priceCurrency,
                             isActive: true
                         }))}>Details
                 </button>
@@ -153,6 +163,7 @@ const NotificationOverview = () => {
                         <p>Urgency: {modal.urgency}</p>
                         <p>Channel: {modal.usedChannel}</p>
                         <p>Message: {modal.body}</p>
+                        <p>Price: {modal.priceCurrency} {modal.price}</p>
                     </div>
                 </div>
             </div>
