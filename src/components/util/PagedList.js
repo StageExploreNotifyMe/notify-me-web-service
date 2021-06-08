@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import PageControls from "../util/PageControls";
 import Spinner from "../util/Spinner";
+import {Pagination} from "@material-ui/lab";
 
 const PagedList = (props) => {
     const [page, setPage] = useState({
@@ -15,7 +15,7 @@ const PagedList = (props) => {
     const [activePage, setActivePage] = useState(0);
     let pageControlSettings = {
         showButtons: true,
-        sizeModifier : "is-medium"
+        sizeModifier: "is-medium"
     }
 
     if (props.pageControls !== undefined) {
@@ -43,6 +43,7 @@ const PagedList = (props) => {
     }, [activePage]);
 
     function onPageChange(e) {
+        console.log("change", e)
         setActivePage(e);
         setLoading(true);
         internalFetchData();
@@ -55,18 +56,17 @@ const PagedList = (props) => {
     const RenderList = () => {
         if (loading) return <Spinner/>
         if (hasErrored) return "";
-        if (page.content.length === 0) return <div className="panel-block">{props.IsEmptyComponent({update: forceUpdate})}</div>
+        if (page.content.length === 0) return <div
+            className="panel-block">{props.IsEmptyComponent({update: forceUpdate})}</div>
         return page.content.map(data => props.RenderListItem({key: data.id, data: data, update: forceUpdate}));
     }
 
     const RenderPageControls = () => {
-        if (loading) return "";
+        if (loading || hasErrored) return "";
         if (page.content.length === 0) return "";
         if (page.totalPages === 1) return "";
-        return <div className="control">
-            <PageControls showButtons={pageControlSettings.showButtons} sizeModifier={pageControlSettings.sizeModifier} pageSettings={page}
-                          changePage={(e) => onPageChange(e)}/>
-        </div>
+        return <Pagination count={page.totalPages} onChange={(e, page) => onPageChange(page - 1)} boundaryCount={1}
+                           color="primary"/>
     }
 
     if (hasErrored) return "";

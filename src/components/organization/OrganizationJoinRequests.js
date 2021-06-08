@@ -1,10 +1,12 @@
 import React from "react";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import OrganizationRequestUserDetail from "./OrganizationRequestUserDetail";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from "notistack";
 
 const OrganizationJoinRequests = () => {
+    const {enqueueSnackbar} = useSnackbar();
     const org = JSON.parse(localStorage.getItem("organization"));
     const id = org.id;
 
@@ -12,15 +14,14 @@ const OrganizationJoinRequests = () => {
         try {
             return await getBase("/userorganization/requests/" + id + "/pending?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the organization data',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch the organization data', {
+                variant: 'error',
+            });
         }
     }
 
     const RenderJoinRequests = (props) => {
-       return <OrganizationRequestUserDetail key={props.id} request={props.data}/>
+        return <OrganizationRequestUserDetail key={props.id} request={props.data}/>
     }
 
     return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">

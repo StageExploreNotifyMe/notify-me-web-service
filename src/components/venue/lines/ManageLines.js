@@ -2,35 +2,37 @@ import PagedList from "../../util/PagedList";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {getBase} from "../../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
-import ReactTooltip from "react-tooltip";
+import {useSnackbar} from 'notistack';
+import {Tooltip} from "@material-ui/core";
 
 const ManageLines = () => {
 
     const history = useHistory();
     const createLineLink = "/venue/lines/create";
     const venue = JSON.parse(localStorage.getItem("venue"));
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchPageData(activePage) {
         try {
             return await getBase("/line/venue/" + venue.id + "?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch your lines',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch your lines', {
+                variant: 'error',
+            });
         }
     }
 
     const RenderLines = (props) => {
         let line = props.data;
         return <div className="panel-block columns" key={line.id}>
-            <div className="column" data-tip="" data-for={line.id}> {line.name}
-                <ReactTooltip id={line.id} place="top" type="dark" effect="solid">
-                    {line.description}
-                </ReactTooltip></div>
+            <div className="column">
+                <Tooltip title={line.description}>
+                    <p>{line.name}</p>
+                </Tooltip>
+            </div>
             <div className="column">Required people: {line.numberOfRequiredPeople}</div>
             <div className="column is-1">
                 <span className="icon is-clickable" onClick={() => {

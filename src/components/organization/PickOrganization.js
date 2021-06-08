@@ -1,14 +1,16 @@
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {useHistory} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
+import {useSnackbar} from "notistack";
 
 const PickOrganizationToManage = () => {
 
     const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+    const {enqueueSnackbar} = useSnackbar();
 
     const org = JSON.parse(localStorage.getItem("organization"));
     if (org === null || org.id !== undefined) {
@@ -21,10 +23,9 @@ const PickOrganizationToManage = () => {
             setData(data.userOrganizations);
             setLoading(false);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch all the venues you are a part of',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch all the venues you are a part of', {
+                variant: 'error',
+            });
         }
     }
 

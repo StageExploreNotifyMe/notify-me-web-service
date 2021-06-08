@@ -1,8 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import NotificationOverview from "../../components/admin/NotificationOverview";
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -34,7 +35,7 @@ let notificationTypes = {
     notificationTypes: ["USER_CREATED", "USER_JOINED", "USER_ACCEPTED", "USER_DECLINED", "USER_PROMOTED", "USER_DEMOTED", "USER_CANCELED", "EVENT_CREATED", "EVENT_PUBLISHED", "EVENT_CONFIRMED", "EVENT_CANCELED", "WEEKLY_DIGEST", "STAFFING_REMINDER", "LINE_ASSIGNED", "LINE_CANCELED"]
 }
 
-function mockFetch(content = pageSettings, simulateNetworkError=false) {
+function mockFetch(content = pageSettings, simulateNetworkError = false) {
     fetch.enableMocks();
     fetch.resetMocks();
     fetch.mockResponse(async request => {
@@ -43,7 +44,7 @@ function mockFetch(content = pageSettings, simulateNetworkError=false) {
         } else if (request.url.includes("/admin/notificationTypes")) {
             return Promise.resolve(JSON.stringify(notificationTypes))
         } else if (request.url.includes("/admin/notifications")) {
-            if (simulateNetworkError)  return Promise.resolve("hjgj")
+            if (simulateNetworkError) return Promise.resolve("hjgj")
             return Promise.resolve(JSON.stringify(content))
         } else
             return Promise.reject(new Error("unknown URL"))
@@ -53,7 +54,7 @@ function mockFetch(content = pageSettings, simulateNetworkError=false) {
 test("dropdown", async () => {
     await act(async () => {
         mockFetch()
-        const {container} = render(<NotificationOverview/>)
+        const {container} = RenderComponent(NotificationOverview)
         let types = container.querySelector(".select")
         await sleep(20)
         expect(types).toBeInTheDocument();
@@ -65,7 +66,7 @@ test("dropdown", async () => {
 test("RenderNotification - fail", async () => {
     await act(async () => {
         mockFetch(pageSettings, true)
-        render(<NotificationOverview/>)
+        RenderComponent(NotificationOverview)
         await sleep(50)
         let notRendered = screen.getAllByText(/Something went wrong while fetching all notifications/i)
         expect(notRendered[0]).toBeInTheDocument()
@@ -76,7 +77,7 @@ test("RenderNotification - fail", async () => {
 test("RenderNoNotification", async () => {
     await act(async () => {
         mockFetch({...pageSettings, content: []})
-        render(<NotificationOverview/>)
+        RenderComponent(NotificationOverview)
         await sleep(50)
         let notRendered = screen.getAllByText(/No notifications in your overview/i)
         expect(notRendered[0]).toBeInTheDocument()
@@ -86,7 +87,7 @@ test("RenderNoNotification", async () => {
 test("RenderNotification - success", async () => {
     await act(async () => {
         mockFetch({...pageSettings, content: [request]})
-        const {container} = render(<NotificationOverview/>)
+        const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
         let button = screen.queryByText(/Details/i)
         expect(button).toBeInTheDocument()
@@ -98,7 +99,7 @@ test("RenderNotification - success", async () => {
 test("modalClose", async () => {
     await act(async () => {
         mockFetch({...pageSettings, content: [request]})
-        const {container} = render(<NotificationOverview/>)
+        const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
         let button = screen.queryByText(/Details/i)
         expect(button).toBeInTheDocument()

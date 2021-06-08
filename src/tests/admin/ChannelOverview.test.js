@@ -1,7 +1,8 @@
-import {render, screen} from '@testing-library/react';
+import {screen} from '@testing-library/react';
 import ChannelOverview from "../../components/admin/ChannelOverview";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
+import {RenderComponent} from "../TestUtilities";
 
 
 enableFetchMocks()
@@ -17,13 +18,13 @@ function mockFetch() {
 }
 
 test("layout", () => {
-    render(<ChannelOverview/>)
+    RenderComponent(ChannelOverview)
     expect(screen.getByText(/Notifications/)).toBeInTheDocument()
 }, 5000)
 
 test("channels", async () => {
     mockFetch()
-        render(<ChannelOverview/>)
+    RenderComponent(ChannelOverview)
     await sleep(50)
     expect(screen.getByText(/SMS/)).toBeInTheDocument()
 }, 5000)

@@ -1,9 +1,10 @@
 import Organization from "./Organization";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+import {useSnackbar} from 'notistack';
 import PagedList from "../util/PagedList";
 
 const JoinOrganization = () => {
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchOrganizations(activePage) {
         try {
@@ -27,10 +28,9 @@ const JoinOrganization = () => {
 
             return {...organizations, content: content};
         } catch {
-            toast({
-                message: 'Something went wrong while trying to save your data',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to save your data', {
+                variant: 'error',
+            });
         }
     }
 
@@ -43,8 +43,8 @@ const JoinOrganization = () => {
             <h2 className=" title is-3">Join Organizations</h2>
         </div>
         <section>
-        <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
-                   IsEmptyComponent={() => <p>No organizations found</p>}/>
+            <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
+                       IsEmptyComponent={() => <p>No organizations found</p>}/>
         </section>
     </article>
 }

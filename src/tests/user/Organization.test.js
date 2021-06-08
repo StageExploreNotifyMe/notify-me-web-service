@@ -1,6 +1,7 @@
 import {enableFetchMocks} from 'jest-fetch-mock'
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent} from '@testing-library/react';
 import Organization from '../../components/user/Organization';
+import {RenderComponent} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 import {sleep} from "../../js/Sleep";
 
@@ -9,14 +10,16 @@ enableFetchMocks()
 function mockFetch(simulateNetworkError = false) {
     fetch.enableMocks()
     fetch.resetMocks()
-    let response = ["{\"id\":null,\"user\":{\"id\":\"testUser\"},\"organization\":{\"id\":\"testOrganization\",\"name\":\"\"},\"role\":\"MEMBER\",\"status\":\"PENDING\"}",{ status: 200 }]
-    if (!simulateNetworkError) {response = ["{\"id\":null,\"user\":{\"id\":\"testUser\"},\"organization\":{\"id\":\"testOrganization\",\"name\":\"\"},\"role\":\"MEMBER\",\"status\":\"PENDING\"}",{ status: 500 }]}
+    let response = ["{\"id\":null,\"user\":{\"id\":\"testUser\"},\"organization\":{\"id\":\"testOrganization\",\"name\":\"\"},\"role\":\"MEMBER\",\"status\":\"PENDING\"}", {status: 200}]
+    if (!simulateNetworkError) {
+        response = ["{\"id\":null,\"user\":{\"id\":\"testUser\"},\"organization\":{\"id\":\"testOrganization\",\"name\":\"\"},\"role\":\"MEMBER\",\"status\":\"PENDING\"}", {status: 500}]
+    }
     fetch.mockResponses(response)
 }
 
 async function Render(hasAlreadyJoined = false) {
     let data = {id: "1", name: "Company 1", hasJoined: hasAlreadyJoined};
-    const {container} = render(<Organization content={data}/>)
+    const {container} = RenderComponent(Organization, {content: data})
 
     let input = container.querySelector("input");
     let button = container.querySelector("button");
@@ -35,7 +38,7 @@ async function Render(hasAlreadyJoined = false) {
 }
 
 test('Render Organization Component - SuccessCase', async () => {
-  await act(async () => {
+    await act(async () => {
         mockFetch();
         let {data, input, button} = await Render();
 
@@ -46,7 +49,7 @@ test('Render Organization Component - SuccessCase', async () => {
 }, 5000);
 
 test('Render Organization Component - CancelCase', async () => {
-   await act(async () => {
+    await act(async () => {
         mockFetch();
         let {data, input, button, button2} = await Render();
 
@@ -59,7 +62,7 @@ test('Render Organization Component - CancelCase', async () => {
 test('Render Organization Component - Leave', async () => {
     await act(async () => {
         mockFetch();
-        let {button} =  await Render(true);
+        let {button} = await Render(true);
 
         fireEvent.click(button)
         expect(button.parentNode.classList.contains('is-hidden')).toBe(true)

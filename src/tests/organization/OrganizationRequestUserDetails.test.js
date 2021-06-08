@@ -1,8 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import OrganizationRequestUserDetail from "../../components/organization/OrganizationRequestUserDetail";
 
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {act} from "react-dom/test-utils";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 fetch.enableMocks();
@@ -41,8 +42,8 @@ function mockFetch(simulateNetworkError = false) {
 }
 
 function renderOrganizationRequestUserDetail() {
-    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
-    const {container} = render(<OrganizationRequestUserDetail request={request}/>);
+    localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
+    const {container} = RenderComponent(OrganizationRequestUserDetail, {request: request});
     expect(screen.getByText(new RegExp(request.user.firstname + " " + request.user.lastname))).toBeInTheDocument()
     let acceptButton = screen.queryByText(/Accept/i);
     expect(acceptButton).toBeInTheDocument()

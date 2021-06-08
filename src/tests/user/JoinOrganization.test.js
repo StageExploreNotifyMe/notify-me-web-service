@@ -1,7 +1,8 @@
-import {act, render, screen} from '@testing-library/react';
+import {act, screen} from '@testing-library/react';
 import JoinOrganization from '../../components/user/JoinOrganization';
 import {sleep} from "../../js/Sleep";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -60,7 +61,7 @@ function mockFetch(simulateNetworkError = false) {
 test('Render Spinner Component', async () => {
     await act(async () => {
         mockFetch();
-        render(<JoinOrganization/>)
+        RenderComponent(JoinOrganization)
         expect(screen.getByText(/Join Organizations/i)).toBeInTheDocument()
         await sleep(40);
         expect(screen.getByText(/notKdG/i)).toBeInTheDocument()

@@ -1,8 +1,9 @@
 import CreateVenue from "../../components/venue/CreateVenue";
 import {act} from "react-dom/test-utils";
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -42,10 +43,15 @@ function setLocalStorage() {
     }));
 }
 
+function RenderFnc(action = "create") {
+    const {container} = RenderComponent(CreateVenue, {action: action})
+    return container;
+}
+
 test("Render Create Venue", async () => {
     await act(async () => {
         mockFetch(page, false)
-        const {container} = render(<CreateVenue action={"create"}/>)
+        const container = RenderFnc();
         expect(screen.getByText(/Create Venue/i)).toBeInTheDocument()
         let submit = container.querySelectorAll("button")[0]
         expect(submit).toBeInTheDocument()
@@ -60,7 +66,7 @@ test("Render Create Venue", async () => {
 test("Create Venue - no name", async () => {
     await act(async () => {
         mockFetch(page, false)
-        const {container} = render(<CreateVenue action={"create"}/>)
+        const container = RenderFnc();
         await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
@@ -75,7 +81,7 @@ test("Create Venue - no name", async () => {
 test("Create Venue - name - no venueManager", async () => {
     await act(async () => {
         mockFetch(page, false)
-        const {container} = render(<CreateVenue action={"create"}/>)
+        const container = RenderFnc();
         await sleep(50)
         let name = container.querySelectorAll("input")[0]
         expect(name).toBeInTheDocument()
@@ -91,7 +97,7 @@ test("Render network error", async () => {
     await act(async () => {
         setLocalStorage();
         mockFetch(page, true)
-        render(<CreateVenue action={"create"}/>)
+        const container = RenderFnc();
         await sleep(20);
         expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
     })
@@ -100,7 +106,7 @@ test("Render network error", async () => {
 test("Create Venue - name -  venueManager", async () => {
     await act(async () => {
         mockFetch({...page, content: [user]})
-        const {container} = render(<CreateVenue action={"create"}/>)
+        const container = RenderFnc();
         await fillNameAndManager(container)
         await sleep(20)
         let u = screen.getAllByText(/John/i)[0]
@@ -116,7 +122,7 @@ test("Edit Venue - name -  venueManager", async () => {
     await act(async () => {
         mockFetch({...page, content: [user]})
         setLocalStorage();
-        const {container} = render(<CreateVenue/>)
+        const container = RenderFnc("");
         await fillNameAndManager(container);
         let selected = container.querySelectorAll(".panel-block")[2]
         expect(selected).toBeInTheDocument();

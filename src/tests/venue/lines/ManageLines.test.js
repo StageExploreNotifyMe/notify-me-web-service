@@ -1,7 +1,8 @@
-import {act, fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {act, fireEvent, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../../js/Sleep";
 import ManageLines from "../../../components/venue/lines/ManageLines";
+import {RenderComponent} from "../../TestUtilities";
 
 enableFetchMocks()
 
@@ -41,7 +42,13 @@ test('Render line management - network error', async () => {
     })
 }, 5000);
 
-let line = {"id":"2","name":"Catering","description":"The catering during events","venueDto":{"id":"1","name":"Groenplaats"},"numberOfRequiredPeople":1}
+let line = {
+    "id": "2",
+    "name": "Catering",
+    "description": "The catering during events",
+    "venueDto": {"id": "1", "name": "Groenplaats"},
+    "numberOfRequiredPeople": 1
+}
 let page = {
     content: [],
     last: true,
@@ -76,7 +83,7 @@ jest.mock('react-router-dom', () => ({
 
 async function renderAdminOrgMngmt(waitForRemoved = true) {
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<ManageLines/>);
+    const {container} = RenderComponent(ManageLines);
     let spinner = container.querySelector(".loading");
     expect(spinner).toBeInTheDocument()
     if (waitForRemoved) await waitForElementToBeRemoved(spinner)

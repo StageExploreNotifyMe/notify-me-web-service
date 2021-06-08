@@ -2,13 +2,15 @@ import PagedList from "../../util/PagedList";
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import {getBase, patchBase} from "../../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import {useSnackbar} from "notistack";
 
 const AdminOrganizationManagement = () => {
     const history = useHistory();
     const createOrgLink = "/admin/organizationManagement/create";
+    const {enqueueSnackbar} = useSnackbar();
 
     const [editingValues, setEditingValues] = useState({
         openModal: false,
@@ -22,10 +24,9 @@ const AdminOrganizationManagement = () => {
         try {
             return await getBase("/organization?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch organizations',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch organizations', {
+                variant: 'error',
+            });
         }
     }
 
@@ -65,10 +66,9 @@ const AdminOrganizationManagement = () => {
             editingValues.updateFnc();
             closeModal();
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to update this organization',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to update this organization', {
+                variant: 'error',
+            });
         })
     }
 

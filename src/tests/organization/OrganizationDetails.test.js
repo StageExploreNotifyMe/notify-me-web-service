@@ -1,11 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import OrganizationDetails from "../../components/organization/OrganizationDetails";
-
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {act} from "react-dom/test-utils";
 import {sleep} from "../../js/Sleep";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -32,16 +30,16 @@ jest.mock('react-router-dom', () => ({
 }));
 
 function renderOrganizationDetails() {
-    localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
-    const history = createMemoryHistory();
+    localStorage.setItem("user", JSON.stringify({
+        firstname: "Test",
+        lastname: "Test",
+        id: "1",
+        roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"],
+        userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}
+    }));
     const route = '/organization';
-    history.push(route);
-    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
-    const {container} = render(
-        <Router history={history}>
-            <OrganizationDetails/>
-        </Router>,
-    );
+    localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
+    const {container} = RenderComponent(OrganizationDetails, {}, [route]);
     return container;
 }
 

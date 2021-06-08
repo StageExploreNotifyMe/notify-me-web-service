@@ -1,6 +1,7 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import App from '../components/Home';
 import {act} from "react-dom/test-utils";
+import {RenderComponent} from "./TestUtilities";
 
 const mockHistoryPush = jest.fn();
 
@@ -13,8 +14,8 @@ jest.mock('react-router-dom', () => ({
 
 test('Render Home Component', () => {
     act(() => {
-        render(<App/>);
-        expect(screen.getByText(/Notify Me/i)).toBeInTheDocument();
+        RenderComponent(App);
+        expect(screen.getByText(/Log in/i)).toBeInTheDocument();
 
         let openButton = screen.getAllByText(/Open/i)[0];
         fireEvent.click(openButton);

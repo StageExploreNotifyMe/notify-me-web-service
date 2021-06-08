@@ -1,9 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {act} from "react-dom/test-utils";
 import PickOrganization from "../../components/organization/PickOrganization";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -55,7 +55,7 @@ function renderOrganizationDetails(withOrg = false) {
         userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}
     }));
     if (withOrg) localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
-    const {container} = render(<PickOrganization/>);
+    const {container} = RenderComponent(PickOrganization);
     return {container};
 }
 

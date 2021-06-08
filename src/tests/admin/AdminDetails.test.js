@@ -1,5 +1,6 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import AdminDetails from "../../components/admin/AdminDetails";
+import {RenderComponent} from "../TestUtilities";
 
 
 let mockHistoryPush = jest.fn();
@@ -11,7 +12,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 test('User details page', () => {
-    const {container} =render(<AdminDetails/>)
+    const {container} = RenderComponent(AdminDetails)
     expect(screen.getByText(/Admin Details/i)).toBeInTheDocument()
 
     let notificationDetails = screen.getByText(/Notification details/i)

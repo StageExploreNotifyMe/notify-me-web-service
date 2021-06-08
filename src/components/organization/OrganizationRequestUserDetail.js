@@ -1,14 +1,16 @@
 import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import Spinner from "../util/Spinner";
 import {faBan, faCheck} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {useSnackbar} from "notistack";
 
 const OrganizationRequestUserDetail = (props) => {
     const [submitting, setSubmitting] = useState(false);
     const [chosenOption, setChosenOption] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const {enqueueSnackbar} = useSnackbar();
 
     function confirmClicked(accepted) {
         let body = {
@@ -20,10 +22,9 @@ const OrganizationRequestUserDetail = (props) => {
         postBase("/userorganization/request/process", JSON.stringify(body)).then(() => {
             setSubmitted(true)
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to save changes for ' + props.request.user.firstname + ' ' + props.request.user.lastname,
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to save changes for ' + props.request.user.firstname + ' ' + props.request.user.lastname, {
+                variant: 'error',
+            });
             setSubmitting(false);
         })
     }
@@ -36,9 +37,9 @@ const OrganizationRequestUserDetail = (props) => {
             return <div className="column is-2">
                 {
                     chosenOption ?
-                        <span className="icon has-text-success"><FontAwesomeIcon icon={faCheck} /></span>
+                        <span className="icon has-text-success"><FontAwesomeIcon icon={faCheck}/></span>
                         :
-                        <span className="icon has-text-danger"><FontAwesomeIcon icon={faBan} /></span>
+                        <span className="icon has-text-danger"><FontAwesomeIcon icon={faBan}/></span>
                 }
             </div>
         }

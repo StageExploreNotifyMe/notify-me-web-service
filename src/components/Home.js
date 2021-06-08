@@ -1,60 +1,64 @@
 import {useHistory} from "react-router-dom";
+import {Button, Card, CardActions, CardContent, Grid, Typography} from "@material-ui/core";
 import UnlockAccess from "./authentication/UnlockAccess";
+import {makeStyles} from "@material-ui/styles";
 
 const Home = () => {
     const history = useHistory();
+    const classes = useStyles();
 
     const NavigationCard = (props) => {
-        return (<div className="card">
-            <header className="card-header">
-                <p className="card-header-title">{props.cardData.title}</p>
-            </header>
-            <footer className="card-footer">
-                <button className="card-footer-item button is-link" onClick={(e) => {
-                    e.preventDefault();
-                    history.push(props.cardData.url)
-                }}>
-                    Open
-                </button>
-            </footer>
-        </div>);
+        return (<UnlockAccess request={props.cardData.request}>
+            <Grid item xs={4}>
+                <Card>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {props.cardData.title}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" color="secondary" onClick={(e) => {
+                            e.preventDefault();
+                            history.push(props.cardData.url)
+                        }}>
+                            Open
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Grid>
+        </UnlockAccess>);
     };
 
-    return <div>
-        <section className="hero is-primary">
-            <div className="hero-body">
-                <h2 className="title is-2">Notify Me</h2>
-            </div>
-        </section>
-        <section className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-4">
-            <div className="columns is-multiline">
-                <UnlockAccess request={['ANY']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "User details", url: "/user"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['MEMBER', 'ORGANIZATION_LEADER']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "Organization details", url: "/organizations"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['VENUE_MANAGER', 'LINE_MANAGER']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "Event Management", url: "/venue/events"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['VENUE_MANAGER']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "Line Management", url: "/venue/lines"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['ADMIN']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "Admin Page", url: "/admin"}}/></div>
-                </UnlockAccess>
-                <UnlockAccess request={['NONE']}>
-                    <div className="column is-4 is-12-mobile"><NavigationCard
-                        cardData={{title: "Log in", url: "/login"}}/></div>
-                </UnlockAccess>
-            </div>
-        </section>
-    </div>
+    return <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-start"
+        spacing={2}
+        className={classes.root}
+    >
+        <NavigationCard cardData={{title: "User details", url: "/user", request: ['ANY']}}/>
+        <NavigationCard cardData={{
+            title: "Organization details",
+            url: "/organizations",
+            request: ['MEMBER', 'ORGANIZATION_LEADER']
+        }}/>
+        <NavigationCard
+            cardData={{
+                title: "Event Management",
+                url: "/venue/events",
+                request: ['VENUE_MANAGER', 'LINE_MANAGER']
+            }}/>
+        <NavigationCard cardData={{title: "Line Management", url: "/venue/lines", request: ['VENUE_MANAGER']}}/>
+        <NavigationCard cardData={{title: "Admin Page", url: "/admin", request: ['ADMIN']}}/>
+        <NavigationCard cardData={{title: "Log in", url: "/login", request: ['NONE']}}/>
+    </Grid>
 }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        margin: "0.5%",
+        maxWidth: "99%"
+    }
+}));
 
 export default Home

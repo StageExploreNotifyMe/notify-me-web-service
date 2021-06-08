@@ -1,6 +1,7 @@
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, screen} from '@testing-library/react';
 import CreateLine from "../../../components/venue/lines/CreateLine";
 import {sleep} from "../../../js/Sleep";
+import {RenderComponent} from "../../TestUtilities";
 
 let mockHistoryPush = jest.fn();
 let mockHistoryGoBack = jest.fn();
@@ -30,7 +31,7 @@ function renderComponent(isEdit) {
     resetMockFuncs();
     localStorage.setItem("editLine", JSON.stringify(lineToEdit));
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<CreateLine action={isEdit ? "edit" : "create"}/>);
+    const {container} = RenderComponent(CreateLine, {action: isEdit ? "edit" : "create"});
     let submitButton = container.querySelectorAll("button")[0];
     expect(submitButton).toBeInTheDocument()
     let cancelButton = screen.queryByText(/Cancel/i);

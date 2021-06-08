@@ -1,8 +1,9 @@
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent} from '@testing-library/react';
 import Registration from "../../components/authentication/Registration";
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {RenderComponent} from "../TestUtilities";
 
 let mockHistoryPush = jest.fn();
 let mockHistoryGoBack = jest.fn();
@@ -32,7 +33,7 @@ let testTimeout = 5000;
 let inputTimeout = 5;
 
 function renderComponent() {
-    const {container} = render(<Registration/>);
+    const {container} = RenderComponent(Registration);
     mockFetch();
     let submitButton = container.querySelector("button.is-link");
     expect(submitButton).toBeInTheDocument()
@@ -139,7 +140,14 @@ test('Register - valid form', async () => {
     await act(async () => {
         const {container, submitButton} = renderComponent();
 
-        const {firstNameInput, lastNameInput, emailInput, phoneInput, passwordInput, passwordRepeatInput} = getInputFields(container);
+        const {
+            firstNameInput,
+            lastNameInput,
+            emailInput,
+            phoneInput,
+            passwordInput,
+            passwordRepeatInput
+        } = getInputFields(container);
         firstNameInput.value = "Test";
         expect(firstNameInput.value).toBe("Test")
         lastNameInput.value = "User";

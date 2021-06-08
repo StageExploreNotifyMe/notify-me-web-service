@@ -2,23 +2,24 @@ import PagedList from "../util/PagedList";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import {useSnackbar} from 'notistack';
 
 const AdminVenueManagement = () => {
 
     const history = useHistory();
     const createVenueLink = "/admin/venue/create";
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchPageData(activePage) {
         try {
             return await getBase("/admin/venue?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch venues',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch venues", {
+                variant: 'error',
+            });
         }
     }
 

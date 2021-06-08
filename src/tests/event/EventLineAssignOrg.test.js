@@ -1,10 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-import {Router} from 'react-router-dom';
+import {fireEvent, screen} from '@testing-library/react';
 import {createMemoryHistory} from 'history';
 import EventLineAssignOrganization from "../../components/event/EventLineAssignOrganization";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
@@ -60,8 +59,10 @@ function renderComponent() {
     let mockCancel = jest.fn();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
     localStorage.setItem("event.line.assign", JSON.stringify(line));
-    const {container} = render(<Router history={history}><EventLineAssignOrganization assignOrg={mockAssign}
-                                                                                      cancel={mockCancel}/></Router>);
+    const {container} = RenderComponent(EventLineAssignOrganization, {
+        assignOrg: mockAssign,
+        cancel: mockCancel
+    }, [route]);
     return {container, mockAssign, mockCancel};
 }
 

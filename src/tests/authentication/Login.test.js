@@ -1,8 +1,9 @@
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent} from '@testing-library/react';
 import {act} from "react-dom/test-utils";
 import {sleep} from "../../js/Sleep";
 import Login from "../../components/authentication/Login";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks();
 const mockHistoryPush = jest.fn();
@@ -14,8 +15,8 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
-function RenderComponent() {
-   return render(<Login/>)
+function doRender() {
+    return RenderComponent(Login)
 }
 
 function mockFetch(successfulLogin = true) {
@@ -31,7 +32,7 @@ function mockFetch(successfulLogin = true) {
 test('Login - 1', async () => {
     await act(async () => {
         mockFetch();
-        const {container} = RenderComponent();
+        const {container} = doRender();
 
         let emailInput = container.querySelectorAll("input")[0];
         fireEvent.change(emailInput, {target: {value: "test@user.com"}})
@@ -48,7 +49,7 @@ test('Login - 1', async () => {
 test('Login - 2', async () => {
     await act(async () => {
         mockFetch();
-        const {container} = RenderComponent();
+        const {container} = doRender();
 
         let passwordInput = container.querySelectorAll("input")[1];
         fireEvent.change(passwordInput, {target: {value: "1234"}})
@@ -66,7 +67,7 @@ test('Login - 2', async () => {
 test('Login - showPassword', async () => {
     await act(async () => {
         mockFetch();
-        const {container} = RenderComponent();
+        const {container} = doRender();
         let passwordInput = container.querySelectorAll("input")[1];
         expect(passwordInput.type).toBe("password");
         await sleep(5)

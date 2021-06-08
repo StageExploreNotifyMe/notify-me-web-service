@@ -1,13 +1,15 @@
 import {getBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import React, {useState} from "react";
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const AssignMembersToLine = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
     const id = org.id;
 
+    const {enqueueSnackbar} = useSnackbar();
     const [line, setLine] = useState(JSON.parse(localStorage.getItem("organization.memberassignment.line")))
 
     async function fetchData(activePage) {
@@ -24,10 +26,9 @@ const AssignMembersToLine = () => {
 
             return users;
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the users in your organization',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch the users in your organization", {
+                variant: 'error',
+            });
         }
     }
 
@@ -42,22 +43,18 @@ const AssignMembersToLine = () => {
 
     function assignUser(user, forceUpdateFnc) {
         if (user.alreadyAssigned) {
-            toast({
-                message: 'Not implemented',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Not implemented", {
+                variant: "warning"
+            });
             return;
         }
 
         postBase("/line/" + line.id + "/assign/member", JSON.stringify({
             eventLineId: line.id,
             memberId: user.user.id
-        })).then(() => forceUpdateFnc()).catch(() =>
-            toast({
-                message: 'Something went wrong while trying to assign member to line',
-                type: 'is-danger'
-            })
-        )
+        })).then(() => forceUpdateFnc()).catch(() => enqueueSnackbar("Something went wrong while trying to assign member to line", {
+            variant: "error"
+        }))
     }
 
     return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">

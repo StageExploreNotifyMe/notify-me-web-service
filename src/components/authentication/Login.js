@@ -2,13 +2,15 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope, faEye, faLock} from "@fortawesome/free-solid-svg-icons";
 import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {useHistory} from "react-router-dom";
+import {useSnackbar} from 'notistack';
 
 const Login = (props) => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [loginDetails, setLoginDetails] = useState({id: '', password: ''});
+    const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
 
     function onLogin(resp) {
@@ -35,10 +37,9 @@ const Login = (props) => {
             }
             history.push(route);
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to log in',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to log in", {
+                variant: 'error',
+            });
         })
 
     }

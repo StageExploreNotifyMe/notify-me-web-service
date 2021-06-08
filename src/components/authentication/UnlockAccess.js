@@ -1,6 +1,6 @@
 import grantPermission from "../../js/AuthChecker";
 
-const UnlockAccess = ({ children, request }) => {
+const UnlockAccess = ({children, request}) => {
     const permission = grantPermission(request);
     return (
         <>

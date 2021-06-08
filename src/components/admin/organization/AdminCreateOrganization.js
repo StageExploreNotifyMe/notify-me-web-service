@@ -3,12 +3,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import {useHistory} from "react-router-dom";
 import {getBase, postBase} from "../../../js/FetchBase";
-import {toast} from "bulma-toast";
+import {useSnackbar} from 'notistack';
 import PagedList from "../../util/PagedList";
 
 const AdminCreateOrganization = () => {
     const history = useHistory();
-
+    const {enqueueSnackbar} = useSnackbar();
     const [organization, setOrganization] = useState({
         name: "",
         userId: "",
@@ -29,17 +29,16 @@ const AdminCreateOrganization = () => {
             noUser: noUser
         }))
 
-        return (!noName && ! noUser);
+        return (!noName && !noUser);
     }
 
     async function fetchUsers(activePage) {
         try {
             return await getBase("/user?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while fetching all users',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while fetching all users', {
+                variant: 'error',
+            });
         }
     }
 
@@ -60,8 +59,7 @@ const AdminCreateOrganization = () => {
 
     function submitEvent(e) {
         e.preventDefault();
-
-        if( !isValidState()) return;
+        if (!isValidState()) return;
 
         postBase("/organization/create", JSON.stringify({
             organizationName: organization.name,
@@ -70,16 +68,13 @@ const AdminCreateOrganization = () => {
             history.goBack();
         }).catch((error) => {
             if (error.info.status === 409) {
-                toast({
-                    message: 'There is already an organization with the name ' + organization.name,
-                    type: 'is-danger',
-                    duration: 5000
-                })
+                enqueueSnackbar('There is already an organization with the name ' + organization.name, {
+                    variant: 'error',
+                });
             } else {
-                toast({
-                    message: 'Something went wrong while trying to create your organization',
-                    type: 'is-danger'
-                })
+                enqueueSnackbar('Something went wrong while trying to create your organization', {
+                    variant: 'error',
+                });
             }
         })
     }
@@ -139,7 +134,6 @@ const AdminCreateOrganization = () => {
                 </div>
             </div>
         </form>
-
     </article>;
 }
 

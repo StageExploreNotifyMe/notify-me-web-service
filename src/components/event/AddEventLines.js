@@ -1,13 +1,15 @@
 import React, {useState} from "react";
 import {getBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {useParams} from "react-router-dom";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const AddEventLines = () => {
     let {id} = useParams();
     const venue = JSON.parse(localStorage.getItem("venue"));
     const userId = JSON.parse(localStorage.getItem("user.id"));
+    const {enqueueSnackbar} = useSnackbar();
 
     const [modal, setModal] = useState({
         isActive: false,
@@ -29,31 +31,28 @@ const AddEventLines = () => {
 
             return venueLines;
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the lines for your venue',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch the lines for your venue", {
+                variant: 'error',
+            });
         }
     }
 
     function onLineChange(e, line, forceUpdateFnc) {
         let added = e.target.checked;
         if (!added) {
-            toast({
-                message: 'Not Implemented',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Not Implemented", {
+                severity: "warning"
+            });
             return;
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, lineManagerId:userId})).then(() => {
+        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, lineManagerId: userId})).then(() => {
             forceUpdateFnc();
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to fetch the lines for your venue',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch the lines for your venue", {
+                variant: 'error',
+            });
         });
     }
 

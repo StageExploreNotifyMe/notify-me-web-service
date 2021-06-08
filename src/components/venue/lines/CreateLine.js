@@ -3,12 +3,13 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import {patchBase, postBase} from "../../../js/FetchBase";
-import {toast} from "bulma-toast";
+import {useSnackbar} from 'notistack';
 
 const CreateLine = (props) => {
     const history = useHistory();
+    const {enqueueSnackbar} = useSnackbar();
     const venue = JSON.parse(localStorage.getItem("venue"));
-    let isCreating = ( props.action === "create");
+    let isCreating = (props.action === "create");
     let editLine = {
         name: "",
         description: "",
@@ -51,16 +52,16 @@ const CreateLine = (props) => {
         }
 
         remoteCall.then(() => history.goBack()).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to submitting your line',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to submitting your line', {
+                variant: 'error',
+            });
         });
     }
 
     return <div className="container mt-2">
         <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">{isCreating ? "Create": "Edit"} Line</h2></div>
+            <div className="level-left"><h2 className="title is-2 level-item">{isCreating ? "Create" : "Edit"} Line</h2>
+            </div>
         </div>
         <form>
             <div className="field">
@@ -82,7 +83,8 @@ const CreateLine = (props) => {
                         className={`icon is-small is-right ${validationState.noName ? '' : 'is-hidden'}`}>
                             <FontAwesomeIcon icon={faExclamationTriangle}/>
                         </span>
-                    <p className={`help is-danger ${validationState.noName ? '' : 'is-hidden'}`}>A line must have a name</p>
+                    <p className={`help is-danger ${validationState.noName ? '' : 'is-hidden'}`}>A line must have a
+                        name</p>
                 </div>
             </div>
 
@@ -108,7 +110,7 @@ const CreateLine = (props) => {
                            onChange={e => {
                                setLineDto(prevState => ({
                                    ...prevState,
-                                   numberOfRequiredPeople:  parseInt(e.target.value)
+                                   numberOfRequiredPeople: parseInt(e.target.value)
                                }))
                                setValidationState(prevState => ({
                                    ...prevState,
@@ -119,13 +121,15 @@ const CreateLine = (props) => {
                         className={`icon is-small is-right ${validationState.numberInvalid ? '' : 'is-hidden'}`}>
                             <FontAwesomeIcon icon={faExclamationTriangle}/>
                         </span>
-                    <p className={`help is-danger ${validationState.numberInvalid ? '' : 'is-hidden'}`}>A line must have at least 1 people required for it.</p>
+                    <p className={`help is-danger ${validationState.numberInvalid ? '' : 'is-hidden'}`}>A line must have
+                        at least 1 people required for it.</p>
                 </div>
             </div>
 
             <div className="field is-grouped">
                 <div className="control">
-                    <button onClick={(e) => submitEvent(e)} className="button is-link" disabled={validationState.noName}>
+                    <button onClick={(e) => submitEvent(e)} className="button is-link"
+                            disabled={validationState.noName}>
                         {isCreating ? "Create" : "Update"}
                     </button>
                 </div>

@@ -1,23 +1,24 @@
 import {useHistory} from "react-router-dom";
 import React from "react";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import PagedList from "../util/PagedList";
 import VenueEvent from "./VenueEvent";
 import UnlockAccess from "../authentication/UnlockAccess";
+import {useSnackbar} from "notistack";
 
 const EventManagement = () => {
     const venue = JSON.parse(localStorage.getItem("venue"));
     const history = useHistory();
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchPageData(activePage) {
         try {
             return await getBase("/event/venue/" + venue.id + "?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch events',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch events', {
+                variant: 'error',
+            });
         }
     }
 
@@ -30,13 +31,13 @@ const EventManagement = () => {
 
     const RenderNoEvents = () => {
         return <UnlockAccess request={['VENUE_MANAGER']}>
-        <div className="panel-block">
-            No events scheduled yet. Schedule an event now by clicking&nbsp;
-            <span className="has-text-link is-clickable" onClick={() => history.push("/venue/events/create")}>
+            <div className="panel-block">
+                No events scheduled yet. Schedule an event now by clicking&nbsp;
+                <span className="has-text-link is-clickable" onClick={() => history.push("/venue/events/create")}>
                 here
             </span>
-            !
-        </div>
+                !
+            </div>
         </UnlockAccess>
     };
 
@@ -45,11 +46,11 @@ const EventManagement = () => {
             <div className="level-left"><h2 className="title is-2 level-item">Venue {venue.name}</h2></div>
             <div className="level-right">
                 <UnlockAccess request={['VENUE_MANAGER']}>
-                <button onClick={() => {
-                    history.push("/venue/events/create")
-                }} className="button is-link level-item">
-                    Create Event
-                </button>
+                    <button onClick={() => {
+                        history.push("/venue/events/create")
+                    }} className="button is-link level-item">
+                        Create Event
+                    </button>
                 </UnlockAccess>
             </div>
         </div>

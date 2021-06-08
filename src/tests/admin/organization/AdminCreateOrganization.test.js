@@ -1,7 +1,8 @@
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, screen} from '@testing-library/react';
 import AdminCreateOrganization from "../../../components/admin/organization/AdminCreateOrganization";
 import {sleep} from "../../../js/Sleep";
 import {enableFetchMocks} from "jest-fetch-mock";
+import {RenderComponent} from "../../TestUtilities";
 
 enableFetchMocks()
 
@@ -36,7 +37,7 @@ jest.mock('react-router-dom', () => ({
 function renderComponent(fetchData = page, simulateNetworkError = false) {
     mockFetch(fetchData, simulateNetworkError);
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<AdminCreateOrganization/>);
+    const {container} = RenderComponent(AdminCreateOrganization);
     let submitButton = screen.queryByText(/Submit/i);
     expect(submitButton).toBeInTheDocument()
     let cancelButton = screen.queryByText(/Cancel/i);

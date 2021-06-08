@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {toast} from 'bulma-toast';
+import {useSnackbar} from 'notistack';
 
 const Organization = (props) => {
 
@@ -8,6 +8,7 @@ const Organization = (props) => {
         showConfirmButtons: false,
         disableCheckbox: (props.content.status === "PENDING" || props.content.status === "DECLINED")
     })
+    const {enqueueSnackbar} = useSnackbar();
 
     function checkboxClicked(e) {
         let currVal = e.target.checked;
@@ -35,24 +36,21 @@ const Organization = (props) => {
         };
 
         fetch(process.env.REACT_APP_SERVER_URL + "/userorganization/request/join", requestOptions).then(resp => resp.json()).then(() => {
-            toast({
-                message: `You've submitted a request to join ${props.content.name}!`,
-                type: 'is-success',
-            })
+            enqueueSnackbar(`You've submitted a request to join ${props.content.name}!`, {
+                variant: 'success',
+            });
         }).catch(() => {
             setJoinedState((prev) => ({joined: !prev.joined, showConfirmButtons: false}))
-            toast({
-                message: 'Something went wrong while trying to save your data',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to save your data', {
+                variant: 'error',
+            });
         })
     }
 
     function leaveOrganisation() {
-        toast({
-            message: 'Not implemented yet!',
-            type: 'is-danger'
-        })
+        enqueueSnackbar('Not implemented yet!', {
+            variant: 'error',
+        });
     }
 
     return (

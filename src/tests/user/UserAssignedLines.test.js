@@ -1,8 +1,8 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import UserAssignedLines from "../../components/user/UserAssignedLines";
 import {sleep} from "../../js/Sleep";
 import {enableFetchMocks} from "jest-fetch-mock";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 
 enableFetchMocks();
@@ -70,7 +70,7 @@ function mockFetch(simulateNetworkError = false, isAssigned = true) {
 function renderComponent() {
     hasCanceled = false;
     localStorage.setItem("user.id", "1");
-    const {container} = render(<UserAssignedLines/>)
+    const {container} = RenderComponent(UserAssignedLines)
     return {container};
 }
 

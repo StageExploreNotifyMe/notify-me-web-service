@@ -1,6 +1,7 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {act} from "react-dom/test-utils";
 import Navbar from "../components/Navbar";
+import {RenderComponent} from "./TestUtilities";
 
 const mockHistoryPush = jest.fn();
 
@@ -11,15 +12,15 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
-function RenderComponent(isLoggedIn = false) {
+function doRender(isLoggedIn = false) {
     localStorage.setItem("IsLoggedIn", isLoggedIn.toString())
-    const {container} = render(<Navbar/>);
+    const {container} = RenderComponent(Navbar);
     return {container};
 }
 
 test('Navbar - navigate home', () => {
     act(() => {
-        RenderComponent();
+        doRender();
         fireEvent.click(screen.queryByText(/Notify Me/i));
         expect(mockHistoryPush).toHaveBeenCalledWith("/")
     })
@@ -27,7 +28,7 @@ test('Navbar - navigate home', () => {
 
 test('Navbar - navigate sign up', () => {
     act(() => {
-        RenderComponent();
+        doRender();
         fireEvent.click(screen.queryByText(/Sign up/i));
         expect(mockHistoryPush).toHaveBeenCalledWith("/register")
     })
@@ -35,7 +36,7 @@ test('Navbar - navigate sign up', () => {
 
 test('Navbar - login', async () => {
     await act(async () => {
-        RenderComponent();
+        doRender();
         fireEvent.click(screen.queryByText(/Log In/i));
         expect(mockHistoryPush).toHaveBeenCalledWith("/login")
     })
@@ -43,7 +44,7 @@ test('Navbar - login', async () => {
 
 test('Navbar - logout', async () => {
     await act(async () => {
-        RenderComponent(true);
+        doRender(true);
         fireEvent.click(screen.queryByText(/Log out/i));
         expect(mockHistoryPush).toHaveBeenCalledWith("/logout")
     })

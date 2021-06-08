@@ -1,8 +1,9 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import Inbox from "../../components/user/Inbox";
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 fetch.enableMocks();
@@ -32,16 +33,21 @@ function mockFetch(content = pageSettings) {
     fetch.mockResponses([json, {status: 200}])
 }
 
-test("inbox", () => {
-    act( () => {
-    render(<Inbox/>)
+function doRender() {
+    const {container} = RenderComponent(Inbox)
     expect(screen.getByText(/Inbox/)).toBeInTheDocument()
+    return container;
+}
+
+test("inbox", () => {
+    act(() => {
+        doRender();
     })
 }, 5000);
 
 test("buttons", () => {
     act(() => {
-        render(<Inbox/>)
+        doRender()
         let urgentButton = screen.queryByText(/Urgent/i)
         expect(urgentButton).toBeInTheDocument()
         let normalButton = screen.queryByText(/All/i)
@@ -54,7 +60,7 @@ test("buttons", () => {
 test("RenderNotifications -success", async () => {
     await act(async () => {
         mockFetch({...pageSettings, content: [request]})
-        const {container} = render(<Inbox/>);
+        const container = doRender();
         await sleep(40)
         expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
 
