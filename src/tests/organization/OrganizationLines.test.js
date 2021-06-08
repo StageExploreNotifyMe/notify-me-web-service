@@ -70,7 +70,7 @@ function renderAssignMembersToLine() {
     localStorage.setItem("organization.memberassignment.line", JSON.stringify(organizationLines));
     localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
     const {container} = RenderComponent(OrganizationLines, {}, [route]);
-    expect(screen.getByText(new RegExp('Manage lines'))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp('Manage Lines'))).toBeInTheDocument()
     return {container};
 }
 
@@ -96,7 +96,7 @@ test('OrganizationLines - with data', async () => {
         const {container} = renderAssignMembersToLine();
         await waitForLoadingSpinner(container)
         expect(screen.getByText(new RegExp('Main Entrance Bar'))).toBeInTheDocument()
-        let assignMembersButton = container.querySelector(".is-clickable");
+        let assignMembersButton = container.querySelectorAll("span")[3];
         expect(assignMembersButton).toBeInTheDocument();
         fireEvent.click(assignMembersButton);
         expect(mockHistoryPush).toHaveBeenCalledWith("/organization/memberassignment/assign")

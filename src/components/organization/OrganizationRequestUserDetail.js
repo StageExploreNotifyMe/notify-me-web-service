@@ -5,6 +5,7 @@ import Spinner from "../util/Spinner";
 import {faBan, faCheck} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useSnackbar} from "notistack";
+import {Button, ButtonGroup, TableCell, TableRow} from "@material-ui/core";
 
 const OrganizationRequestUserDetail = (props) => {
     const [submitting, setSubmitting] = useState(false);
@@ -31,29 +32,29 @@ const OrganizationRequestUserDetail = (props) => {
 
     const RenderRequestActions = () => {
         if (submitting) {
-            return <div className="column is-2"><Spinner/></div>
+            return <Spinner/>
         }
         if (submitted) {
-            return <div className="column is-2">
+            return <>
                 {
                     chosenOption ?
-                        <span className="icon has-text-success"><FontAwesomeIcon icon={faCheck}/></span>
+                        <span><FontAwesomeIcon icon={faCheck}/></span>
                         :
-                        <span className="icon has-text-danger"><FontAwesomeIcon icon={faBan}/></span>
+                        <span><FontAwesomeIcon icon={faBan}/></span>
                 }
-            </div>
+            </>
         }
 
-        return <div className="column is-2">
-            <button className="button is-success is-small ml-2" onClick={() => confirmClicked(true)}>Accept</button>
-            <button className="button is-danger is-small ml-2" onClick={() => confirmClicked(false)}>Reject</button>
-        </div>;
+        return <ButtonGroup color="secondary" aria-label="outlined primary button group">
+            <Button onClick={() => confirmClicked(true)}>Accept</Button>
+            <Button onClick={() => confirmClicked(false)}>Reject</Button>
+        </ButtonGroup>;
     }
 
-    return <div className="panel-block columns" key={props.request.user.id}>
-        <div className="column">{props.request.user.firstname} {props.request.user.lastname}</div>
-        <RenderRequestActions/>
-    </div>
+    return <TableRow key={props.request.user.id}>
+        <TableCell>{props.request.user.firstname} {props.request.user.lastname}</TableCell>
+        <TableCell><RenderRequestActions/></TableCell>
+    </TableRow>
 }
 
 export default OrganizationRequestUserDetail

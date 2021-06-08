@@ -2,29 +2,30 @@ import {useHistory} from "react-router-dom";
 
 import React from 'react';
 import UnlockAccess from "../authentication/UnlockAccess";
+import {Button, Card, CardActions, CardContent, Container, Grid, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 
 const OrganizationDetails = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
     const history = useHistory();
+    const classes = useStyles();
 
     const OrganizationNavCard = (props) => {
-        return (<div className="card">
-            <header className="card-header">
-                <p className="card-header-title">{props.card.title}</p>
-            </header>
-            <div className="card-content">
+        return (<Grid item xs={4}><Card>
+            <CardContent>
+                <Typography gutterBottom variant="h6" component="h3">{props.card.title} </Typography>
                 {props.card.body}
-            </div>
-            <footer className="card-footer">
-                <button className="card-footer-item button is-link"
+            </CardContent>
+            <CardActions>
+                <Button size="small" color="secondary"
                         onClick={(e) => {
                             e.preventDefault();
                             history.push(props.card.link)
                         }}>
                     Open
-                </button>
-            </footer>
-        </div>);
+                </Button>
+            </CardActions>
+        </Card></Grid>);
     }
 
     function changeOrg() {
@@ -33,32 +34,48 @@ const OrganizationDetails = () => {
         history.push('/organizations');
     }
 
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h2 className="title is-2">Organization {org.name}</h2>
-        <div className="mb-2">
-            <button onClick={() => changeOrg()} className="button is-link">Change Organization</button>
-        </div>
+    return <Container maxWidth="xl">
+        <Typography gutterBottom variant="h3" component="h2">
+            Organization {org.name}
+        </Typography>
+        <Button color="secondary" variant="contained" onClick={() => changeOrg()} className="button is-link">
+            Change Organization
+        </Button>
+
 
         <UnlockAccess request={['ORGANIZATION_LEADER']}>
-            <div className="columns is-multiline">
-                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+            <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="flex-start"
+                spacing={2}
+                className={classes.gridContainer}
+            >
+                <OrganizationNavCard card={{
                     title: "Line management",
                     body: "Manage the lines assigned to your organization",
                     link: "/organization/linemanagement"
-                }}/></div>
-                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+                }}/>
+                <OrganizationNavCard card={{
                     title: "Member Management",
                     body: "Promote and demote members",
                     link: "/organization/membermanagement"
-                }}/></div>
-                <div className="column is-4 is-12-mobile"><OrganizationNavCard card={{
+                }}/>
+                <OrganizationNavCard card={{
                     title: "Join Requests",
                     body: "See all the pending join requests for your organization",
                     link: "/organization/pendingrequests"
-                }}/></div>
-            </div>
+                }}/>
+            </Grid>
         </UnlockAccess>
-    </div>
+    </Container>
 }
+
+const useStyles = makeStyles((theme) => ({
+    gridContainer: {
+        marginTop: "0.5%"
+    }
+}));
 
 export default OrganizationDetails

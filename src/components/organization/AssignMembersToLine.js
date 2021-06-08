@@ -4,6 +4,18 @@ import React, {useState} from "react";
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {
+    Container,
+    Paper,
+    Switch,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const AssignMembersToLine = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
@@ -34,11 +46,17 @@ const AssignMembersToLine = () => {
 
     const RenderJoinRequests = (props) => {
         const user = props.data;
-        return <div className="columns" key={user.id}>
-            <input className="column is-1" type="checkbox" checked={user.alreadyAssigned}
-                   onChange={() => assignUser(user, props.update)}/>
-            <p className="column">{user.user.firstname} {user.user.lastname}</p>
-        </div>
+        return <TableRow className="columns" key={user.id}>
+            <TableCell width={140}>
+                <Switch
+                    checked={user.alreadyAssigned}
+                    onChange={() => assignUser(user, props.update)}
+                    name={user.firstname + user.lastname + "-switch"}
+                    inputProps={{'aria-label': 'secondary checkbox'}}
+                />
+            </TableCell>
+            <TableCell>{user.user.firstname} {user.user.lastname}</TableCell>
+        </TableRow>
     }
 
     function assignUser(user, forceUpdateFnc) {
@@ -57,17 +75,33 @@ const AssignMembersToLine = () => {
         }))
     }
 
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h2 className="title is-2">Assign members</h2>
-        <p className="subtitle">{line.event.name} - {line.line.name} - {dateArrayToDate(line.event.date).toLocaleTimeString()} {dateArrayToDate(line.event.date).toLocaleDateString()}</p>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className=" title is-3">Users</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
-                       IsEmptyComponent={() => <p>No users in your organization</p>}/>
-        </div>
-    </div>
+    return <Container maxWidth="xl">
+        <Typography gutterBottom variant="h3" component="h2">
+            Assign members
+        </Typography>
+
+        <Container>
+            <Typography variant="subtitle2" component="p">
+                {line.event.name} - {line.line.name}
+            </Typography>
+            <Typography variant="subtitle1" component="p" align="right">
+                {dateArrayToDate(line.event.date).toLocaleDateString()} {dateArrayToDate(line.event.date).toLocaleTimeString()}
+            </Typography>
+
+            <TableContainer component={Paper}>
+                <Table className="panel">
+                    <TableHead>
+                        <TableCell>Is Assigned</TableCell>
+                        <TableCell>Member</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
+                                   IsEmptyComponent={() => <TableCell colSpan={2}>No users in your organization</TableCell>}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Container>
+    </Container>
 }
 
 export default AssignMembersToLine

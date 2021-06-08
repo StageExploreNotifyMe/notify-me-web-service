@@ -3,6 +3,18 @@ import {getBase, postBase} from "../../js/FetchBase";
 
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const MemberManagement = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
@@ -21,20 +33,20 @@ const MemberManagement = () => {
 
     const MemberDetails = (props) => {
         let member = props.data;
-        return <div className="panel-block columns">
-            <div className="column">{member.user.firstname} {member.user.lastname}</div>
-            <div className="column">{member.role}</div>
-            <div className="column is-2"><RenderPromoteButtons organizationMember={member} update={props.update}/></div>
-        </div>
+        return <TableRow>
+            <TableCell>{member.user.firstname} {member.user.lastname}</TableCell>
+            <TableCell>{member.role}</TableCell>
+            <TableCell><RenderPromoteButtons organizationMember={member} update={props.update}/></TableCell>
+        </TableRow>
     }
 
     const RenderPromoteButtons = (props) => {
         if (props.organizationMember.role === "MEMBER") {
-            return <button className="button is-success"
-                           onClick={() => promoteMember(props.organizationMember, false, props.update)}>Promote</button>
+            return <Button variant="contained" color="secondary"
+                onClick={() => promoteMember(props.organizationMember, false, props.update)}>Promote</Button>
         } else {
-            return <button className="button is-danger"
-                           onClick={() => promoteMember(props.organizationMember, true, props.update)}>Demote</button>
+            return <Button variant="outlined" color="secondary"
+                onClick={() => promoteMember(props.organizationMember, true, props.update)}>Demote</Button>
         }
     }
 
@@ -47,17 +59,28 @@ const MemberManagement = () => {
         })
     }
 
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h2 className="title is-2">Organization {org.name}</h2>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className=" title is-3">Member management</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchData} RenderListItem={MemberDetails}
-                       IsEmptyComponent={() => <p>No users in your organization</p>}/>
-        </div>
-    </div>
-
+    return <Container maxWidth="xl">
+        <Typography gutterBottom variant="h3" component="h2">
+            Member Management {org.name}
+        </Typography>
+        <Container>
+        <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell width={150}>Member</TableCell>
+                        <TableCell width={250}>Function</TableCell>
+                        <TableCell width={50}>Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <PagedList fetchDataFnc={fetchData} RenderListItem={MemberDetails}
+                               IsEmptyComponent={() => <TableCell colSpan={3}>No users in your organization</TableCell>}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
+        </Container>
+    </Container>
 };
 
 export default MemberManagement;
