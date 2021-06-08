@@ -70,7 +70,7 @@ test("click radiobutton", async () => {
         const {container} = DoRender()
         let notRendered = screen.getAllByText(/no notifications rendered/i)
         await waitForElementToBeRemoved(notRendered[0])
-        let radio = container.querySelector('#radioNormal')
+        let radio = container.querySelectorAll('.MuiTypography-body1')[0]
         fireEvent.click(radio)
     })
 }, 5000)
@@ -78,6 +78,7 @@ test("click radiobutton", async () => {
 test("dropdown", async () => {
     await act(async () => {
         const {container} = DoRender()
+        screen.debug()
         let dropdown = container.querySelector('.dropdown-trigger')
         fireEvent.click(dropdown)
     })
