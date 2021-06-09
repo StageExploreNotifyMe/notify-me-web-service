@@ -4,9 +4,22 @@ import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import {patchBase, postBase} from "../../../js/FetchBase";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    ButtonGroup,
+    Container,
+    FormControl,
+    FormHelperText,
+    Input,
+    InputAdornment,
+    InputLabel,
+    Typography
+} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 
 const CreateLine = (props) => {
     const history = useHistory();
+    const classes = useStyles();
     const {enqueueSnackbar} = useSnackbar();
     const venue = JSON.parse(localStorage.getItem("venue"));
     let isCreating = (props.action === "create");
@@ -58,87 +71,115 @@ const CreateLine = (props) => {
         });
     }
 
-    return <div className="container mt-2">
-        <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">{isCreating ? "Create" : "Edit"} Line</h2>
-            </div>
-        </div>
+    return <Container maxWidth="lg">
+        <Typography gutterBottom variant="h3" component="h2">
+            {isCreating ? "Create" : "Edit"} Line
+        </Typography>
         <form>
-            <div className="field">
-                <label className="label">Name</label>
-                <div className={`control ${validationState.noName ? 'has-icons-right' : ''}`}>
-                    <input className={`input ${validationState.noName ? 'is-danger' : ''}`} type="text"
-                           placeholder="Name of the line" value={lineDto.name}
-                           onChange={e => {
-                               setLineDto(prevState => ({
-                                   ...prevState,
-                                   name: e.target.value
-                               }))
-                               setValidationState(prevState => ({
-                                   ...prevState,
-                                   noName: e.target.value === ""
-                               }))
-                           }}/>
-                    <span
-                        className={`icon is-small is-right ${validationState.noName ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                    <p className={`help is-danger ${validationState.noName ? '' : 'is-hidden'}`}>A line must have a
-                        name</p>
-                </div>
-            </div>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="line-name-input">Line name</InputLabel>
+                    <Input
+                        id="line-name-input"
+                        aria-describedby="line-name-validation"
+                        type={'text'}
+                        value={lineDto.name}
+                        onChange={e => {
+                            setLineDto(prevState => ({
+                                ...prevState,
+                                name: e.target.value
+                            }))
+                            setValidationState(prevState => ({
+                                ...prevState,
+                                noName: e.target.value === ""
+                            }))
+                        }}
+                        endAdornment={
+                            validationState.noName ?
+                                <InputAdornment position="end">
+                                    <FontAwesomeIcon icon={faExclamationTriangle}/>
+                                </InputAdornment> : ""
+                        }
+                        error={validationState.noName}
+                    />
+                    <FormHelperText hidden={!validationState.noName} error={true} id="line-name-validation">
+                        A line must have a name
+                    </FormHelperText>
+                </FormControl>
+            </Typography>
 
-            <div className="field">
-                <label className="label">Description</label>
-                <div className={`control`}>
-                    <input className={`input`} type="text"
-                           placeholder="Description of the line" value={lineDto.description}
-                           onChange={e => {
-                               setLineDto(prevState => ({
-                                   ...prevState,
-                                   description: e.target.value
-                               }))
-                           }}/>
-                </div>
-            </div>
-
-            <div className="field">
-                <label className="label">Number of required people</label>
-                <div className={`control ${validationState.numberInvalid ? 'has-icons-right' : ''}`}>
-                    <input className={`input ${validationState.numberInvalid ? 'is-danger' : ''}`} type="number"
-                           placeholder="Number of required people for the line" value={lineDto.numberOfRequiredPeople}
-                           onChange={e => {
-                               setLineDto(prevState => ({
-                                   ...prevState,
-                                   numberOfRequiredPeople: parseInt(e.target.value)
-                               }))
-                               setValidationState(prevState => ({
-                                   ...prevState,
-                                   numberInvalid: parseInt(e.target.value) < 1
-                               }))
-                           }}/>
-                    <span
-                        className={`icon is-small is-right ${validationState.numberInvalid ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                    <p className={`help is-danger ${validationState.numberInvalid ? '' : 'is-hidden'}`}>A line must have
-                        at least 1 people required for it.</p>
-                </div>
-            </div>
-
-            <div className="field is-grouped">
-                <div className="control">
-                    <button onClick={(e) => submitEvent(e)} className="button is-link"
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="line-name-description">Line Description</InputLabel>
+                    <Input
+                        id="line-name-description"
+                        type={'text'}
+                        value={lineDto.description}
+                        onChange={e => {
+                            setLineDto(prevState => ({
+                                ...prevState,
+                                description: e.target.value
+                            }))
+                        }}
+                    />
+                </FormControl>
+            </Typography>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="line-numberOfPeople">Number of required people</InputLabel>
+                    <Input
+                        id="line-numberOfPeople"
+                        aria-describedby="line-numberOfPeople-validation"
+                        value={lineDto.numberOfRequiredPeople}
+                        onChange={(e) => {
+                            setLineDto(prevState => ({
+                                ...prevState,
+                                numberOfRequiredPeople: parseInt(e.target.value)
+                            }))
+                            setValidationState(prevState => ({
+                                ...prevState,
+                                numberInvalid: parseInt(e.target.value) < 1
+                            }))
+                        }}
+                        endAdornment={
+                            validationState.numberInvalid ?
+                                <InputAdornment position="end">
+                                    <FontAwesomeIcon icon={faExclamationTriangle}/>
+                                </InputAdornment> : ""
+                        }
+                        error={validationState.numberInvalid}
+                        inputProps={{
+                            step: 1,
+                            min: 1,
+                            max: 100,
+                            type: 'number',
+                        }}
+                    />
+                    <FormHelperText hidden={!validationState.numberInvalid} error={true}
+                                    id="line-numberOfPeople-validation">
+                        A line must have at least 1 people required for it.
+                    </FormHelperText>
+                </FormControl>
+            </Typography>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <ButtonGroup color="secondary" aria-label="contained primary button group">
+                    <Button variant="contained" onClick={(e) => submitEvent(e)} className="button is-link"
                             disabled={validationState.noName}>
                         {isCreating ? "Create" : "Update"}
-                    </button>
-                </div>
-                <div className="control">
-                    <button onClick={() => history.goBack()} className="button is-link is-light">Cancel</button>
-                </div>
-            </div>
+                    </Button>
+                    <Button variant="outlined" onClick={() => history.goBack()}
+                            className="button is-link is-light">Cancel</Button>
+                </ButtonGroup>
+            </Typography>
+
         </form>
-    </div>;
+    </Container>;
 };
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        margin: theme.spacing(4),
+    }
+}));
 
 export default CreateLine

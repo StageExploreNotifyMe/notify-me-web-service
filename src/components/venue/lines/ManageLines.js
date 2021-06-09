@@ -6,7 +6,22 @@ import {getBase} from "../../../js/FetchBase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {useSnackbar} from 'notistack';
-import {Tooltip} from "@material-ui/core";
+import {
+    Button,
+    Container,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import {isClickable} from "../../../style/StyleUtils";
 
 const ManageLines = () => {
 
@@ -14,6 +29,7 @@ const ManageLines = () => {
     const createLineLink = "/venue/lines/create";
     const venue = JSON.parse(localStorage.getItem("venue"));
     const {enqueueSnackbar} = useSnackbar();
+    const classes = useStyles();
 
     async function fetchPageData(activePage) {
         try {
@@ -27,52 +43,75 @@ const ManageLines = () => {
 
     const RenderLines = (props) => {
         let line = props.data;
-        return <div className="panel-block columns" key={line.id}>
-            <div className="column">
+        return <TableRow key={line.id}>
+            <TableCell>
                 <Tooltip title={line.description}>
                     <p>{line.name}</p>
                 </Tooltip>
-            </div>
-            <div className="column">Required people: {line.numberOfRequiredPeople}</div>
-            <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => {
+            </TableCell>
+            <TableCell>Required people: {line.numberOfRequiredPeople}</TableCell>
+            <TableCell width={100} align="center">
+                <span className={classes.clickable} onClick={() => {
                     localStorage.setItem("editLine", JSON.stringify(line));
                     history.push("/venue/lines/edit");
                 }}>
                     <FontAwesomeIcon icon={faEdit}/>
                 </span>
-            </div>
-        </div>
+            </TableCell>
+        </TableRow>
     }
 
     const RenderNoLines = () => {
-        return <div className="panel-block">
+        return <TableCell colSpan={3}>
             No lines for your venue yet. Create the first one now by clicking&nbsp;
-            <span className="has-text-link is-clickable" onClick={() => history.push(createLineLink)}>
+            <span className={classes.clickable} onClick={() => history.push(createLineLink)}>
                 here
             </span>
             !
-        </div>
+        </TableCell>
     };
 
-    return <div className="container mt-2">
-        <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Line Management</h2></div>
-            <div className="level-right">
-                <button onClick={() => {
+    return <Container maxWidth="lg">
+        <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+        >
+            <Grid item xs={7} sm={10}>
+                <Typography gutterBottom variant="h3" component="h2">
+                    Line Management
+                </Typography>
+            </Grid>
+            <Grid item xs={5} sm={2}>
+                <Button variant="contained" color="primary" onClick={() => {
                     history.push(createLineLink)
                 }} className="button is-link level-item">
                     Create Line
-                </button>
-            </div>
-        </div>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className="title is-3">Lines</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderLines} IsEmptyComponent={RenderNoLines}/>
-        </div>
-    </div>;
+                </Button>
+            </Grid>
+        </Grid>
+
+
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Required people</TableCell>
+                    <TableCell width={100} align="center">Edit</TableCell>
+                </TableHead>
+                <TableBody>
+                    <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderLines}
+                               IsEmptyComponent={RenderNoLines}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
+
+    </Container>
 };
+
+const useStyles = makeStyles((theme) => ({
+    clickable: {...isClickable}
+}));
 
 export default ManageLines

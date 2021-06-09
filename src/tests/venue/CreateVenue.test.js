@@ -97,7 +97,7 @@ test("Render network error", async () => {
     await act(async () => {
         setLocalStorage();
         mockFetch(page, true)
-        const container = RenderFnc();
+        RenderFnc();
         await sleep(20);
         expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
     })
@@ -124,7 +124,8 @@ test("Edit Venue - name -  venueManager", async () => {
         setLocalStorage();
         const container = RenderFnc("");
         await fillNameAndManager(container);
-        let selected = container.querySelectorAll(".panel-block")[2]
+
+        let selected = screen.getByText(/John/i)
         expect(selected).toBeInTheDocument();
         await fireEvent.click(selected);
         await sleep(50);
@@ -156,7 +157,7 @@ async function fillNameAndManager(container) {
     await fireEvent.change(name, {target: {value: "Groenplaats"}})
     await sleep(20)
     expect(name.value).toBe("Groenplaats")
-    let userDiv = container.querySelectorAll(".panel-block")[0]
+    let userDiv = container.querySelectorAll(".MuiListItem-button")[0]
     expect(userDiv).toBeInTheDocument();
     await fireEvent.click(userDiv);
     await sleep(50);

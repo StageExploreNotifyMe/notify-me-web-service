@@ -3,6 +3,18 @@ import {getBase} from "../../js/FetchBase";
 import React from "react";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const EventLineAssignOrganization = (props) => {
     const {enqueueSnackbar} = useSnackbar();
@@ -25,33 +37,45 @@ const EventLineAssignOrganization = (props) => {
     const RenderOrganizationsList = (props) => {
         const org = props.data;
 
-        return <div className="panel-block columns" key={org.id}>
-            <div className="column">{org.name}</div>
-            <div className="column is-1">
-                <button className="button is-primary" onClick={() => assignOrgFnc(org.id, eventLine.id)}>Assign
-                </button>
-            </div>
-        </div>
-
+        return <TableRow key={org.id}>
+            <TableCell>{org.name}</TableCell>
+            <TableCell>
+                <Button variant="contained" color="secondary" onClick={() => assignOrgFnc(org.id, eventLine.id)}>
+                    Assign
+                </Button>
+            </TableCell>
+        </TableRow>
     }
 
-    return <div>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile columns">
-                <div className="column">
-                    <h2 className="title is-3">Assign organization to line {eventLine.line.name}</h2>
-                </div>
-                <div className="column is-1">
-                    <button onClick={() => props.cancel()} className="button">
+    return <>
+        <Grid container spacing={2}>
+            <Grid item xs={10}>
+                <Typography gutterBottom variant="h4" component="h2">
+                    Assign organization to line {eventLine.line.name}
+                </Typography>
+            </Grid>
+            <Grid item xs={2}>
+                <Typography align={"right"} gutterBottom variant="body1" component="div">
+                    <Button onClick={() => props.cancel()}>
                         Cancel
-                    </button>
-                </div>
-            </div>
+                    </Button>
+                </Typography>
 
-            <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizationsList}
-                       IsEmptyComponent={() => <p>No organizations found!</p>}/>
-        </div>
-    </div>
+            </Grid>
+        </Grid>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableCell>Organization</TableCell>
+                    <TableCell>Actions</TableCell>
+                </TableHead>
+                <TableBody>
+                    <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizationsList}
+                               IsEmptyComponent={() => <p>No organizations found!</p>}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </>
 }
 
 export default EventLineAssignOrganization

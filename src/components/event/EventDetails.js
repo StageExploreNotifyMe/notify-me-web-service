@@ -1,24 +1,32 @@
 import {getBase, postBase} from "../../js/FetchBase";
 import {dateArrayToDate, getRelativeTime} from "../../js/DateTime"
-
-import {useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
 import EventLines from "./EventLines";
 import UnlockAccess from "../authentication/UnlockAccess";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Container,
+    Dialog,
+    DialogTitle,
+    Grid,
+    List,
+    ListItem,
+    ListItemText,
+    Typography
+} from "@material-ui/core";
 
 
 const EventDetails = () => {
-    let {id} = useParams();
-
-    const [event, setEvent] = useState({})
+    const [event, setEvent] = useState(JSON.parse(localStorage.getItem("currentEvent")))
     const [loading, setLoading] = useState(true);
+    const [openEventStatusDiag, setOpenEventStatusDiag] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
 
     async function fetchEvent() {
         try {
-            let result = await getBase("/event/" + id);
+            let result = await getBase("/event/" + event.id);
             setEvent(result)
             setLoading(false)
         } catch {
@@ -32,8 +40,11 @@ const EventDetails = () => {
         fetchEvent();
     }, [loading]);
 
-    function setEventState(state) {
-        postBase("/event/" + event.id + "/" + state, {}).then(() => setLoading(true)).catch(() => {
+    function setEventState(update, value) {
+        setOpenEventStatusDiag(false);
+        if (!update) return;
+        setLoading(true);
+        postBase("/event/" + event.id + "/" + value, {}).then(() => setLoading(true)).catch(() => {
             enqueueSnackbar("Something went wrong while trying to update the status of your event", {
                 variant: 'error',
             });
@@ -42,41 +53,66 @@ const EventDetails = () => {
 
     if (loading) return <Spinner/>
 
-    return <article>
-        <h1 className="is-hidden">Manage event</h1>
-        <section className="hero is-primary">
-            <div className="hero-body">
-                <h1 className="title">
+    return <Container maxWidth="xl">
+        <Grid container spacing={2} component="h1" alignItems="center">
+            <Grid item>
+                <Typography gutterBottom variant="h4" component="span">
+                    Manage event -
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Typography gutterBottom variant="h4" component="span">
                     {event.name}
-                </h1>
-                <p className="subtitle">
-                    {dateArrayToDate(event.date).toLocaleDateString()} {getRelativeTime(dateArrayToDate(event.date))}
-                </p>
-            </div>
-        </section>
+                </Typography>
+            </Grid>
+        </Grid>
+
+        <Typography gutterBottom variant="subtitle1" component="h2">
+            {dateArrayToDate(event.date).toLocaleDateString()} - {getRelativeTime(dateArrayToDate(event.date))}
+        </Typography>
+
+
         <UnlockAccess request={['VENUE_MANAGER']}>
-            <section className="section">
-                <h2 className="title is-3">Change event status</h2>
-                <div><p>{event.eventStatus}</p></div>
-                <div className="buttons">
-                    <button
-                        className={`button ${event.eventStatus === "CREATED" || event.eventStatus === "PRIVATE" ? "is-hidden" : ""}`}
-                        onClick={() => setEventState('private')}>Make Private
-                    </button>
-                    <button className={`button ${event.eventStatus === "PUBLIC" ? "is-hidden" : ""}`}
-                            onClick={() => setEventState('publish')}>Make Public
-                    </button>
-                    <button className={`button is-danger ${event.eventStatus === "CANCELED" ? "is-hidden" : ""}`}
-                            onClick={() => setEventState('cancel')}>Cancel
-                    </button>
-                </div>
-            </section>
+            <Typography gutterBottom variant="body1" component="p">
+                Event Status <Button variant="outlined" size={"small"}
+                                     onClick={() => setOpenEventStatusDiag(true)}>{event.eventStatus}</Button>
+                <EventStatusDialog selectedValue={event.eventStatus} open={openEventStatusDiag}
+                                   onClose={setEventState}/>
+            </Typography>
         </UnlockAccess>
 
         <section>
             <EventLines/>
         </section>
-    </article>
+    </Container>
+}
+
+function EventStatusDialog(props) {
+    const {onClose, selectedValue, open} = props;
+
+    const handleListItemClick = (value) => {
+        onClose(true, value);
+    };
+
+    return (
+        <Dialog onClose={() => onClose(false)} aria-labelledby="eventStatus-diag-title" open={open}>
+            <DialogTitle id="eventStatus-diag-title">Set event Status</DialogTitle>
+            <List>
+                <ListItem selected={selectedValue === "PRIVATE"} button onClick={() => handleListItemClick('private')}
+                          key="private">
+                    <ListItemText primary="Private"/>
+                </ListItem>
+                <ListItem selected={selectedValue === "PUBLIC"} button onClick={() => handleListItemClick('publish')}
+                          key="public">
+                    <ListItemText primary="Public"/>
+                </ListItem>
+                <ListItem selected={selectedValue === "CANCELED"} button onClick={() => handleListItemClick('cancel')}
+                          key="cancel">
+                    <ListItemText primary="Cancel"/>
+                </ListItem>
+            </List>
+        </Dialog>
+    );
 }
 
 export default EventDetails

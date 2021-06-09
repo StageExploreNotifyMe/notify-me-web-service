@@ -24,23 +24,42 @@ let page = {
     last: false,
     totalPages: 0
 };
+
+let venue = {
+    "id": "1", "name": "Groenplaats"
+};
+
+let event = {
+    "id": "1",
+    "name": "test",
+    "date": [2025, 5, 2, 15, 6, 18, 355000000],
+    "eventStatus": "CREATED",
+    "venue": venue
+};
+
 let line = {
     "id": "1",
-    "line": {
-        "id": "1",
-        "name": "Main Entrance Bar",
-        "description": "The bar at the main entrance of the venue",
-        "venueDto": {"id": "1", "name": "Groenplaats"}
-    },
-    "event": {
-        "id": "1",
-        "name": "test",
-        "date": [2021, 5, 2, 15, 6, 18, 355000000],
-        "eventStatus": "CREATED",
-        "venue": {"id": "1", "name": "Groenplaats"}
-    },
+    "name": "Main Entrance Bar",
+    "description": "The bar at the main entrance of the venue",
+    "venueDto": venue
+};
+
+let eventLine = {
+    "id": "1",
+    "line": line,
+    "event": event,
     "organization": null,
-    "assignedUsers": []
+    "assignedUsers": [],
+    "eventLineStatus": "CREATED"
+}
+
+let eventLine2 = {
+    "id": "2",
+    "line": line,
+    "event": event,
+    "organization": null,
+    "assignedUsers": [],
+    "eventLineStatus": "CANCELED"
 }
 let org = {"id": "1", "name": "KdG"}
 
@@ -62,6 +81,7 @@ function mockFetch(simulateNetworkError = false, content = page) {
 function renderComponent() {
     mockHistoryPush = jest.fn();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
+    localStorage.setItem("currentEvent", JSON.stringify(event));
     const {container} = RenderComponent(EventLines, {}, [route]);
     return {container};
 }
@@ -86,26 +106,21 @@ test('Render event lines component - network error', async () => {
 
 test('Render event lines component - with lines & organization', async () => {
     await act(async () => {
-        let lineWithOrg = {...line, organization: org};
-        let data = {...page, content: [lineWithOrg]}
+        let lineWithOrg = {...eventLine, organization: org};
+        let data = {...page, content: [lineWithOrg, eventLine2]}
         mockFetch(false, data);
         const {container} = renderComponent();
         await waitForLoadingSpinner(container)
-        expect(screen.getByText(new RegExp('Organization: ' + org.name))).toBeInTheDocument()
         let addButton = screen.getByText(new RegExp('Add'))
         expect(addButton).toBeInTheDocument()
         fireEvent.click(addButton);
 
-        openModal();
-        let closeModal = container.querySelector(".modal-background");
-        expect(closeModal).toBeVisible();
-        fireEvent.click(closeModal);
-        openModal();
+        let staffingReminder = screen.getByText(new RegExp("Send staffing reminder"));
+        expect(staffingReminder).toBeInTheDocument();
+        fireEvent.click(staffingReminder);
+        await sleep(20);
 
-        let textArea = container.querySelector("textarea");
-        expect(textArea).toBeVisible();
-
-        let sendReminder = screen.getAllByText(new RegExp("Send"))[1];
+        let sendReminder = screen.getAllByText(new RegExp("Send"))[2];
         expect(sendReminder).toBeVisible();
         fireEvent.click(sendReminder);
         await sleep(40);
@@ -117,21 +132,29 @@ test('Render event lines component - with lines & organization', async () => {
     })
 }, 5000);
 
-function openModal() {
-    let staffingReminder = screen.getByText(new RegExp("Send staffing reminder"));
-    expect(staffingReminder).toBeInTheDocument();
-    fireEvent.click(staffingReminder);
-}
-
-test('Render event lines component - with lines, without organization', async () => {
+test('Render event lines component - with lines & organization - cancel', async () => {
     await act(async () => {
-        let data = {...page, content: [line]}
+        let lineWithOrg = {...eventLine, organization: org};
+        let data = {...page, content: [lineWithOrg]}
         mockFetch(false, data);
         const {container} = renderComponent();
         await waitForLoadingSpinner(container)
-        expect(screen.getByText(new RegExp('Unassigned'))).toBeInTheDocument()
-        let assignButton = container.querySelector('.is-clickable')
-        expect(assignButton).toBeInTheDocument()
-        fireEvent.click(assignButton);
+
+        let staffingReminder = screen.getByText(new RegExp("Cancel"));
+        expect(staffingReminder).toBeInTheDocument();
+        fireEvent.click(staffingReminder);
+    })
+}, 5000);
+
+test('Render event lines component - with lines, without organization', async () => {
+    await act(async () => {
+        let data = {...page, content: [eventLine]}
+        mockFetch(false, data);
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container)
+        let unassignedButton = screen.getByText(new RegExp('Unassigned'));
+        expect(unassignedButton).toBeInTheDocument()
+        fireEvent.click(unassignedButton);
+        await sleep(10);
     })
 }, 5000);

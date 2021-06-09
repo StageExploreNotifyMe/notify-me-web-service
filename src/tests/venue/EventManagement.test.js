@@ -11,18 +11,18 @@ test('Render Event management', async () => {
     await act(async () => {
         mockFetch();
         const {container, createButton} = await renderEventManagement();
-        let icon = container.querySelector(".is-clickable");
+        let icon = container.querySelector(".makeStyles-clickable-1");
         expect(icon).toBeInTheDocument();
         fireEvent.click(icon);
-        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/1');
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/event');
 
         fireEvent.click(createButton)
         expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/create');
 
-        let editEventIcon = container.querySelector(".is-clickable");
+        let editEventIcon = container.querySelector(".makeStyles-clickable-1");
         expect(editEventIcon).toBeInTheDocument()
         fireEvent.click(editEventIcon)
-        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/events/' + events.content[0].id);
+        expect(mockHistoryPush).toHaveBeenCalledWith('/venue/event');
     })
 }, 5000);
 
@@ -50,14 +50,16 @@ test('Render Event management - network error', async () => {
 let venue = {name: "TestVenue", id: "1"}
 const mockHistoryPush = jest.fn();
 
+let event = {
+    id: "1",
+    name: "Test Event",
+    date: [2021, 5, 8, 16, 6],
+    eventStatus: "CREATED",
+    venue: {id: "1", name: "Groenplaats"}
+};
+
 let events = {
-    content: [{
-        id: "1",
-        name: "Test Event",
-        date: [2021, 5, 8, 16, 6],
-        eventStatus: "CREATED",
-        venue: {id: "1", name: "Groenplaats"}
-    }],
+    content: [event],
     last: true,
     totalPages: 1,
     totalElements: 0,
@@ -66,7 +68,6 @@ let events = {
     first: true,
     numberOfElements: 0
 };
-
 
 function mockFetch(data = events, simulateNetworkError = false) {
     fetch.enableMocks()
@@ -96,6 +97,7 @@ async function renderEventManagement(waitForRemoved = true) {
         roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"],
         userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}
     }));
+    localStorage.setItem("currentEvent", JSON.stringify(event));
     const {container} = RenderComponent(EventManagement);
     let spinner = container.querySelector(".loading");
     expect(spinner).toBeInTheDocument()
@@ -105,3 +107,5 @@ async function renderEventManagement(waitForRemoved = true) {
     expect(createButton).toBeInTheDocument();
     return {createButton, spinner, container};
 }
+
+

@@ -115,9 +115,7 @@ test('Assign members to line', async () => {
         expect(checkbox).toBeInTheDocument()
         expect(checkbox).not.toBeChecked()
         fireEvent.click(checkbox);
-        await sleep(20)
-        await waitForLoadingSpinner(container)
-        await sleep(20);
+        await sleep(40);
         checkbox = container.querySelector("input");
         expect(checkbox).toBeChecked()
         fireEvent.click(checkbox);
