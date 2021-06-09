@@ -36,7 +36,7 @@ test('logged in based routing - not logged in', async () => {
 test('logged in based routing - unauthorized', async () => {
     await act(async () => {
         doRender(true);
-        expect(screen.getByText("Unauthorized")).toBeInTheDocument()
+        expect(screen.getByText("403 Access denied")).toBeInTheDocument()
     })
 }, 5000);
 

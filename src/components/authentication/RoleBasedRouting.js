@@ -1,5 +1,6 @@
 import {Route} from "react-router-dom";
 import grantPermission from "../../js/AuthChecker";
+import AccessDenied from "./AccessDenied";
 
 const RoleBasedRouting = ({component: Component, roles, ...rest}) => {
     return (
@@ -19,7 +20,7 @@ const RoleBasedRouting = ({component: Component, roles, ...rest}) => {
                     <Route
                         render={() => (
                             <>
-                                <p> Unauthorized</p>
+                                <AccessDenied/>
                             </>
                         )}
                     />
