@@ -2,13 +2,24 @@ import PagedList from "../util/PagedList";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {getBase} from "../../js/FetchBase";
-
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import EditIcon from '@material-ui/icons/Edit';
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Container,
+    IconButton, makeStyles,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    Typography
+} from "@material-ui/core";
+import {isClickable} from "../../style/StyleUtils";
 
 const AdminVenueManagement = () => {
 
+    const classes = useStyles();
     const history = useHistory();
     const createVenueLink = "/admin/venue/create";
     const {enqueueSnackbar} = useSnackbar();
@@ -25,49 +36,59 @@ const AdminVenueManagement = () => {
 
     const RenderVenues = (props) => {
         let venue = props.data;
-        return <div className="panel-block columns" key={venue.id}>
-            <div className="column"> {venue.name}</div>
-            <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => {
-                    localStorage.setItem("editVenue", JSON.stringify(venue));
-                    history.push("/admin/venue/edit")
-                }}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
-            </div>
-        </div>
+        return <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableBody>
+                    <TableCell>{venue.name}</TableCell>
+                    <TableCell align={"right"}>
+                        <IconButton onClick={() => {
+                            localStorage.setItem("editVenue", JSON.stringify(venue));
+                            history.push("/admin/venue/edit")
+                        }}>
+                            <EditIcon color={"secondary"}/>
+                        </IconButton>
+                    </TableCell>
+                </TableBody>
+            </Table>
+        </TableContainer>
+
+
     }
 
     const RenderNoVenues = () => {
-        return <div className="panel-block">
-            No venues known in the system yet. Create the first one now by clicking&nbsp;
-            <span className="has-text-link is-clickable" onClick={() => history.push(createVenueLink)}>
+        return <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableBody>
+                    <TableCell> No venues known in the system yet. Create the first one now by clicking&nbsp;
+                        <span className={classes.clickable} onClick={() => history.push(createVenueLink)}>
                 here
             </span>
-            !
-        </div>
+                        !
+                    </TableCell>
+                </TableBody>
+            </Table>
+        </TableContainer>
+
     };
 
 
-    return <div className="container mt-2">
-        <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Venue Management</h2></div>
-            <div className="level-right">
-                <button onClick={() => {
-                    history.push(createVenueLink)
-                }} className="button is-link level-item">
-                    Create venue
-                </button>
-            </div>
-        </div>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className="title is-3">Venues</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
-                       IsEmptyComponent={RenderNoVenues}/>
-        </div>
-    </div>;
+    return <Container>
+        <Typography gutterBottom variant="h5" component="h2">Venue Management</Typography>
+        <Button color={"secondary"} onClick={() => {
+            history.push(createVenueLink)
+        }}>
+            Create venue
+        </Button>
+
+        <Typography gutterBottom variant="h6" component="h2">Venues</Typography>
+        <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
+                   IsEmptyComponent={RenderNoVenues}/>
+    </Container>;
 };
+
+
+const useStyles = makeStyles((theme) => ({
+    clickable: {...isClickable}
+}));
 
 export default AdminVenueManagement

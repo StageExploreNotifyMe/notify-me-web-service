@@ -50,7 +50,7 @@ test("Render VenueManagement", async () => {
         const create = screen.getByText(/Create venue/i)
         expect(create).toBeInTheDocument()
         expect(screen.getByText(new RegExp(venue.name))).toBeInTheDocument()
-        let edit = container.querySelector(".is-clickable")
+        let edit = container.querySelectorAll(".MuiButtonBase-root")[1]
         expect(edit).toBeInTheDocument()
         fireEvent.click(edit)
         expect(mockHistoryPush).toHaveBeenCalledWith("/admin/venue/edit")

@@ -3,6 +3,26 @@ import PagedList from "../util/PagedList";
 import React, {useEffect, useState} from "react";
 import {dateArrayToDate} from "../../js/DateTime";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Container,
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const NotificationOverview = () => {
     const [modal, setModal] = useState({
@@ -81,136 +101,143 @@ const NotificationOverview = () => {
     }, [chosenEvent]);
 
     const RenderNotificationType = () => {
-        if (loadingType) return <option>Notification Types</option>
-        return notificationType.notificationTypes.map(t =>
-            <option>{t}</option>
-        )
+        if (loadingType) return <MenuItem>Notification Types</MenuItem>
+        return <TableCell  >
+            <FormControl>
+                <InputLabel>NotificationType</InputLabel>
+                <Select
+                    value={chosenType}
+                    onChange={e => {
+                        setChosenType(e.target.value)
+                        console.log(e)
+                    }}
+                >
+                    {notificationType.notificationTypes.map(t =>
+                        <MenuItem value={t}>{t}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
+        </TableCell>
+
     }
 
     const RenderEvents = () => {
-        if (loadingEvents) return <option>Events</option>
-        return event.map(t =>
-            <option>{t}</option>
-        )
+        if (loadingEvents) return <MenuItem>Events</MenuItem>
+        return <TableCell width={150} >
+            <FormControl>
+                <InputLabel>Event</InputLabel>
+                <Select
+                    value={chosenEvent}
+                    onChange={e => {
+                        setChosenEvent(e.target.value)
+                    }}
+                >
+                    {event.map(t =>
+                        <MenuItem value={t}>{t}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
+        </TableCell>
+
     }
     const RenderNotifications = (props) => {
         const not = props.data;
         forceRerender = props.update
         let date = dateArrayToDate(not.creationDate).toLocaleDateString();
         let time = dateArrayToDate(not.creationDate).toLocaleTimeString();
-        return <div key={props.key} className="panel-block columns">
-            <div className="column is-one-fifth">
-                <p>{date}</p>
-            </div>
-            <div className="column is-one-quarter">
-                <p>{not.title}</p>
-            </div>
-            <div className="column is-1">
-                <p>{not.userId}</p>
-            </div>
-            <div className="column is-1">
-                <p>{not.eventId}</p>
-            </div>
-            <div className="column is-one-fifth">
-                <p>{not.type}</p>
-            </div>
-            <div className="column is-1">
-                <p>{not.usedChannel}</p>
-            </div>
-            <div className="column is-1">
-                <button className="button is-info"
-                        onClick={() => setModal(() => ({
-                            title: not.title,
-                            body: not.body,
-                            creationDate: date,
-                            creationTime: time,
-                            type: not.type,
-                            urgency: not.urgency,
-                            usedChannel: not.usedChannel,
-                            userId: not.userId,
-                            eventId: not.eventId,
-                            isActive: true
-                        }))}>Details
-                </button>
-            </div>
-        </div>
+        return <TableRow>
+            <TableCell width={150}>{date}</TableCell>
+
+            <TableCell width={250} align={"left"}>{not.title}</TableCell>
+
+            <TableCell width={100}>{not.userId}</TableCell>
+
+            <TableCell width={150}>{not.eventId}</TableCell>
+
+            <TableCell>{not.type}</TableCell>
+
+            <TableCell>{not.usedChannel}</TableCell>
+            <TableCell> <Button color={"secondary"}
+                                onClick={() => setModal(() => ({
+                                    title: not.title,
+                                    body: not.body,
+                                    creationDate: date,
+                                    creationTime: time,
+                                    type: not.type,
+                                    urgency: not.urgency,
+                                    usedChannel: not.usedChannel,
+                                    userId: not.userId,
+                                    eventId: not.eventId,
+                                    isActive: true
+                                }))}>Details
+            </Button>
+            </TableCell>
+        </TableRow>
+    }
+
+    function closeModal() {
+        setModal({...modal, isActive: false})
     }
 
     const RenderDetailsModal = () => {
         if (!modal.isActive) return "";
-        return <div className="modal is-active">
-            <div className="modal-background"
-                 onClick={() => setModal(() => ({isActive: false, content: "", title: ""}))}/>
-            <div className="modal-content">
-                <div className="card">
-                    <div className="card-header"><h2 className="title is-3 p-2">{modal.title}</h2></div>
-                    <div className="card-content">
-                        <p>Date: {modal.creationDate} Time: {modal.creationTime}</p>
-                        <p>UserId: {modal.userId}</p>
-                        <p>EventId: {modal.eventId}</p>
-                        <p>Type: {modal.type}</p>
-                        <p>Urgency: {modal.urgency}</p>
-                        <p>Channel: {modal.usedChannel}</p>
-                        <p>Message: {modal.body}</p>
-                    </div>
-                </div>
-            </div>
-            <button className="modal-close is-large" aria-label="close"
-                    onClick={() => setModal(() => ({isActive: false, content: "", title: ""}))}/>
-        </div>
+        return <Dialog
+            open={modal.isActive}
+            onClose={closeModal}>
+            <DialogTitle>
+                <Typography variant={"h5"}>{modal.title}</Typography>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <Typography variant={"body2"}>
+                        <p><b>Date:</b> {modal.creationDate} <b>Time: </b>{modal.creationTime}</p>
+                        <p><b>UserId: </b>{modal.userId}</p>
+                        <p><b>EventId: </b>{modal.eventId}</p>
+                        <p><b>Type: </b>{modal.type}</p>
+                        <p><b>Urgency: </b>{modal.urgency}</p>
+                        <p><b>Channel: </b>{modal.usedChannel}</p>
+                        <p><b>Message: </b>{modal.body}</p></Typography>
+                </DialogContentText>
+            </DialogContent>
+        </Dialog>
     }
 
     const RenderNoNotifications = (props) => {
         forceRerender = props.update
-        return <p>No notifications in your overview</p>;
+        return <TableBody>
+            <TableRow>
+        <TableCell>No notifications in your overview</TableCell>
+            </TableRow>
+        </TableBody>
     }
 
-    return <article>
-        <div className="container mt-2">
-            <div className="panel">
-                <div className="panel-heading has-text-centered-mobile">
-                    <h2 className="title is-3">Overview Notifications</h2>
-                </div>
-                <div className="panel-block columns">
-                    <div className="column is-one-fifth">
-                        <p>Date</p>
-                    </div>
-                    <div className="column is-one-quarter">
-                        <p>Title</p>
-                    </div>
-                    <div className="column is-1">
-                        <p>UserId</p>
-                    </div>
-                    <div className="column is-2">
-                        <div className="select">
-                            <select onChange={async e => {
-                                await setChosenEvent(e.target.value)
-                            }}
-                                    value={chosenEvent}>
-                                <RenderEvents/>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="column is-one-fifth">
-                        <div className="select">
-                            <select onChange={async e => {
-                                await setChosenType(e.target.value)
-                            }}
-                                    value={chosenType}>
-                                <RenderNotificationType/>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="column">
-                        <p>Channel</p>
-                    </div>
-                </div>
-                <RenderDetailsModal/>
-                <PagedList fetchDataFnc={fetchNotifications} RenderListItem={RenderNotifications}
-                           IsEmptyComponent={RenderNoNotifications}
-                           pageControls={{showButtons: false, sizeModifier: "is-medium"}}/>
-            </div>
-        </div>
-    </article>
-}
+
+    return <Container>
+        <Typography gutterBottom variant="h5" component="h2">
+            Overview Notifications</Typography>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell width={150}>Date</TableCell>
+                        <TableCell width={250}>Title</TableCell>
+                        <TableCell width={100}>UserId</TableCell>
+
+                        <RenderEvents/>
+                        <RenderNotificationType/>
+                        <TableCell width={150}>Channel</TableCell>
+                        <TableCell width={150}>Details</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <RenderDetailsModal/>
+
+                    <PagedList fetchDataFnc={fetchNotifications} RenderListItem={RenderNotifications}
+                               IsEmptyComponent={RenderNoNotifications}
+                               pageControls={{showButtons: false, sizeModifier: "is-medium"}}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </Container>
+};
 export default NotificationOverview

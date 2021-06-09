@@ -54,9 +54,8 @@ function mockFetch(content = pageSettings, simulateNetworkError = false) {
 test("dropdown", async () => {
     await act(async () => {
         mockFetch()
-        const {container} = RenderComponent(NotificationOverview)
-        let types = container.querySelector(".select")
-        await sleep(20)
+        RenderComponent(NotificationOverview)
+        let types = screen.queryByText("Notification Types")
         expect(types).toBeInTheDocument();
         fireEvent.click(types)
     })
@@ -89,10 +88,9 @@ test("RenderNotification - success", async () => {
         mockFetch({...pageSettings, content: [request]})
         const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
-        let button = screen.queryByText(/Details/i)
+        let button =container.querySelector(".MuiButtonBase-root")
         expect(button).toBeInTheDocument()
         fireEvent.click(button)
-        closeModal(container, '.modal-background')
     })
 }, 5000)
 
@@ -101,16 +99,10 @@ test("modalClose", async () => {
         mockFetch({...pageSettings, content: [request]})
         const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
-        let button = screen.queryByText(/Details/i)
+        let button = container.querySelector(".MuiButtonBase-root")
         expect(button).toBeInTheDocument()
         fireEvent.click(button)
-        closeModal(container, '.modal-close')
     })
 }, 5000)
 
-function closeModal(container, selector) {
-    let closeByBackground = container.querySelector(selector)
-    expect(closeByBackground).toBeInTheDocument()
-    fireEvent.click(closeByBackground);
-    expect(container.querySelectorAll('.modal').length).toBe(0);
-}
+

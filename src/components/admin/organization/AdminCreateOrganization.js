@@ -1,10 +1,9 @@
 import React, {useState} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import {useHistory} from "react-router-dom";
 import {getBase, postBase} from "../../../js/FetchBase";
 import {useSnackbar} from 'notistack';
 import PagedList from "../../util/PagedList";
+import {Button, ButtonGroup, Container, List, ListItem, TextField, Typography} from "@material-ui/core";
 
 const AdminCreateOrganization = () => {
     const history = useHistory();
@@ -44,17 +43,16 @@ const AdminCreateOrganization = () => {
 
     const RenderUsers = (props) => {
         const user = props.data;
+        return <List>
+            <ListItem button onClick={() => setOrganization(prevState => ({
+                ...prevState,
+                userId: user.id,
+                user: user
+            }))}
+            >                {user.firstname} {user.lastname}
 
-        return <div key={props.key}
-                    className={`panel-block is-clickable ${user.id === organization.userId ? "has-background-primary" : ""}`}
-                    onClick={() => setOrganization(prevState => ({
-                        ...prevState,
-                        userId: user.id,
-                        user: user
-                    }))}
-        >
-            {user.firstname} {user.lastname}
-        </div>
+            </ListItem>
+        </List>
     }
 
     function submitEvent(e) {
@@ -79,62 +77,47 @@ const AdminCreateOrganization = () => {
         })
     }
 
-    return <article className="container mt-2">
-        <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Create Organization</h2></div>
-        </div>
-        <form>
-            <div className="field">
-                <label className="label">Name</label>
-                <div className={`control ${validationState.noName ? 'has-icons-right' : ''}`}>
-                    <input className={`input ${validationState.noName ? 'is-danger' : ''}`} type="text"
-                           placeholder="Name of the organization" value={organization.name}
-                           onChange={e => {
-                               setOrganization(prevState => ({
-                                   ...prevState,
-                                   name: e.target.value
-                               }))
-                               setValidationState(prevState => ({
-                                   ...prevState,
-                                   noName: e.target.value === ""
-                               }))
-                           }}/>
-                    <span
-                        className={`icon is-small is-right ${validationState.noName ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                    <p className={`help is-danger ${validationState.noName ? '' : 'is-hidden'}`}>
-                        An organization must have a name
-                    </p>
-                </div>
+    return <Container>
+        <Typography gutterBottom variant="h5" component="h2">Create Organization</Typography>
+        <TextField
+            error={validationState.noName}
+            helperText={validationState.noName === false ? "" : "An organization must have a name"}
+            label={"Organization name"}
+            value={organization.name}
+            onChange={e => {
+                setOrganization(prevState => ({
+                    ...prevState,
+                    name: e.target.value
+                }))
+                setValidationState(prevState => ({
+                    ...prevState,
+                    noName: e.target.value === ""
+                }))
+            }}>
+        </TextField>
 
-                <div className="panel mt-4">
-                    <div className="panel-heading has-text-centered-mobile">
-                        <h2 className="title is-5">Select the organization
-                            leader{organization.user.firstname !== undefined ? (": " + organization.user.firstname + " " + organization.user.lastname) : ""}</h2>
-                    </div>
-                    <PagedList fetchDataFnc={fetchUsers} RenderListItem={RenderUsers}
-                               IsEmptyComponent={() => <p>No users found</p>}
-                               pageControls={{showButtons: true, sizeModifier: "is-small"}}/>
-                </div>
-                <p className={`help is-danger ${validationState.noUser ? '' : 'is-hidden'}`}>
-                    Please select a user to be the organization leader
-                </p>
+        <Typography gutterBottom variant="h6" component="h2">Select the organization
+            leader{organization.user.firstname !== undefined ? (": " + organization.user.firstname + " " + organization.user.lastname) : ""}</Typography>
+        <PagedList fetchDataFnc={fetchUsers} RenderListItem={RenderUsers}
+                   IsEmptyComponent={() => <p>No users found</p>}
+                   pageControls={{showButtons: true, sizeModifier: "is-small"}}/>
+        <p className={`help is-danger ${validationState.noUser ? '' : 'is-hidden'}`}>
+            Please select a user to be the organization leader
+        </p>
 
-            </div>
-
-            <div className="field is-grouped">
-                <div className="control">
-                    <button onClick={(e) => submitEvent(e)} className="button is-link"
-                            disabled={validationState.dateInpast || validationState.noName}>Submit
-                    </button>
-                </div>
-                <div className="control">
-                    <button onClick={() => history.goBack()} className="button is-link is-light">Cancel</button>
-                </div>
-            </div>
-        </form>
-    </article>;
+        <ButtonGroup>
+            <Button color={"secondary"} variant={"contained"} onClick={
+                (e) => submitEvent(e)
+            }
+                    disabled={validationState.noUser || validationState.noName}> Submit
+            < /Button>
+            <Button color={"secondary"} onClick={
+                () => history.goBack()
+            }
+                    className="button is-link is-light"> Cancel
+            < /Button>
+        </ButtonGroup>
+    </Container>;
 }
 
 export default AdminCreateOrganization
