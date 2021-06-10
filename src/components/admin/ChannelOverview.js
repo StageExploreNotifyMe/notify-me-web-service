@@ -1,6 +1,17 @@
 import {getBase} from "../../js/FetchBase";
 import React, {useEffect, useState} from "react";
 import {useSnackbar} from 'notistack';
+import {
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const ChannelOverview = () => {
 
@@ -28,34 +39,28 @@ const ChannelOverview = () => {
     const RenderChannels = () => {
         if (loading) return <p>No channels</p>
         return channels.map(c =>
-            <div className="panel-block columns">
-                <div className="column is-one-third">
-                    <p>{c[1]}</p>
-                </div>
-                <div className="column">
-                    <p>{c[0]}</p>
-                </div>
-            </div>
+            <TableBody>
+                <TableCell>{c[1]}</TableCell>
+                <TableCell>{c[0]}</TableCell>
+            </TableBody>
         )
     }
 
-    return <article>
-        <div className="container mt-2">
-            <div className="panel">
-                <div className="panel-heading has-text-centered-mobile">
-                    <h2 className="title is-3">Overview Notifications</h2>
-                </div>
-                <div className="panel-block columns">
-                    <div className="column is-one-third">
-                        <p>Channel</p>
-                    </div>
-                    <div className="column ">
-                        <p>Amount</p>
-                    </div>
-                </div>
+    return <Container>
+
+        <Typography gutterBottom variant="h5" component="h2">Overview Notifications</Typography>
+        <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Channel</TableCell>
+                        <TableCell>Amount</TableCell>
+                    </TableRow>
+                </TableHead>
                 <RenderChannels/>
-            </div>
-        </div>
-    </article>
+
+            </Table>
+        </TableContainer>
+    </Container>
 }
 export default ChannelOverview

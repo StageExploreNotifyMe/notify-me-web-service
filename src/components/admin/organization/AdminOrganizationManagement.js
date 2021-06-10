@@ -3,9 +3,24 @@ import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import {getBase, patchBase} from "../../../js/FetchBase";
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import EditIcon from '@material-ui/icons/Edit';
 import {useSnackbar} from "notistack";
+import {
+    Button,
+    Card,
+    Container,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer, TextField,
+    Typography
+} from "@material-ui/core";
 
 const AdminOrganizationManagement = () => {
     const history = useHistory();
@@ -32,26 +47,36 @@ const AdminOrganizationManagement = () => {
 
     const RenderOrganizations = (props) => {
         let org = props.data;
-        return <div className="panel-block columns" key={org.id}>
-            <div className="column">{org.name}</div>
-            <div className="column is-1">
-                <span className="icon is-clickable" onClick={() => {
-                    setEditingValues({openModal: true, organization: org, updateFnc: props.update})
-                }}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
-            </div>
-        </div>
+        return <TableContainer component={Paper}>
+            <Table>
+                <TableBody key={org.id}>
+                    <TableCell>{org.name}</TableCell>
+                    <TableCell align={"right"}>
+                        <IconButton size={"small"} color={"secondary"} onClick={() => {
+                            setEditingValues({openModal: true, organization: org, updateFnc: props.update})
+                        }}>
+                            <EditIcon/>
+                        </IconButton>
+                    </TableCell>
+
+                </TableBody>
+            </Table>
+        </TableContainer>
     }
 
     const RenderNoOrganizations = () => {
-        return <div className="panel-block">
-            No organizations known in the system yet. Create the first one now by clicking&nbsp;
-            <span className="has-text-link is-clickable" onClick={() => history.push(createOrgLink)}>
+         return <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableBody>
+                    <TableCell> No organizations known in the system yet. Create the first one now by clicking&nbsp;
+                        <span className="has-text-link is-clickable" onClick={() => history.push(createOrgLink)}>
                 here
             </span>
-            !
-        </div>
+                        !
+                    </TableCell>
+                </TableBody>
+            </Table>
+        </TableContainer>
     };
 
     function closeModal() {
@@ -72,31 +97,30 @@ const AdminOrganizationManagement = () => {
         })
     }
 
-    return <article className="container mt-2">
-        <section className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Organization Management</h2></div>
+    return <>
+        <Container>
+            <Typography gutterBottom variant="h5" component="h2">Organization Management</Typography>
             <div className="level-right">
-                <button onClick={() => {
+                <Button color={"secondary"} onClick={() => {
                     history.push(createOrgLink)
                 }} className="button is-link level-item">
                     Create Organization
-                </button>
+                </Button>
             </div>
-        </section>
-        <section className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className="title is-3">Organizations</h2>
-            </div>
+            <Typography gutterBottom variant="h6" component="h2">Organizations</Typography>
+
             <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderOrganizations}
                        IsEmptyComponent={RenderNoOrganizations}/>
-        </section>
+        </Container>
         <section className={`modal ${editingValues.openModal ? "is-active" : ""}`}>
-            <div className="modal-background" onClick={closeModal}/>
-            <div className="modal-content">
-                <div className="card">
-                    <div className="card-header"><h2 className="title is-3 p-2">Rename Organization</h2></div>
-                    <div className="card-content">
-                        <input className="input" value={editingValues.organization.name}
+
+            <Dialog open={editingValues.openModal}
+                    onClose={closeModal}>
+                <div>
+                    <DialogTitle><Typography gutterBottom variant="h5" component="h2">Rename
+                        Organization</Typography></DialogTitle>
+                    <DialogContent>
+                        <TextField id={"editOrg"} value={editingValues.organization.name}
                                onChange={(e) => setEditingValues({
                                    ...editingValues,
                                    organization: {
@@ -104,18 +128,23 @@ const AdminOrganizationManagement = () => {
                                        name: e.target.value
                                    }
                                })}/>
-                    </div>
-                    <div className="card-footer">
-                        <button className="button is-success card-footer-item mx-1" onClick={updateOrganization}>Save
-                        </button>
-                        <button className="button is-danger card-footer-item mx-1" onClick={closeModal}>Cancel</button>
-                    </div>
-                </div>
-            </div>
-            <button className="modal-close is-large" aria-label="close" onClick={closeModal}/>
 
+                    </DialogContent>
+                    <DialogActions>
+                        <Card>
+                            <Button variant="contained" color={"primary"}  onClick={updateOrganization}>Save
+                            </Button>
+                            <Button color={"secondary"} onClick={closeModal}>Cancel</Button>
+                        </Card>
+
+
+                        <Button className="modal-close is-large" aria-label="close" onClick={closeModal}/>
+                    </DialogActions>
+                </div>
+            </Dialog>
         </section>
-    </article>;
+    </>
+
 };
 
 export default AdminOrganizationManagement
