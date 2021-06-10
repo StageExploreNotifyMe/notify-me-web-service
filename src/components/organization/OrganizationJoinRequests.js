@@ -4,6 +4,17 @@ import {getBase} from "../../js/FetchBase";
 import OrganizationRequestUserDetail from "./OrganizationRequestUserDetail";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from "notistack";
+import {
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const OrganizationJoinRequests = () => {
     const {enqueueSnackbar} = useSnackbar();
@@ -24,16 +35,27 @@ const OrganizationJoinRequests = () => {
         return <OrganizationRequestUserDetail key={props.id} request={props.data}/>
     }
 
-    return <div className="is-flex is-flex-direction-column is-align-self-center mx-4 mt-1">
-        <h2 className="title is-2">Organization {org.name}</h2>
-        <div className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className=" title is-3">Open Join Requests</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
-                       IsEmptyComponent={() => <p>No pending join requests for your organization!</p>}/>
-        </div>
-    </div>
+    return <Container maxWidth="xl">
+        <Typography gutterBottom variant="h3" component="h2">
+            Open Join Requests {org.name}
+        </Typography>
+        <Container>
+            <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width={150}>Member</TableCell>
+                            <TableCell width={50}>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
+                                   IsEmptyComponent={() => <TableCell colSpan={2}>No pending join requests for your organization!</TableCell>}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Container>
+    </Container>
 
 };
 

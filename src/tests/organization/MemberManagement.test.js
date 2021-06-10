@@ -73,6 +73,8 @@ function renderMemberManagement() {
     const route = '/organization/membermanagement';
     localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
     const {container} = RenderComponent(MemberManagement, {}, [route]);
+    expect(screen.getByText(new RegExp("Member Management"))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(organization.name))).toBeInTheDocument()
     return container;
 }
 
@@ -82,8 +84,6 @@ test('MemberManagement', async () => {
         const container = renderMemberManagement();
 
         await waitForLoadingSpinner(container);
-        await sleep(20);
-        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
         let promoteButton = screen.getByText(/Promote/i);
         expect(promoteButton).toBeInTheDocument()

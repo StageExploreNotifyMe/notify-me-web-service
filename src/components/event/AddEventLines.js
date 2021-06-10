@@ -1,31 +1,36 @@
-import React, {useState} from "react";
+import React from "react";
 import {getBase, postBase} from "../../js/FetchBase";
-
-import {useParams} from "react-router-dom";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {
+    Container,
+    Paper,
+    Switch,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
 
 const AddEventLines = () => {
-    let {id} = useParams();
+    const event = JSON.parse(localStorage.getItem("currentEvent"));
     const venue = JSON.parse(localStorage.getItem("venue"));
     const userId = JSON.parse(localStorage.getItem("user.id"));
     const {enqueueSnackbar} = useSnackbar();
 
-    const [modal, setModal] = useState({
-        isActive: false,
-        title: "",
-        content: ""
-    });
-
     async function fetchVenueLines() {
         try {
-            let addedLinesProm = getBase("/line/event/" + id);
+            let addedLinesProm = getBase("/line/event/" + event.id);
             let venueLinesProm = getBase("/line/venue/" + venue.id);
 
             let addedLines = (await addedLinesProm).content;
             let venueLines = await venueLinesProm;
             venueLines.content.map(venueLine => {
-                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined && addedLines.find(addedLine => addedLine.eventLineStatus !== "CANCELED"));
+                venueLine.alreadyAdded = (addedLines.find(addedLine => addedLine.line.id === venueLine.id) !== undefined && addedLines.find(addedLine => addedLine.eventLineStatus !== "CANCELED") !== undefined);
                 return venueLine
             });
 
@@ -47,7 +52,11 @@ const AddEventLines = () => {
         }
 
         line.alreadyAdded = added;
-        postBase("/line/event/add", JSON.stringify({lineId: line.id, eventId: id, lineManagerId: userId})).then(() => {
+        postBase("/line/event/add", JSON.stringify({
+            lineId: line.id,
+            eventId: event.id,
+            lineManagerId: userId
+        })).then(() => {
             forceUpdateFnc();
         }).catch(() => {
             enqueueSnackbar("Something went wrong while trying to fetch the lines for your venue", {
@@ -59,50 +68,42 @@ const AddEventLines = () => {
     const RenderVenueLines = (props) => {
         const line = props.data
         if (line === undefined) return "";
-        return <div className="panel-block columns" key={line.id}>
-            <div className="column is-1">
-                <input type="checkbox"
-                       className="switch is-success" checked={line.alreadyAdded}
-                       onChange={(e) => onLineChange(e, line, props.update)}/>
-                <label className="is-hidden"> Add {line.name}</label>
-            </div>
-
-            <div className="is-clickable column"
-                 onClick={() => setModal(() => ({
-                     title: line.name,
-                     content: line.description,
-                     isActive: true
-                 }))}>{line.name}</div>
-        </div>
-
+        return <TableRow key={line.id}>
+            <TableCell padding="checkbox" align="center">
+                <Switch
+                    checked={line.alreadyAdded}
+                    onChange={(e) => onLineChange(e, line, props.update)}
+                    inputProps={{'aria-label': 'secondary checkbox'}}
+                />
+            </TableCell>
+            <TableCell align={"center"}>
+                <Tooltip title={line.description}>
+                    <p>{line.name}</p>
+                </Tooltip>
+            </TableCell>
+        </TableRow>
     }
 
-    const RenderDescriptionModal = () => {
-        if (!modal.isActive) return "";
+    return <Container maxWidth={"xl"}>
+        <Typography gutterBottom variant="h4" component="h2" align={"center"}>
+            Add Lines to this event
+        </Typography>
 
-        return <div className="modal is-active">
-            <div className="modal-background"
-                 onClick={() => setModal(() => ({isActive: false, content: "", title: ""}))}/>
-            <div className="modal-content">
-                <div className="card">
-                    <div className="card-header"><h2 className="title is-3 p-2">{modal.title}</h2></div>
-                    <div className="card-content"> {modal.content}</div>
-                </div>
-            </div>
-            <button className="modal-close is-large" aria-label="close"
-                    onClick={() => setModal(() => ({isActive: false, content: "", title: ""}))}/>
-        </div>
-    }
-
-    return <div className="panel">
-        <div className="panel-heading">
-            <h2 className="title is-3">Add Lines to this event</h2>
-        </div>
-        <RenderDescriptionModal/>
-        <RenderVenueLines/>
-        <PagedList fetchDataFnc={fetchVenueLines} RenderListItem={RenderVenueLines}
-                   IsEmptyComponent={() => <p>No lines found for your venue</p>}/>
-    </div>
+        <Container maxWidth={"sm"}>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableCell> </TableCell>
+                        <TableCell align={"center"}>Line</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchVenueLines} RenderListItem={RenderVenueLines}
+                                   IsEmptyComponent={() => <p>No lines found for your venue</p>}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Container>
+    </Container>
 };
 
 export default AddEventLines;

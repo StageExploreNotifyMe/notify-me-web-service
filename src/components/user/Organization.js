@@ -1,5 +1,16 @@
 import React, {useState} from 'react';
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    Checkbox,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@material-ui/core";
 
 const Organization = (props) => {
 
@@ -54,23 +65,42 @@ const Organization = (props) => {
     }
 
     return (
-        <div className="panel-block">
-            <div className="column">
-                <input type="checkbox" disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}
-                       checked={joinedState.joined} onChange={checkboxClicked}
-                />
-                {props.content.name}
-            </div>
-            <div
-                className={(props.content.status === "PENDING" || props.content.status === "DECLINED") ? "column is-2" : "is-hidden"}>
-                {props.content.status}
-            </div>
-            <div className={joinedState.showConfirmButtons ? "column is-2" : "is-hidden"}>
-                <button className="button is-success is-small ml-2" onClick={() => confirmClicked(true)}>Save</button>
-                <button className="button is-danger is-small ml-2" onClick={() => confirmClicked(false)}>Cancel</button>
-            </div>
 
-        </div>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Organization</TableCell>
+                        <TableCell>Status</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+
+                        <TableCell>
+                            <Checkbox color="secondary"
+                                      disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}
+                                      checked={joinedState.joined} onChange={checkboxClicked}
+                            />
+                            {props.content.name}
+                        </TableCell>
+                        <TableCell>
+                            <div
+                                className={(props.content.status === "PENDING" || props.content.status === "DECLINED") ? "column is-2" : "is-hidden"}>
+                                {props.content.status}
+                            </div>
+                        </TableCell>
+                    </TableRow>
+
+                </TableBody>
+            </Table>
+            <div className={joinedState.showConfirmButtons ? "column is-2" : "is-hidden"}>
+                <Button color="secondary" onClick={() => confirmClicked(true)}>Save</Button>
+                <Button color="secondary" onClick={() => confirmClicked(false)}>Cancel</Button>
+            </div>
+        </TableContainer>
+
+
     )
 }
 

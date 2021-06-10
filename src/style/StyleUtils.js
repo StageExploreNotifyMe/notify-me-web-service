@@ -1,4 +1,3 @@
-
 const isClickable = {
     cursor: "pointer"
 };

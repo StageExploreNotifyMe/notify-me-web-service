@@ -1,29 +1,49 @@
 import React, {useState} from "react";
 import {getBase, postBase} from "../../js/FetchBase";
 
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import EventLineAssignOrganization from "./EventLineAssignOrganization";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    ButtonGroup,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography
+} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import {isClickable} from "../../style/StyleUtils";
 
 const EventLines = () => {
-    let {id} = useParams();
+    const event = JSON.parse(localStorage.getItem("currentEvent"));
+
     const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
     let forceUpdateFnc = null;
+    const classes = useStyles();
 
     const [assigningOrg, setAssigningOrg] = useState(false);
     const [modal, setModal] = useState({
         isActive: false,
         eventLine: {organization: {name: ""}}
     });
-    const [staffingReminderText, setStaffingReminderText] = useState("");
 
     async function fetchEventLines() {
         try {
-            return await getBase("/line/event/" + id);
+            return await getBase("/line/event/" + event.id);
         } catch {
             enqueueSnackbar("Something went wrong while trying to fetch open join requests", {
                 variant: 'error',
@@ -51,24 +71,29 @@ const EventLines = () => {
     const RenderEventLines = (props) => {
         const eventLine = props.data;
         forceUpdateFnc = props.update;
-
         if (eventLine.eventLineStatus === "CANCELED") return "";
 
-        return <div className="panel-block columns" key={eventLine.id}>
-            <div className="column is-3">{eventLine.line.name}</div>
-            <div className="column is-3">Organization: {eventLine.organization === null ?
-                <span className="is-clickable" onClick={() => assignOrganizationToLine(eventLine)}>Unassigned
-                        <span className="icon"><FontAwesomeIcon icon={faEdit}/></span>
+        return <TableRow key={eventLine.id}>
+            <TableCell className="column is-3">{eventLine.line.name}</TableCell>
+            <TableCell className="column is-3">{
+                eventLine.organization === null ?
+                    <span className={classes.clickable} onClick={() => assignOrganizationToLine(eventLine)}>
+                        Unassigned
+                        <FontAwesomeIcon icon={faEdit}/>
                     </span>
-                : eventLine.organization.name}</div>
-            <div className="column is-2">People assigned: {eventLine.assignedUsers.length}</div>
-            <div className="column is-4">
-                <button className="button is-primary mr-1" onClick={() => openModal(eventLine)}>Send staffing
-                    reminder
-                </button>
-                <button className="button is-danger" onClick={() => setEventLineState(eventLine)}>Cancel</button>
-            </div>
-        </div>
+                    : eventLine.organization.name}
+            </TableCell>
+            <TableCell className="column is-2">{eventLine.assignedUsers.length}</TableCell>
+            <TableCell align={"right"} className="column is-4">
+                <ButtonGroup>
+                    <Button variant={"outlined"} onClick={() => openModal(eventLine)}>Send staffing
+                        reminder
+                    </Button>
+                    <Button variant={"outlined"} onClick={() => setEventLineState(eventLine)}>Cancel</Button>
+                </ButtonGroup>
+
+            </TableCell>
+        </TableRow>
     }
 
     function assignOrganization(orgId, eventLineId) {
@@ -89,13 +114,13 @@ const EventLines = () => {
         setModal(() => ({isActive: false, eventLine: {organization: {name: ""}}}))
     }
 
-    function sendReminder() {
-        let customText = null;
-        if (staffingReminderText !== "") customText = staffingReminderText;
+    function sendReminder(send, text) {
+        closeModal();
+        if (!send) return;
 
         postBase("/line/" + modal.eventLine.id + "/staffingreminder", JSON.stringify({
             eventLineId: modal.eventLine.id,
-            customText: customText
+            customText: text === "" ? null : text
         })).then(() => {
             enqueueSnackbar("The reminder has been sent", {
                 variant: "success"
@@ -105,63 +130,108 @@ const EventLines = () => {
                 variant: 'error',
             });
         });
-        closeModal();
     }
 
     return <>
-        <div className={`modal ${modal.isActive ? "is-active" : ""}`}>
-            <div className="modal-background"
-                 onClick={() => closeModal()}/>
-            <div className="modal-content">
-                <div className="card">
-                    <div className="card-header"><h2 className="title is-3 p-2">Send reminder
-                        to {modal.eventLine.organization.name} to continue staffing</h2></div>
-                    <div className="card-content">
-                        <h3>Custom message:</h3>
-                        <div>
-                            <p>Enter a custom message or leave blank if you want to send the default reminder.</p>
-                            <textarea className="textarea" value={staffingReminderText}
-                                      onChange={(e) => setStaffingReminderText(e.target.value)}/>
-                        </div>
-                    </div>
-                    <div className="card-footer p-1">
-                        <button className="card-footer-item button is-danger mr-1" onClick={() => sendReminder()}>
-                            Send
-                        </button>
-                        <button className="card-footer-item button is-primary" onClick={() => closeModal()}>
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <button className="modal-close is-large" aria-label="close"
-                    onClick={() => closeModal()}/>
-        </div>
-        <div className="panel">
-            <div className={`panel-heading columns ${assigningOrg ? "is-hidden" : ""}`}>
-                <div className="column"><h2 className="title is-3">Lines for this event</h2></div>
-                <div className="column is-1">
-                    <button onClick={() => history.push("/venue/events/" + id + "/lines")}
-                            className="button is-primary">Add
-                    </button>
-                </div>
-            </div>
-            <div className={assigningOrg ? "" : "is-hidden"}>
-                <EventLineAssignOrganization
-                    assignOrg={(orgId, eventLineId) => {
-                        assignOrganization(orgId, eventLineId)
-                    }}
-                    cancel={() => {
-                        setAssigningOrg(false)
-                    }}
-                />
-            </div>
-            <div className={assigningOrg ? "is-hidden" : ""}>
-                <PagedList fetchDataFnc={fetchEventLines} RenderListItem={RenderEventLines}
-                           IsEmptyComponent={() => <p>No lines assigned to this event.</p>}/>
-            </div>
-        </div>
+        <StaffingReminderDialog onClose={sendReminder} open={modal.isActive} eventLine={modal.eventLine}/>
+        <Typography className={assigningOrg ? classes.hidden : ""} gutterBottom variant="body1" component="div">
+            <Grid container spacing={2}>
+                <Grid item xs={10}>
+                    <Typography gutterBottom variant="h4" component="h2">
+                        Lines for {event.name}
+                    </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <Typography align={"right"} gutterBottom variant="body1" component="div">
+                        <Button variant="outlined" onClick={() => history.push("/venue/event/lines")}>
+                            Add
+                        </Button>
+                    </Typography>
+
+                </Grid>
+            </Grid>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableCell>Line</TableCell>
+                        <TableCell>Organization</TableCell>
+                        <TableCell>Assigned people</TableCell>
+                        <TableCell> </TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchEventLines} RenderListItem={RenderEventLines}
+                                   IsEmptyComponent={() => <p>No lines assigned to this event.</p>}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Typography>
+
+        <Typography className={assigningOrg ? "" : classes.hidden} gutterBottom variant="body1" component="div">
+            <EventLineAssignOrganization
+                assignOrg={(orgId, eventLineId) => {
+                    assignOrganization(orgId, eventLineId)
+                }}
+                cancel={() => {
+                    setAssigningOrg(false)
+                }}
+            />
+        </Typography>
     </>
 };
+
+function StaffingReminderDialog(props) {
+    const classes = useStyles();
+    const {onClose, open, eventLine} = props;
+    const [staffingReminderText, setStaffingReminderText] = useState("");
+
+    return (
+        <Dialog onClose={() => onClose(false)} aria-labelledby="eventStatus-diag-title" open={open}>
+            <DialogTitle id="eventStatus-diag-title">
+                Send reminder to {eventLine.organization.name} to continue staffing
+            </DialogTitle>
+
+
+            <Typography className={classes.margin} gutterBottom variant="subtitle1" component="p">
+                Enter a custom message or leave blank if you want to send the default reminder.
+            </Typography>
+            <TextField
+                className={classes.margin}
+                id="staffingreminder-text-area"
+                label="Custom Reminder Message"
+                multiline
+                rows={4}
+                variant="outlined"
+                value={staffingReminderText}
+                onChange={(e) => setStaffingReminderText(e.target.value)}
+            />
+
+            <DialogActions>
+                <ButtonGroup>
+                    <Button color="secondary" variant={"contained"} className="card-footer-item button is-danger mr-1"
+                            onClick={() => onClose(true, staffingReminderText)}>
+                        Send
+                    </Button>
+                    <Button color="secondary" variant={"outlined"} className="card-footer-item button is-primary"
+                            onClick={() => onClose(false)}>
+                        Cancel
+                    </Button>
+                </ButtonGroup>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+const useStyles = makeStyles((theme) => ({
+    hidden: {
+        display: "none"
+    },
+    clickable: {
+        ...isClickable
+    },
+    margin: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2)
+    }
+}));
 
 export default EventLines;

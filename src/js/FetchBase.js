@@ -13,8 +13,9 @@ const fetchBase = async (url, method = "GET", body) => {
 
     if (!url.startsWith("/")) url = "/" + url;
 
-    return fetch(process.env.REACT_APP_SERVER_URL + url, requestOptions).then(resp => handleErrors(resp)).then(resp =>resp.json())
+    return fetch(process.env.REACT_APP_SERVER_URL + url, requestOptions).then(resp => handleErrors(resp)).then(resp => resp.json())
 }
+
 function handleErrors(response) {
     if (response.ok) return response;
 

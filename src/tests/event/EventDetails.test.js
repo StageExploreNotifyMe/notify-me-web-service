@@ -32,6 +32,7 @@ function mockFetch(simulateNetworkError = false, data = event) {
 }
 
 function renderComponent() {
+    localStorage.setItem("currentEvent", JSON.stringify(event));
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
     localStorage.setItem("user", JSON.stringify({
         firstname: "Test",
@@ -45,12 +46,14 @@ function renderComponent() {
 }
 
 test('Render addEventLines component - network error', async () => {
-    mockFetch(true)
-    const {container} = renderComponent();
-    let loadingSpinner = container.querySelector('.loading');
-    expect(loadingSpinner).toBeInTheDocument()
-    await sleep(20);
-    expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
+    await act(async () => {
+        mockFetch(true)
+        const {container} = renderComponent();
+        let loadingSpinner = container.querySelector('.loading');
+        expect(loadingSpinner).toBeInTheDocument()
+        await sleep(20);
+        expect(screen.getByText(new RegExp("Something went wrong"))).toBeInTheDocument()
+    })
 }, 5000);
 
 test('Render addEventLines component - created event', async () => {
@@ -58,8 +61,10 @@ test('Render addEventLines component - created event', async () => {
         mockFetch()
         const {container} = renderComponent();
         await waitForLoadingSpinner(container);
-        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-        expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
+        expect(screen.getAllByText(new RegExp(event.name)).length).toBeGreaterThan(0)
+        let createdButton = screen.getByText(new RegExp("CREATED"));
+        expect(createdButton).toBeVisible()
+        fireEvent.click(createdButton);
         let cancelButton = screen.getAllByText(new RegExp("Cancel"))[0];
         expect(cancelButton).toBeVisible()
         fireEvent.click(cancelButton)
@@ -72,11 +77,12 @@ test('Render addEventLines component - public event', async () => {
         mockFetch(false, pubEvent)
         const {container} = renderComponent();
         await waitForLoadingSpinner(container);
-        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-        expect(screen.getAllByText(new RegExp("Cancel"))[0]).toBeVisible()
-        let makePrivateButton = screen.getByText(new RegExp("Make Private"));
-        expect(makePrivateButton).toBeVisible()
-        fireEvent.click(makePrivateButton)
+        let createdButton = screen.getByText(new RegExp("PUBLIC"));
+        expect(createdButton).toBeVisible()
+        fireEvent.click(createdButton);
+        let cancelButton = screen.getAllByText(new RegExp("Private"))[0];
+        expect(cancelButton).toBeVisible()
+        fireEvent.click(cancelButton)
     })
 }, 5000);
 
@@ -86,11 +92,27 @@ test('Render addEventLines component - canceled event', async () => {
         mockFetch(false, canEvent)
         const {container} = renderComponent();
         await waitForLoadingSpinner(container);
-        expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
-        expect(screen.getByText(new RegExp("Make Private"))).toBeVisible()
-        let makePublicButton = screen.getByText(new RegExp("Make Public"));
-        expect(makePublicButton).toBeVisible()
-        mockFetch(true)
-        fireEvent.click(makePublicButton)
+        let createdButton = screen.getByText(new RegExp("CANCELED"));
+        expect(createdButton).toBeVisible()
+        fireEvent.click(createdButton);
+        let cancelButton = screen.getAllByText(new RegExp("Public"))[0];
+        expect(cancelButton).toBeVisible()
+        fireEvent.click(cancelButton)
+    })
+}, 5000);
+
+test('Render addEventLines component - close dialog', async () => {
+    await act(async () => {
+        let canEvent = {...event, eventStatus: "CANCELED"};
+        mockFetch(false, canEvent)
+        const {container} = renderComponent();
+        await waitForLoadingSpinner(container);
+        let createdButton = screen.getByText(new RegExp("CANCELED"));
+        expect(createdButton).toBeVisible()
+        fireEvent.click(createdButton);
+        let closeDiagDiv = screen.getByText(canEvent.name);
+        expect(closeDiagDiv).toBeVisible()
+        fireEvent.click(closeDiagDiv)
+        await sleep(20);
     })
 }, 5000);

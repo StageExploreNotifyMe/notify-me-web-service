@@ -35,7 +35,11 @@ const NotificationOverview = () => {
         urgency: "",
         usedChannel: "",
         userId: "",
-        eventId: ""
+        eventId: "",
+        price: "",
+        priceCurrency: "",
+
+
     });
     const [notificationType, setNotificationType] = useState([])
     const [event, setEvent] = useState([])
@@ -145,6 +149,10 @@ const NotificationOverview = () => {
         forceRerender = props.update
         let date = dateArrayToDate(not.creationDate).toLocaleDateString();
         let time = dateArrayToDate(not.creationDate).toLocaleTimeString();
+        let price = '-'
+        if (not.price !== null){
+            price = not.price
+        }
         return <TableRow>
             <TableCell width={150}>{date}</TableCell>
 
@@ -168,6 +176,8 @@ const NotificationOverview = () => {
                                     usedChannel: not.usedChannel,
                                     userId: not.userId,
                                     eventId: not.eventId,
+                                    price: price,
+                                    priceCurrency: not.priceCurrency,
                                     isActive: true
                                 }))}>Details
             </Button>
@@ -197,6 +207,8 @@ const NotificationOverview = () => {
                         <p><b>Urgency: </b>{modal.urgency}</p>
                         <p><b>Channel: </b>{modal.usedChannel}</p>
                         <p><b>Message: </b>{modal.body}</p></Typography>
+                    <p><b>Price: </b>{modal.priceCurrency} {modal.price}</p>
+
                 </DialogContentText>
             </DialogContent>
         </Dialog>

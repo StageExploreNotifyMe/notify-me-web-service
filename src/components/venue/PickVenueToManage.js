@@ -4,6 +4,18 @@ import {getBase} from "../../js/FetchBase";
 
 import {useHistory} from "react-router-dom";
 import {useSnackbar} from "notistack";
+import {
+    Button,
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 
 const PickVenueToManage = () => {
 
@@ -27,28 +39,37 @@ const PickVenueToManage = () => {
 
     const RenderVenues = (props) => {
         let ev = props.data;
-        return <div className="panel-block columns" key={ev.id}>
-            <div className="column">{ev.name}</div>
-            <div className="column is-3">
-                <button className="button is-primary" onClick={() => onVenueManageClick(ev)}>Manage this venue</button>
-            </div>
-        </div>
+        return <TableRow className="panel-block columns" key={ev.id}>
+            <TableCell>{ev.name}</TableCell>
+            <TableCell align="right">
+                <Button variant="contained" color="primary" onClick={() => onVenueManageClick(ev)}>Manage this
+                    venue</Button>
+            </TableCell>
+        </TableRow>
     }
 
-    return <article className="container mt-2">
-        <section className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">
-                Please select which venue you'd like to manage now:
-            </h2></div>
-        </section>
-        <section className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className="title is-3">Venues</h2>
-            </div>
-            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
-                       IsEmptyComponent={() => <p>Something went wrong, you appear to not be a part of any venue</p>}/>
-        </section>
-    </article>
+    return <Container maxWidth="xl">
+
+        <Typography gutterBottom variant="h4" component="h2" align="center">
+            Please select which venue you'd like to manage now:
+        </Typography>
+        <Container maxWidth="sm">
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableCell>Venue</TableCell>
+                        <TableCell align="right">Manage</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
+                                   IsEmptyComponent={() => <TableCell>Something went wrong, you appear to not be a part
+                                       of
+                                       any venue</TableCell>}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Container>
+    </Container>
 };
 
 export default PickVenueToManage;

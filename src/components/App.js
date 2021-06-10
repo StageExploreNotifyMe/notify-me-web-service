@@ -71,9 +71,9 @@ function App() {
                                           component={OrganizationDetails}/>
                     <LoggedInBasedRouting path="/venue/events/create" roles={['VENUE_MANAGER']}
                                           component={CreateEvent}/>
-                    <LoggedInBasedRouting path="/venue/events/:id/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                    <LoggedInBasedRouting path="/venue/event/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
                                           component={AddEventLines}/>
-                    <LoggedInBasedRouting path="/venue/events/:id" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                    <LoggedInBasedRouting path="/venue/event" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
                                           component={EventDetails}/>
                     <LoggedInBasedRouting path="/venue/events" roles={['LINE_MANAGER', 'VENUE_MANAGER']}
                                           component={EventManagement}/>

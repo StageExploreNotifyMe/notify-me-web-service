@@ -22,7 +22,7 @@ function renderComponent() {
     resetMockFuncs();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
     const {container} = RenderComponent(CreateEvent);
-    let submitButton = screen.queryByText(/Submit/i);
+    let submitButton = screen.queryAllByText(/Create/i)[1];
     expect(submitButton).toBeInTheDocument()
     let cancelButton = screen.queryByText(/Cancel/i);
     expect(cancelButton).toBeInTheDocument()
