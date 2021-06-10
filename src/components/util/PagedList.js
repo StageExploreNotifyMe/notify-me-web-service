@@ -43,7 +43,6 @@ const PagedList = (props) => {
     }, [activePage]);
 
     function onPageChange(e) {
-        console.log("change", e)
         setActivePage(e);
         setLoading(true);
         internalFetchData();
