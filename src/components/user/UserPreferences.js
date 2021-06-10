@@ -3,6 +3,17 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import classnames from "classnames";
 import {useSnackbar} from "notistack";
+import {
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    Select
+} from "@material-ui/core";
 
 const UserPreferences = () => {
     const [notificationPreferences, setNotificationPreferences] = useState(null)
@@ -59,64 +70,77 @@ const UserPreferences = () => {
     const RenderNormalPreferences = () => {
         if (loadingPreferences) return <p>no notifications rendered</p>
         return notificationPreferences.map(pref =>
-            <label key={"normal-" + pref} className="radio">
-                <input
-                    aria-label="Radio Button"
-                    checked={pref === channel.normalChannel}
-                    onChange={() => onPreferenceChanged(pref, "normal")}
-                    type="radio" id={"radioNormal"}/>
-                {pref}
-            </label>
+            <FormControlLabel key={"normal-" + pref}
+                              value={pref}
+                              checked={pref === channel.normalChannel}
+                              label={pref}
+                              control={<Radio/>}
+                              onChange={() => onPreferenceChanged(pref, "normal")}>
+
+            </FormControlLabel>
         )
     }
 
     const RenderUrgentPreferences = () => {
         if (loadingPreferences) return <p>no notifications rendered</p>
         return notificationPreferences.map(pref =>
-            <label key={"urgent-" + pref} className="radio">
-                <input
-                    checked={pref === channel.urgentChannel}
-                    onChange={() => onPreferenceChanged(pref, "urgent")}
-                    type="radio" id={"radioUrgent"}/>
-                {pref}
-            </label>
+            <FormControlLabel key={"urgent-" + pref}
+                              value={pref}
+                              checked={pref === channel.urgentChannel}
+                              label={pref}
+                              control={<Radio/>}
+                              onChange={() => onPreferenceChanged(pref, "urgent")}>
+            </FormControlLabel>
         )
-    }
+    };
+
+
     const LanguageDropdown = () => {
         return languages.map(l =>
-            <a className="dropdown-item" key={l.id}>
+           <MenuItem>
                 {l.language}
-            </a>
+           </MenuItem>
         )
     }
 
     return <><h2>User Preferences</h2>
-        <div className="control">
-            <label className="radio">Normal Notifications: </label>
-            <RenderNormalPreferences/>
-        </div>
-        <div className="control">
-            <label>Urgent Notifications: </label>
-            <RenderUrgentPreferences/>
-        </div>
+        <Grid container
+              direction="row"
+              spacing={3}
+        >
+            <Grid item xs={6} sm={3}>
+                <FormControl>
+                    <FormLabel>Normal Notifications:</FormLabel>
+                    <RadioGroup>
+                        <RenderNormalPreferences/>
+                    </RadioGroup>
+                </FormControl>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+                <FormControl>
+                    <FormLabel>Urgent Notifications:</FormLabel>
+                    <RadioGroup>
+                        <RenderUrgentPreferences/>
+                    </RadioGroup>
+                </FormControl>
+            </Grid>
+        </Grid>
         <div ref={menu} className={classnames("dropdown", {"is-active": open})}>
             <div className="dropdown-trigger" onClick={e => {
                 e.preventDefault();
                 setOpen(!open)
             }}>
-                <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>Language</span>
-                    <span className="icon is-small">
-        <i className="fas fa-angle-down" aria-hidden="true"></i>
-      </span>
-                </button>
-            </div>
-            <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                <div className="dropdown-content">
+                           </div>
+            <div>
+            <FormControl style={{minWidth: 120}}>
+                <InputLabel>Language</InputLabel>
+                <Select>
                     <LanguageDropdown/>
-                </div>
+                </Select>
+            </FormControl>
             </div>
         </div>
+
     </>
 }
 

@@ -34,6 +34,7 @@ function mockFetch(content = pageSettings) {
 }
 
 function doRender() {
+    localStorage.setItem("user", JSON.stringify({id: "1", userPreferences: {id: "1", normalChannel: "EMAIL", urgentChannel: "SMS"}, firstname: "John", lastname: "Doe"}));
     const {container} = RenderComponent(Inbox)
     expect(screen.getByText(/Inbox/)).toBeInTheDocument()
     return container;
@@ -63,9 +64,7 @@ test("RenderNotifications -success", async () => {
         const container = doRender();
         await sleep(40)
         expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
-
-        let notification = container.querySelectorAll("div.is-clickable");
-        expect(notification.length).toBe(1);
+        let notification = container.querySelectorAll(".MuiCardContent-root");
         expect(notification[0]).toBeInTheDocument();
         fireEvent.click(notification[0]);
         await sleep(40);

@@ -2,6 +2,8 @@ import Organization from "./Organization";
 import {getBase} from "../../js/FetchBase";
 import {useSnackbar} from 'notistack';
 import PagedList from "../util/PagedList";
+import {Container, Typography} from "@material-ui/core";
+import React from "react";
 
 const JoinOrganization = () => {
     const {enqueueSnackbar} = useSnackbar();
@@ -38,15 +40,19 @@ const JoinOrganization = () => {
         return <Organization className="panel-block" key={props.key} content={props.data}/>
     }
 
-    return <article className="panel">
-        <div className="panel-heading has-text-centered-mobile">
-            <h2 className=" title is-3">Join Organizations</h2>
-        </div>
-        <section>
-            <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
-                       IsEmptyComponent={() => <p>No organizations found</p>}/>
-        </section>
-    </article>
+    return <Container>
+        <article className="panel">
+            <div className="panel-heading has-text-centered-mobile">
+                <Typography variant="h4">
+                    Join Organizations
+                </Typography>
+            </div>
+            <section>
+                <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
+                           IsEmptyComponent={() => <p>No organizations found</p>}/>
+            </section>
+        </article>
+    </Container>
 }
 
 export default JoinOrganization

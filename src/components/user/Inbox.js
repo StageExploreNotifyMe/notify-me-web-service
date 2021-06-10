@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {Card, CardContent, Container, Grid, Tab, Tabs, Typography} from "@material-ui/core";
+
 
 import {getBase} from "../../js/FetchBase";
 import {dateArrayToDate} from "../../js/DateTime";
@@ -6,6 +8,7 @@ import PagedList from "../util/PagedList";
 import {useSnackbar} from "notistack";
 
 const Inbox = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
     let notificationDate = null;
     const [notification, setNotification] = useState(null)
     const [isDisplayingUrgent, setIsDisplayingUrgent] = useState(false)
@@ -29,24 +32,25 @@ const Inbox = () => {
 
     const ShowFullNotification = () => {
         if (notification === null) {
-            return <div className="card">
-                <div className="card-header">
-                    <h3>No notification selected</h3>
-                </div>
-            </div>
+            return <Card>
+                <CardContent>
+                    <Typography variant="h5">
+                        No notification selected
+                    </Typography>
+                </CardContent>
+            </Card>
         }
         let date = dateArrayToDate(notification.creationDate);
         notificationDate = date.toISOString().split('T')[0];
-        return <div className="card">
-            <div className="card-header">
-                <h3>{notification.title}</h3>
-            </div>
-            <div className="card-content">
-                <p>{notification.title}</p>
-                <p className="has-text-right">{notificationDate}</p>
-                <p>{notification.body}</p>
-            </div>
-        </div>
+        return <Card>
+            <CardContent>
+                <Typography variant="h5">{notification.title}  </Typography>
+                <Typography variant="subtitle1">
+                    <p className="has-text-right">{notificationDate}</p>
+                    <p>{notification.body}</p>
+                </Typography>
+            </CardContent>
+        </Card>
     }
 
     const RenderNotifications = (props) => {
@@ -54,44 +58,64 @@ const Inbox = () => {
         const not = props.data;
         if (isDisplayingUrgent && not.urgency !== "URGENT") return "";
 
-        return <div key={props.key} onClick={() => {
+        return <Card  variant="outlined" key={props.key} onClick={() => {
             setNotification(not);
-        }} className="box is-clickable">
-            <p className="field">{not.title}</p>
-            <p className="field-body">{not.body}</p>
-        </div>
+        }}>
+            <CardContent>
+                <Typography variant="body1">
+                    <p>{not.title}</p>
+                    <p>{not.body}</p>
+                </Typography>
+            </CardContent>
+        </Card>
     }
 
     const RenderNoNotifications = () => <p>No notifications in your inbox</p>;
 
     return <article>
-        <section className="hero is-primary">
-            <div className="hero-body">
-                <h2 className="title is-2">Inbox</h2>
-            </div>
-        </section>
-        <section className="section">
-            <div className="columns">
-                <div className="column is-one-quarter panel-tabs has-text-centered">
-                    <a onClick={() => confirmUrgent(false)}>
-                        All
-                    </a>
-                    <a onClick={() => confirmUrgent(true)}>
-                        Urgent
-                    </a>
-                </div>
-            </div>
-            <div className="columns">
-                <div className="column is-one-quarter">
+        <Typography variant="h4">{user.firstname}'s Inbox</Typography>
+
+                 <Grid container
+              alignItems="baseline"
+        >
+            <Grid item xs={6} sm={3}>
+                <Container>
+                <Tabs
+                    indicatorColor="primary"
+                    textColor="primary">
+                    <Tab label="ALL" value="1" onClick={() => confirmUrgent(false)}/>
+                    <Tab label="URGENT" value="2" onClick={() => confirmUrgent(true)}/>
+                </Tabs>
+                </Container>
+            </Grid>
+            <Grid container
+                  spacing={3}
+                  alignItems="baseline"
+
+            >
+                <Grid item xs={3} sm={3}>
+                    <Container>
+
                     <PagedList fetchDataFnc={fetchNotifications} RenderListItem={RenderNotifications}
                                IsEmptyComponent={RenderNoNotifications}
                                pageControls={{showButtons: false, sizeModifier: "is-small"}}/>
-                </div>
-                <div className="column">
+                    </Container>
+                </Grid>
+
+                <Grid item xs={9}
+                      container
+                      direction="row"
+                      justify="flex-start"
+                      alignItems="stretch"
+                >
+                    <Container>
                     <ShowFullNotification/>
-                </div>
-            </div>
-        </section>
+                    </Container>
+
+                </Grid>
+
+            </Grid>
+        </Grid>
     </article>
 }
 

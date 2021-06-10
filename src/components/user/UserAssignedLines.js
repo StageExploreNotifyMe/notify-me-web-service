@@ -4,6 +4,7 @@ import {getBase, postBase} from "../../js/FetchBase";
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
+import {Button, Paper, Table, TableBody, TableCell, TableContainer} from "@material-ui/core";
 
 const UserAssignedLines = () => {
     let userId = localStorage.getItem("user.id");
@@ -37,15 +38,21 @@ const UserAssignedLines = () => {
     const RenderVenueLines = (props) => {
         const line = props.data;
         const eventDate = dateArrayToDate(line.event.date);
-        return <div className="panel-block columns" key={line.id}>
-            <p className="column">{line.event.name} {line.line.name} </p>
-            <p className="column">{eventDate.toLocaleTimeString()} {eventDate.toLocaleDateString()}</p>
-            <p className="column is-2">
-                <button className="button is-danger" onClick={() => cancelAttendance(line, props.update)}>
-                    Cancel attendance
-                </button>
-            </p>
-        </div>
+        return <TableContainer component={Paper}>
+            <Table>
+                <TableBody>
+                    <TableCell align="left" width={300}>{line.event.name} {line.line.name}</TableCell>
+                    <TableCell
+                        align="left"
+                        width={300}>{eventDate.toLocaleTimeString()} {eventDate.toLocaleDateString()}</TableCell>
+                    <TableCell align="right" width={300}>
+                        <Button color="secondary" onClick={() => cancelAttendance(line, props.update)}> Cancel
+                            attendance</Button>
+                    </TableCell>
+                </TableBody>
+            </Table>
+        </TableContainer>
+
     }
 
     return <>
