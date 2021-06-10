@@ -4,6 +4,7 @@ import {useHistory} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
 import {useSnackbar} from "notistack";
+import {Container, List, ListItem, ListItemText, ListSubheader, Typography} from "@material-ui/core";
 
 const PickOrganizationToManage = () => {
 
@@ -43,28 +44,24 @@ const PickOrganizationToManage = () => {
         if (loading) return <Spinner/>
 
         return data.map(ev => {
-            return <div className="panel-block columns" key={ev.id}>
-                <div className="column">{ev.organization.name}</div>
-                <div className="column is-2">
-                    <button className="button is-primary" onClick={() => onOrgClick(ev)}>Details</button>
-                </div>
-            </div>
+            return <ListItem key={ev.id} component="li" divider={true} button>
+                <ListItemText primary={ev.organization.name} onClick={() => onOrgClick(ev)}/>
+            </ListItem>
         })
     }
 
-    return <article className="container mt-2">
-        <section className="level">
-            <div className="level-left"><h2 className="title is-3 level-item">
-                Please select which organization you'd like to see information on now:
-            </h2></div>
-        </section>
-        <section className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <h2 className="title is-3">Organizations</h2>
-            </div>
+    return <Container maxWidth="xl">
+        <Typography gutterBottom variant="h4" component="h2">
+            Please select which organization you'd like to see information on now:
+        </Typography>
+        <List component="ul" aria-label="main mailbox folders" subheader={
+            <ListSubheader key={"subheader"} component="li" id="nested-list-subheader">
+                Organizations
+            </ListSubheader>
+        }>
             <RenderOrgs/>
-        </section>
-    </article>
+        </List>
+    </Container>
 };
 
 export default PickOrganizationToManage;

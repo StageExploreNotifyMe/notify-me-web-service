@@ -49,11 +49,11 @@ test('OrganizationDetails - Render', async () => {
         const container = renderOrganizationDetails();
         expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
 
-        let navButton = container.querySelector(".card-footer-item");
+        let navButton = container.querySelector("button");
         expect(navButton).toBeInTheDocument();
         fireEvent.click(navButton);
         await sleep(20);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/linemanagement")
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organizations")
 
         let changeButton = (screen.getByText(new RegExp("Change Organization")));
         expect(changeButton).toBeInTheDocument();

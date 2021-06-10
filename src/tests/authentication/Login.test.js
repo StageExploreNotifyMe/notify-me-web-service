@@ -39,8 +39,7 @@ test('Login - 1', async () => {
         await sleep(20);
         expect(emailInput.value).toBe("test@user.com")
 
-        let button = container.querySelector("button");
-        fireEvent.click(button);
+        fireEvent.click(container.querySelectorAll("button")[1]);
         await sleep(20);
         expect(mockHistoryPush).toHaveBeenCalledWith("/")
     })
@@ -56,9 +55,7 @@ test('Login - 2', async () => {
         await sleep(20);
         expect(passwordInput.value).toBe("1234")
 
-
-        let button = container.querySelector("button");
-        fireEvent.click(button);
+        fireEvent.click(container.querySelectorAll("button")[1]);
         await sleep(20);
         expect(mockHistoryPush).toHaveBeenCalledWith("/")
     })
@@ -71,7 +68,7 @@ test('Login - showPassword', async () => {
         let passwordInput = container.querySelectorAll("input")[1];
         expect(passwordInput.type).toBe("password");
         await sleep(5)
-        fireEvent.click(container.querySelector(".is-clickable"));
+        fireEvent.click(container.querySelector("button"));
         await sleep(20);
         expect(passwordInput.type).toBe("text");
     })

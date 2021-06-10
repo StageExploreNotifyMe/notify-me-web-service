@@ -65,7 +65,7 @@ test('Pick Organization - Render', async () => {
         const {container} = renderOrganizationDetails();
         await waitForLoadingSpinner(container)
         expect(screen.getByText(new RegExp(organization.name))).toBeInTheDocument()
-        let button = screen.getByText("Details");
+        let button = screen.getByText("KdG");
         expect(button).toBeInTheDocument();
         fireEvent.click(button);
         await sleep(20);

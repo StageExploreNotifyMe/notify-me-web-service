@@ -60,6 +60,8 @@ function renderMemberManagement() {
     localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
 
     const {container} = RenderComponent(OrganizationJoinRequests, {}, [route]);
+    expect(screen.getByText(new RegExp("Open Join Requests "))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(organization.name))).toBeInTheDocument()
     return container;
 }
 
@@ -69,7 +71,7 @@ test('OrganizationJoinRequests - render', async () => {
         const container = renderMemberManagement();
         await waitForLoadingSpinner(container)
         await sleep(20)
-        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
+
         expect(screen.getByText(new RegExp(userOrg.user.firstname + " " + userOrg.user.lastname))).toBeInTheDocument()
     })
 }, 5000);
@@ -80,7 +82,6 @@ test('OrganizationJoinRequests - no requests', async () => {
         const container = renderMemberManagement();
         await waitForLoadingSpinner(container)
         await sleep(20)
-        expect(screen.getByText(new RegExp("Organization " + organization.name))).toBeInTheDocument()
         expect(screen.getByText(new RegExp("No pending"))).toBeInTheDocument()
     })
 }, 5000);
