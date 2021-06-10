@@ -4,10 +4,25 @@ import {postBase} from "../../js/FetchBase";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {useSnackbar} from 'notistack';
+import {
+    Button,
+    ButtonGroup,
+    Container,
+    FormControl,
+    FormHelperText,
+    Input,
+    InputAdornment,
+    InputLabel,
+    Typography,
+} from "@material-ui/core";
+import DateFnsUtils from '@date-io/date-fns';
+import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import {makeStyles} from "@material-ui/styles";
 
 const CreateEvent = () => {
     const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
+    const classes = useStyles();
     const venue = JSON.parse(localStorage.getItem("venue"));
 
     let now = new Date()
@@ -21,10 +36,9 @@ const CreateEvent = () => {
         venueId: venue.id
     })
     const [validationState, setValidationState] = useState({
-        dateInpast: false,
+        invalidDateTime: false,
         noName: false
     })
-    const [snackBarState, setSnackBarState] = useState({isOpen: false, text: "", severity: "error"})
 
     function submitEvent(e) {
         e.preventDefault();
@@ -34,18 +48,15 @@ const CreateEvent = () => {
                 ...prevState,
                 noName: true
             }))
+            return;
         }
-        setDateTime(eventDto.eventDate, true)
 
-        if (validationState.noName || validationState.dateInpast) return;
-
-        let eventDateTime = eventDto.eventDateTime;
-        eventDateTime.setUTCHours(eventDateTime.getHours())
+        if (validationState.noName || validationState.invalidDateTime) return;
 
         postBase("/event", JSON.stringify({
             name: eventDto.name,
             venueId: eventDto.venueId,
-            eventDateTime: eventDateTime
+            eventDateTime: eventDto.eventDateTime
         })).then(() => {
             history.push("/venue/events");
         }).catch(() => {
@@ -55,105 +66,106 @@ const CreateEvent = () => {
         })
     }
 
-    function setDateTime(value, isDate) {
-        let rawDate = eventDto.eventDate;
-        let time = eventDto.eventTime
-        if (isDate) {
-            rawDate = value
-        } else {
-            time = value
-        }
-        let date = new Date(rawDate);
-        let dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(time.split(':')[0]), parseInt(time.split(':')[1]));
-
+    function setDateTime(value) {
         setEventDto(prevState => ({
             ...prevState,
-            eventDate: rawDate,
-            eventTime: time,
-            eventDateTime: dateTime
+            eventDateTime: value
         }))
-        let dateInPast = dateTime < new Date();
+        let dateInPast = value < new Date();
         setValidationState(prevState => ({
             ...prevState,
-            dateInpast: dateInPast
+            invalidDateTime: dateInPast
         }))
     }
 
-    return <div className="container mt-2">
-        <div className="level">
-            <div className="level-left"><h2 className="title is-2 level-item">Create Event</h2></div>
-        </div>
+    return <Container maxWidth="md">
+        <Typography gutterBottom variant="h3" component="h2">
+            Create Event
+        </Typography>
+
         <form>
-            <div className="field">
-                <label className="label">Name</label>
-                <div className={`control ${validationState.noName ? 'has-icons-right' : ''}`}>
-                    <input className={`input ${validationState.noName ? 'is-danger' : ''}`} type="text"
-                           placeholder="Name of the event" value={eventDto.name}
-                           onChange={e => {
-                               setEventDto(prevState => ({
-                                   ...prevState,
-                                   name: e.target.value
-                               }))
-                               setValidationState(prevState => ({
-                                   ...prevState,
-                                   noName: e.target.value === ""
-                               }))
-                           }}/>
-                    <span
-                        className={`icon is-small is-right ${validationState.noName ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                    <p className={`help is-danger ${validationState.noName ? '' : 'is-hidden'}`}>An event must have a
-                        name</p>
-                </div>
-            </div>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="event-name-input">Event name</InputLabel>
+                    <Input
+                        id="event-name-input"
+                        aria-describedby="event-name-validation"
+                        type={'text'}
+                        value={eventDto.name}
+                        onChange={e => {
+                            setEventDto(prevState => ({
+                                ...prevState,
+                                name: e.target.value
+                            }))
+                            setValidationState(prevState => ({
+                                ...prevState,
+                                noName: e.target.value === ""
+                            }))
+                        }}
+                        endAdornment={
+                            validationState.noName ?
+                                <InputAdornment position="end">
+                                    <FontAwesomeIcon icon={faExclamationTriangle}/>
+                                </InputAdornment> : ""
+                        }
+                        error={validationState.noName}
+                    />
+                    <FormHelperText hidden={!validationState.noName} error={true} id="event-name-validation">
+                        An event must have a name
+                    </FormHelperText>
+                </FormControl>
+            </Typography>
 
-            <div className="field columns">
-                <div className="field column is-12-mobile">
-                    <label className="label">Event Date</label>
-                    <div className={`control ${validationState.dateInpast ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.dateInpast ? 'is-danger' : ''}`} type="date"
-                               placeholder="Time of the event"
-                               value={eventDto.eventDate} onChange={e => {
-                            setDateTime(e.target.value, true)
-                        }}/>
-                        <span
-                            className={`icon is-small is-right ${validationState.dateInpast ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.dateInpast ? '' : 'is-hidden'}`}>An event cannot
-                            be planned in the past</p>
-                    </div>
-                </div>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <FormControl fullWidth>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDateTimePicker
+                            margin="normal"
+                            id="date-picker-dialog"
+                            label="Event Date & Time"
+                            format="HH:mm - dd/MM/yyyy"
+                            ampm={false}
+                            disablePast={true}
+                            value={eventDto.eventDateTime}
+                            onChange={(e) => setDateTime(e, true)}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            aria-describedby="event-name-validation"
+                            invalidDateMessage={"Given date time format not recognized"}
+                            minDateMessage={"Date cannot be in the past"}
+                        />
+                        <FormHelperText hidden={!validationState.invalidDateTime} error={true}
+                                        id="event-date-validation">
+                            Chosen date & time combination is invalid. Make sure the event is planned in the future and
+                            the given input is valid.
+                        </FormHelperText>
+                    </MuiPickersUtilsProvider>
+                </FormControl>
+            </Typography>
 
-                <div className="field column is-12-mobile">
-                    <label className="label">Event Time</label>
-                    <div className={`control ${validationState.dateInpast ? 'has-icons-right' : ''}`}>
-                        <input className={`input ${validationState.dateInpast ? 'is-danger' : ''}`} type="time"
-                               placeholder="Time of the event"
-                               value={eventDto.eventTime} onChange={e => {
-                            setDateTime(e.target.value, false)
-                        }}/>
-                        <span
-                            className={`icon is-small is-right ${validationState.dateInpast ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="field is-grouped">
-                <div className="control">
-                    <button onClick={(e) => submitEvent(e)} className="button is-link"
-                            disabled={validationState.dateInpast || validationState.noName}>Submit
-                    </button>
-                </div>
-                <div className="control">
-                    <button onClick={() => history.goBack()} className="button is-link is-light">Cancel</button>
-                </div>
-            </div>
+            <Typography className={classes.margin} gutterBottom variant="body1" component="div" align="center">
+                <ButtonGroup color="secondary" aria-label="contained primary button group">
+                    <Button variant="contained" onClick={(e) => submitEvent(e)}
+                            disabled={validationState.invalidDateTime || validationState.noName}>
+                        Create
+                    </Button>
+                    <Button variant="outlined" onClick={() => history.goBack()}>Cancel</Button>
+                </ButtonGroup>
+            </Typography>
         </form>
-    </div>;
+    </Container>;
 }
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        margin: theme.spacing(4),
+    },
+    paper: {
+        width: 250,
+        height: 350,
+        overflow: 'auto',
+    },
+}));
 
 export default CreateEvent

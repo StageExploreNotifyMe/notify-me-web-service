@@ -132,7 +132,7 @@ async function renderAdminOrgMngmt(waitForRemoved = true) {
 async function openModal(icon, container) {
     fireEvent.click(icon);
     await sleep(20);
-    screen.debug()
+
     let modal = container.querySelector(".is-active");
     expect(modal).toBeInTheDocument();
 }

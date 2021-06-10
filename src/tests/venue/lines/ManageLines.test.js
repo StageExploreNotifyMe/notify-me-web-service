@@ -11,7 +11,8 @@ test('Render Line management', async () => {
         mockFetch({...page, content: [line]});
         const {container, createButton} = await renderAdminOrgMngmt();
         expect(screen.getByText(new RegExp(line.name))).toBeInTheDocument();
-        let icon = container.querySelector(".is-clickable");
+
+        let icon = container.querySelector(".makeStyles-clickable-1");
         expect(icon).toBeInTheDocument();
         fireEvent.click(icon);
         expect(mockHistoryPush).toHaveBeenCalledWith('/venue/lines/edit');

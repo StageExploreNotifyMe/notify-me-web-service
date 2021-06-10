@@ -43,6 +43,14 @@ let lines = {
     "numberOfElements": 3,
     "empty": false
 };
+let event = {
+    "id": "1",
+    "name": "test",
+    "date": [2021, 5, 2, 15, 6, 18, 0],
+    "eventStatus": "CREATED",
+    "venue": {"id": "1", "name": "Groenplaats"}
+};
+
 let eventLines = {
     "content": [{
         "id": "1",
@@ -52,13 +60,7 @@ let eventLines = {
             "description": "The bar at the main entrance of the venue",
             "venueDto": {"id": "1", "name": "Groenplaats"}
         },
-        "event": {
-            "id": "1",
-            "name": "test",
-            "date": [2021, 5, 2, 15, 6, 18, 0],
-            "eventStatus": "CREATED",
-            "venue": {"id": "1", "name": "Groenplaats"}
-        },
+        "event": event,
         "organization": {"id": "1", "name": "KdG"},
         "assignedUsers": []
     }],
@@ -104,6 +106,7 @@ function mockFetch(simulateNetworkError = false, isEmpty = false) {
 
 function renderComponent() {
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
+    localStorage.setItem("currentEvent", JSON.stringify(event));
     const {container} = RenderComponent(AddEventLines, {}, [route])
     return {container};
 }
@@ -124,11 +127,8 @@ test('Render addEventLines component', async () => {
         expect(screen.getByText(/Add Lines to this event/i)).toBeInTheDocument()
         await waitForLoadingSpinner(container)
 
-        openModal(container);
-        closeModal(container, '.modal-close');
-        openModal(container)
-        closeModal(container, '.modal-background');
         let input = container.querySelectorAll('input')[0]
+
         expect(input).toBeInTheDocument()
         fireEvent.click(input);
         expect(screen.getByText(/Not Implemented/i)).toBeInTheDocument()
@@ -138,18 +138,3 @@ test('Render addEventLines component', async () => {
         fireEvent.click(input2);
     })
 }, 5000);
-
-function openModal(container) {
-    let modelPopupButton = container.querySelector('.is-clickable')
-    expect(modelPopupButton).toBeInTheDocument()
-    fireEvent.click(modelPopupButton);
-    let modal = container.querySelector('.modal')
-    expect(modal).toBeInTheDocument()
-}
-
-function closeModal(container, selector) {
-    let closeByBackground = container.querySelector(selector)
-    expect(closeByBackground).toBeInTheDocument()
-    fireEvent.click(closeByBackground);
-    expect(container.querySelectorAll('.modal').length).toBe(0);
-}
