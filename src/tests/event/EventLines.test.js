@@ -1,17 +1,14 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import EventLines from "../../components/event/EventLines";
 import {sleep} from "../../js/Sleep";
 import React from "react";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
-const history = createMemoryHistory();
+
 const route = '/venue/events/1';
-history.push(route);
 let mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -65,7 +62,7 @@ function mockFetch(simulateNetworkError = false, content = page) {
 function renderComponent() {
     mockHistoryPush = jest.fn();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<Router history={history}><EventLines/></Router>);
+    const {container} = RenderComponent(EventLines, {}, [route]);
     return {container};
 }
 

@@ -1,21 +1,22 @@
 import PagedList from "../util/PagedList";
 import React from "react";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {useHistory} from "react-router-dom";
+import {useSnackbar} from "notistack";
 
 const PickVenueToManage = () => {
 
     const history = useHistory();
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchPageData(activePage) {
         try {
             return await getBase("/venue/" + localStorage.getItem("user.id") + "?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch all the venues you are a part of',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch all the venues you are a part of', {
+                variant: 'error',
+            });
         }
     }
 

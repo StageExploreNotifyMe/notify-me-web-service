@@ -3,6 +3,7 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 import React from "react";
 import {sleep} from "../../js/Sleep";
 import UserPreferences from "../../components/user/UserPreferences";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -14,15 +15,15 @@ let userPref = {
 
 let notificationsDTO = {notificationChannels: ["EMAIL", "SMS", "WHATSAPP", "APP"]}
 
-function RenderComponent() {
+function DoRender() {
     mockFetch()
-    return render(<UserPreferences/>);
+    return RenderComponent(UserPreferences);
 }
 
 test('UserPreferences changed', async () => {
     await act(async () => {
         mockFetch()
-        const {container} = RenderComponent()
+        const {container} = DoRender()
         let notRendered = screen.getAllByText(/no notifications rendered/i)
         expect(notRendered[0]).toBeInTheDocument()
         await waitForElementToBeRemoved(notRendered[0])
@@ -41,7 +42,9 @@ test("onPreferenceChanged - normal", async () => {
         let onPreferenceChanged = jest.fn()
         const {container} = render(<input
             onChange={() => onPreferenceChanged("SMS", "normal")}
-            type="radio" name={"normal"}/>)
+            type="radio"
+            name={"normal"}
+        />)
         const radio = container.firstChild
         fireEvent.click(radio, {target: {value: 'SMS'}})
         expect(onPreferenceChanged.mock.calls.length).toBe(1)
@@ -53,7 +56,9 @@ test("onPreferenceChanged - urgent", async () => {
         let onPreferenceChanged = jest.fn()
         const {container} = render(<input
             onChange={() => onPreferenceChanged("SMS", "urgent")}
-            type="radio" name={"urgent"}/>)
+            type="radio"
+            name={"urgent"}
+        />)
         const radio = container.firstChild
         fireEvent.click(radio, {target: {value: 'SMS'}})
         expect(onPreferenceChanged.mock.calls.length).toBe(1)
@@ -62,7 +67,7 @@ test("onPreferenceChanged - urgent", async () => {
 
 test("click radiobutton", async () => {
     await act(async () => {
-        const {container} = RenderComponent()
+        const {container} = DoRender()
         let notRendered = screen.getAllByText(/no notifications rendered/i)
         await waitForElementToBeRemoved(notRendered[0])
         let radio = container.querySelector('#radioNormal')
@@ -72,7 +77,7 @@ test("click radiobutton", async () => {
 
 test("dropdown", async () => {
     await act(async () => {
-        const {container} = RenderComponent()
+        const {container} = DoRender()
         let dropdown = container.querySelector('.dropdown-trigger')
         fireEvent.click(dropdown)
     })

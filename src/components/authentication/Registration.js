@@ -3,7 +3,8 @@ import {faEnvelope, faExclamationTriangle, faEye, faLock, faPhone} from "@fortaw
 import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
 import {useHistory} from "react-router-dom";
-import {toast} from "bulma-toast";
+import {useSnackbar} from 'notistack';
+
 
 const Registration = () => {
     const history = useHistory();
@@ -26,6 +27,7 @@ const Registration = () => {
         noPassword: false,
         passwordsDontMatch: false
     })
+    const {enqueueSnackbar} = useSnackbar();
 
     function submitEvent(e) {
         e.preventDefault();
@@ -39,15 +41,13 @@ const Registration = () => {
         };
         postBase("/authentication/register", JSON.stringify(body)).then(() => {
             history.push("/");
-            toast({
-                message: 'You have been successfully registered',
-                type: 'is-success'
-            })
+            enqueueSnackbar("You have been successfully registered", {
+                severity: "success"
+            });
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to register you',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to register you", {
+                variant: 'error',
+            });
         })
     }
 
@@ -62,7 +62,9 @@ const Registration = () => {
         };
         let isFullyValid = true;
         Object.keys(validState).forEach(key => {
-            if (validState[key]) {isFullyValid = false;}
+            if (validState[key]) {
+                isFullyValid = false;
+            }
         });
         validState.isFullyValid = isFullyValid;
 
@@ -84,7 +86,8 @@ const Registration = () => {
                 <label className="label">Name</label>
                 <div className="field is-grouped">
                     <div className={`control ${validationState.noFirstName ? 'has-icons-right' : ''}`}>
-                        <input id="firstNameInput" className={`input ${validationState.noFirstName ? 'is-danger' : ''}`} type="text"
+                        <input id="firstNameInput" className={`input ${validationState.noFirstName ? 'is-danger' : ''}`}
+                               type="text"
                                placeholder="First name" value={registerDto.firstName}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -106,7 +109,8 @@ const Registration = () => {
                     </div>
 
                     <div className={`control ${validationState.noLastName ? 'has-icons-right' : ''}`}>
-                        <input id="lastNameInput" className={`input ${validationState.noLastName ? 'is-danger' : ''}`} type="text"
+                        <input id="lastNameInput" className={`input ${validationState.noLastName ? 'is-danger' : ''}`}
+                               type="text"
                                placeholder="Last name" value={registerDto.lastName}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -131,7 +135,8 @@ const Registration = () => {
                 <div className="field">
                     <label className="label">Email</label>
                     <div className={`control has-icons-left ${validationState.noMail ? 'has-icons-right' : ''}`}>
-                        <input id="emailInput" className={`input ${validationState.noMail ? 'is-danger' : ''}`} type="text"
+                        <input id="emailInput" className={`input ${validationState.noMail ? 'is-danger' : ''}`}
+                               type="text"
                                placeholder="Email" value={registerDto.email}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -159,7 +164,8 @@ const Registration = () => {
                 <div className="field">
                     <label className="label">Mobile Number</label>
                     <div className={`control has-icons-left ${validationState.noPhone ? 'has-icons-right' : ''}`}>
-                        <input id="phoneInput" className={`input ${validationState.noPhone ? 'is-danger' : ''}`} type="text"
+                        <input id="phoneInput" className={`input ${validationState.noPhone ? 'is-danger' : ''}`}
+                               type="text"
                                placeholder="Mobile Number" value={registerDto.phone}
                                onChange={e => {
                                    setRegisterDto(prevState => ({
@@ -227,7 +233,8 @@ const Registration = () => {
                     <p className="help">Re-enter your password</p>
                     <div
                         className={`control has-icons-left ${validationState.passwordsDontMatch ? 'has-icons-right' : ''}`}>
-                        <input id="passwordRepeatInput" className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
+                        <input id="passwordRepeatInput"
+                               className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
                                type={`${registerDto.showPassword ? "text" : "password"}`} placeholder="Password"
                                value={registerDto.confirmPassword}
                                onChange={e => {

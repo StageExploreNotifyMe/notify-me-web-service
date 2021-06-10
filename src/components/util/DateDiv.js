@@ -1,15 +1,12 @@
 import {dateArrayToDate, getRelativeTime} from "../../js/DateTime";
-import ReactTooltip from "react-tooltip";
+import {Tooltip} from "@material-ui/core";
 
 const DateDiv = (props) => {
-    const id = "date-div-" + Math.round(Math.random() * 100);
-
-    return <div data-tip="" data-for={id}>
-        {getRelativeTime(dateArrayToDate(props.date))}
-        <ReactTooltip id={id} place="top" type="dark" effect="solid">
-            {dateArrayToDate(props.date).toLocaleString()}
-        </ReactTooltip>
-    </div>
+    return <>
+        <Tooltip title={<span>{dateArrayToDate(props.date).toLocaleString()}</span>}>
+            <span>{getRelativeTime(dateArrayToDate(props.date))}</span>
+        </Tooltip>
+    </>
 }
 
 export default DateDiv

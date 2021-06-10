@@ -1,15 +1,11 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import AddEventLines from "../../components/event/AddEventLines";
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 
-const history = createMemoryHistory();
 const route = '/venue/events/1/lines';
-history.push(route);
 enableFetchMocks()
 
 let lines = {
@@ -108,7 +104,7 @@ function mockFetch(simulateNetworkError = false, isEmpty = false) {
 
 function renderComponent() {
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<Router history={history}><AddEventLines/></Router>)
+    const {container} = RenderComponent(AddEventLines, {}, [route])
     return {container};
 }
 

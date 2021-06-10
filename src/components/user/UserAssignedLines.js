@@ -1,30 +1,29 @@
 import React from "react";
 import {getBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const UserAssignedLines = () => {
-
     let userId = localStorage.getItem("user.id");
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchUserLines(activePage) {
         try {
             return await getBase("/user/" + userId + "/lines?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the lines you were assigned to',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch the lines you were assigned to", {
+                variant: 'error',
+            });
         }
     }
 
     function cancelAttendance(line, forceUpdateFnc) {
         let body = {eventLineId: line.id, memberId: userId};
         postBase("/line/" + line.id + "/cancel/member", JSON.stringify(body)).then(() => forceUpdateFnc()).catch(() =>
-            toast({
-                message: 'Something went wrong while trying to cancel your attendance',
-                type: 'is-danger'
+            enqueueSnackbar("Something went wrong while trying to cancel your attendance", {
+                variant: "error"
             })
         )
     }

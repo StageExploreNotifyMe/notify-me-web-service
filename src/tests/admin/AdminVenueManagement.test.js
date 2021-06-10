@@ -1,8 +1,9 @@
 import {enableFetchMocks} from "jest-fetch-mock";
 import {act} from "react-dom/test-utils";
-import {fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {fireEvent, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import AdminVenueManagement from "../../components/admin/AdminVenueManagement";
 import {sleep} from "../../js/Sleep";
+import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks()
 
@@ -41,7 +42,7 @@ jest.mock('react-router-dom', () => ({
 
 test("Render VenueManagement", async () => {
     await act(async () => {
-        const {container} = render(<AdminVenueManagement/>)
+        const {container} = RenderComponent(AdminVenueManagement)
         let spinner = container.querySelector(".loading")
         expect(spinner).toBeInTheDocument()
         mockFetch({...page, content: [venue]})
@@ -61,7 +62,7 @@ test("Render VenueManagement", async () => {
 test("Render network error", async () => {
     await act(async () => {
         mockFetch(page, true)
-        render(<AdminVenueManagement/>)
+        RenderComponent(AdminVenueManagement)
         await sleep(20);
         expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
     })
@@ -69,7 +70,7 @@ test("Render network error", async () => {
 
 test("Render no venues", async () => {
     await act(async () => {
-        let {container} = render(<AdminVenueManagement/>)
+        let {container} = RenderComponent(AdminVenueManagement)
         let spinner = container.querySelector(".loading")
         mockFetch({...page, content: []})
         await waitForElementToBeRemoved(spinner)

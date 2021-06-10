@@ -1,7 +1,8 @@
-import {act, fireEvent, render, screen, waitForElementToBeRemoved} from '@testing-library/react';
+import {act, fireEvent, screen, waitForElementToBeRemoved} from '@testing-library/react';
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../../js/Sleep";
 import AdminOrganizationManagement from "../../../components/admin/organization/AdminOrganizationManagement";
+import {RenderComponent} from "../../TestUtilities";
 
 enableFetchMocks()
 
@@ -118,7 +119,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 async function renderAdminOrgMngmt(waitForRemoved = true) {
-    const {container} = render(<AdminOrganizationManagement/>);
+    const {container} = RenderComponent(AdminOrganizationManagement);
     let spinner = container.querySelector(".loading");
     expect(spinner).toBeInTheDocument()
     if (waitForRemoved) await waitForElementToBeRemoved(spinner)

@@ -1,8 +1,8 @@
-import {toast} from "bulma-toast";
 import {getBase} from "../../js/FetchBase";
 import PagedList from "../util/PagedList";
 import React, {useEffect, useState} from "react";
 import {dateArrayToDate} from "../../js/DateTime";
+import {useSnackbar} from 'notistack';
 
 const NotificationOverview = () => {
     const [modal, setModal] = useState({
@@ -27,9 +27,9 @@ const NotificationOverview = () => {
     const [chosenEvent, setChosenEvent] = useState('ALL')
     const [loadingEvents, setLoadingEvents] = useState(true)
     const [loadingType, setLoadingType] = useState(true)
+    const {enqueueSnackbar} = useSnackbar();
     let forceRerender = () => {
     };
-
 
     async function fetchNotifications(activePage) {
         try {
@@ -44,10 +44,9 @@ const NotificationOverview = () => {
             }
             return await getBase("/admin/notifications?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while fetching all notifications',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while fetching all notifications", {
+                variant: 'error',
+            });
         }
     }
 

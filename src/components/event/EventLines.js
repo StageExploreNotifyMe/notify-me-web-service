@@ -1,14 +1,16 @@
 import React, {useState} from "react";
 import {getBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import {useHistory, useParams} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import EventLineAssignOrganization from "./EventLineAssignOrganization";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const EventLines = () => {
     let {id} = useParams();
+    const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
     let forceUpdateFnc = null;
 
@@ -23,10 +25,9 @@ const EventLines = () => {
         try {
             return await getBase("/line/event/" + id);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch open join requests',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch open join requests", {
+                variant: 'error',
+            });
         }
     }
 
@@ -37,10 +38,9 @@ const EventLines = () => {
 
     function setEventLineState(eventLine) {
         postBase("/line/" + eventLine.id + "/cancel", {}).then(() => forceUpdateFnc()).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to cancel the eventLine',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to cancel the eventLine", {
+                variant: 'error',
+            });
         })
     }
 
@@ -79,10 +79,9 @@ const EventLines = () => {
             setAssigningOrg(false)
             forceUpdateFnc();
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while assigning organization',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while assigning organization", {
+                variant: 'error',
+            });
         })
     }
 
@@ -94,16 +93,17 @@ const EventLines = () => {
         let customText = null;
         if (staffingReminderText !== "") customText = staffingReminderText;
 
-        postBase("/line/" + modal.eventLine.id + "/staffingreminder", JSON.stringify({eventLineId: modal.eventLine.id, customText:customText})).then(() => {
-            toast({
-                message: 'Reminder send',
-                type: 'is-success'
-            })
+        postBase("/line/" + modal.eventLine.id + "/staffingreminder", JSON.stringify({
+            eventLineId: modal.eventLine.id,
+            customText: customText
+        })).then(() => {
+            enqueueSnackbar("The reminder has been sent", {
+                variant: "success"
+            });
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to send your reminder',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to send your reminder", {
+                variant: 'error',
+            });
         });
         closeModal();
     }

@@ -3,9 +3,10 @@ import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
-import {toast} from "bulma-toast";
+import {useSnackbar} from 'notistack';
 
 const CreateEvent = () => {
+    const {enqueueSnackbar} = useSnackbar();
     const history = useHistory();
     const venue = JSON.parse(localStorage.getItem("venue"));
 
@@ -23,6 +24,7 @@ const CreateEvent = () => {
         dateInpast: false,
         noName: false
     })
+    const [snackBarState, setSnackBarState] = useState({isOpen: false, text: "", severity: "error"})
 
     function submitEvent(e) {
         e.preventDefault();
@@ -47,10 +49,9 @@ const CreateEvent = () => {
         })).then(() => {
             history.push("/venue/events");
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to create your event',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to create your event", {
+                variant: 'error',
+            });
         })
     }
 
@@ -86,7 +87,8 @@ const CreateEvent = () => {
             <div className="field">
                 <label className="label">Name</label>
                 <div className={`control ${validationState.noName ? 'has-icons-right' : ''}`}>
-                    <input className={`input ${validationState.noName ? 'is-danger' : ''}`} type="text" placeholder="Name of the event" value={eventDto.name}
+                    <input className={`input ${validationState.noName ? 'is-danger' : ''}`} type="text"
+                           placeholder="Name of the event" value={eventDto.name}
                            onChange={e => {
                                setEventDto(prevState => ({
                                    ...prevState,

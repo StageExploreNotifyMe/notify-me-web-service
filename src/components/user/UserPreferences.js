@@ -1,7 +1,8 @@
 import {getBase, postBase} from "../../js/FetchBase";
 import React, {useEffect, useRef, useState} from 'react';
-import {toast} from "bulma-toast";
+
 import classnames from "classnames";
+import {useSnackbar} from "notistack";
 
 const UserPreferences = () => {
     const [notificationPreferences, setNotificationPreferences] = useState(null)
@@ -9,6 +10,7 @@ const UserPreferences = () => {
     const [channel, setChannel] = useState(null)
     const [open, setOpen] = useState(false)
     const menu = useRef();
+    const {enqueueSnackbar} = useSnackbar();
     let languages = [
         {id: "1", language: "English"},
         {id: "2", language: "Nederlands"}
@@ -22,18 +24,18 @@ const UserPreferences = () => {
             setNotificationPreferences((await possibleChannelsProm).notificationChannels);
             setLoadingPreferences(false);
         } catch (e) {
-            toast({
-                message: 'Something went wrong while trying to fetch your notificationPreferences', type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch your notificationPreferences', {
+                variant: 'error',
+            });
         }
     }
 
     function confirmChangeChannel(body) {
         postBase("/user/" + localStorage.getItem("user.id") + "/preferences/channel", JSON.stringify(body)).then(() => {
         }).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to save your channel', type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to save your channel', {
+                variant: 'error',
+            });
         })
     }
 

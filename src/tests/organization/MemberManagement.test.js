@@ -1,11 +1,8 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import MemberManagement from "../../components/organization/MemberManagement";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
@@ -73,15 +70,9 @@ function mockFetch(simulateNetworkError = false, noUsers = false) {
 }
 
 function renderMemberManagement() {
-    const history = createMemoryHistory();
     const route = '/organization/membermanagement';
-    history.push(route);
-    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
-    const {container} = render(
-        <Router history={history}>
-            <MemberManagement/>
-        </Router>,
-    );
+    localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
+    const {container} = RenderComponent(MemberManagement, {}, [route]);
     return container;
 }
 

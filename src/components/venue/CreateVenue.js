@@ -3,8 +3,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import {useState} from "react";
 import {getBase, patchBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import PagedList from "../util/PagedList";
+import {useSnackbar} from "notistack";
 
 const CreateVenue = (props) => {
     const isCreating = props.action === 'create'
@@ -19,6 +20,7 @@ const CreateVenue = (props) => {
         venueManagerIds: "",
         users: []
     }
+    const {enqueueSnackbar} = useSnackbar();
 
     if (!isCreating) {
         let toEdit = JSON.parse(localStorage.getItem("editVenue"));
@@ -55,16 +57,13 @@ const CreateVenue = (props) => {
             history.push("/admin/venueManagement")
         }).catch((error) => {
             if (error.info.status === 409) {
-                toast({
-                    message: 'There is already a venue with the name ' + venueDto.name,
-                    type: 'is-danger',
-                    duration: 5000
-                })
+                enqueueSnackbar('There is already a venue with the name ' + venueDto.name, {
+                    variant: 'error',
+                });
             } else {
-                toast({
-                    message: 'Something went wrong while trying to create your venue',
-                    type: 'is-danger'
-                })
+                enqueueSnackbar('Something went wrong while trying to create your venue', {
+                    variant: 'error',
+                });
             }
         })
     }
@@ -73,10 +72,9 @@ const CreateVenue = (props) => {
         try {
             return await getBase("/user?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while fetching all users',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while fetching all users', {
+                variant: 'error',
+            });
         }
     }
 
@@ -180,7 +178,5 @@ const CreateVenue = (props) => {
             </div>
         </form>
     </div>
-        ;
-
 }
 export default CreateVenue

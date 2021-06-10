@@ -1,8 +1,12 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
+import {AppBar, Button, Toolbar, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import {isClickable} from "../style/StyleUtils";
 
 const Navbar = () => {
     const history = useHistory();
+    const classes = useStyles();
 
     function navigateTo(url) {
         history.push(url);
@@ -10,39 +14,35 @@ const Navbar = () => {
 
     const RenderAuthButtons = () => {
         if (localStorage.getItem("IsLoggedIn") === "true") {
-            return <a className="button is-light" onClick={() => navigateTo("/logout")}>
-                    Log out
-                </a>
+            return <Button color="inherit" onClick={() => navigateTo("/logout")}>
+                Log out
+            </Button>
 
         }
         return <>
-            <a className="button is-primary" onClick={() => navigateTo("/register")}>
+            <Button color="inherit" onClick={() => navigateTo("/register")}>
                 <strong>Sign up</strong>
-            </a>
-            <a className="button is-light" onClick={() => navigateTo("/login")}>
+            </Button>
+            <Button color="inherit" onClick={() => navigateTo("/login")}>
                 Log in
-            </a>
+            </Button>
         </>
     };
 
     return <>
-        <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
-            <div id="navbarBasicExample" className="navbar-menu">
-                <div className="navbar-start">
-                    <a className="navbar-item is-primary" onClick={() => navigateTo("/")}>
-                        Notify Me
-                    </a>
-                </div>
-            </div>
-            <div className="navbar-end">
-                <div className="navbar-item">
-                    <div className="buttons">
-                        <RenderAuthButtons/>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" className={classes.title} onClick={() => navigateTo("/")}>
+                    Notify Me
+                </Typography>
+                <RenderAuthButtons/>
+            </Toolbar>
+        </AppBar>
     </>
 }
+
+const useStyles = makeStyles((theme) => ({
+    title: {flexGrow: 1, ...isClickable},
+}));
 
 export default Navbar;

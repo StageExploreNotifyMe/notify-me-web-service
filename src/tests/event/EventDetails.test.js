@@ -1,18 +1,20 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
+import {fireEvent, screen} from '@testing-library/react';
 import EventDetails from "../../components/event/EventDetails";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
 
 enableFetchMocks()
-const history = createMemoryHistory();
 const route = '/venue/events/1';
-history.push(route);
 
-let event = {"id":"1","name":"Test Event","date":[2037,5,3,8,24],"eventStatus":"CREATED","venue":{"id":"1","name":"Groenplaats"}};
+let event = {
+    "id": "1",
+    "name": "Test Event",
+    "date": [2037, 5, 3, 8, 24],
+    "eventStatus": "CREATED",
+    "venue": {"id": "1", "name": "Groenplaats"}
+};
 
 function mockFetch(simulateNetworkError = false, data = event) {
     fetch.enableMocks()
@@ -31,14 +33,20 @@ function mockFetch(simulateNetworkError = false, data = event) {
 
 function renderComponent() {
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
-    const {container} = render(<Router history={history}><EventDetails/></Router>);
+    localStorage.setItem("user", JSON.stringify({
+        firstname: "Test",
+        lastname: "Test",
+        id: "1",
+        roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"],
+        userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}
+    }));
+    const {container} = RenderComponent(EventDetails, {}, [route]);
     return {container};
 }
 
 test('Render addEventLines component - network error', async () => {
     mockFetch(true)
-    const {container} =renderComponent();
+    const {container} = renderComponent();
     let loadingSpinner = container.querySelector('.loading');
     expect(loadingSpinner).toBeInTheDocument()
     await sleep(20);
@@ -48,7 +56,7 @@ test('Render addEventLines component - network error', async () => {
 test('Render addEventLines component - created event', async () => {
     await act(async () => {
         mockFetch()
-        const {container} =renderComponent();
+        const {container} = renderComponent();
         await waitForLoadingSpinner(container);
         expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
         expect(screen.getByText(new RegExp("Make Public"))).toBeVisible()
@@ -62,7 +70,7 @@ test('Render addEventLines component - public event', async () => {
     await act(async () => {
         let pubEvent = {...event, eventStatus: "PUBLIC"};
         mockFetch(false, pubEvent)
-        const {container} =renderComponent();
+        const {container} = renderComponent();
         await waitForLoadingSpinner(container);
         expect(screen.getByText(new RegExp(event.name))).toBeInTheDocument()
         expect(screen.getAllByText(new RegExp("Cancel"))[0]).toBeVisible()

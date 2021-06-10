@@ -1,5 +1,6 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import CreateEvent from "../../components/event/CreateEvent";
+import {RenderComponent} from "../TestUtilities";
 
 let mockHistoryPush = jest.fn();
 let mockHistoryGoBack = jest.fn();
@@ -20,7 +21,7 @@ function resetMockFuncs() {
 function renderComponent() {
     resetMockFuncs();
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
-    const {container} = render(<CreateEvent/>);
+    const {container} = RenderComponent(CreateEvent);
     let submitButton = screen.queryByText(/Submit/i);
     expect(submitButton).toBeInTheDocument()
     let cancelButton = screen.queryByText(/Cancel/i);
@@ -38,7 +39,6 @@ test('Create event - go back', () => {
     fireEvent.click(cancelButton)
     expect(mockHistoryGoBack).toHaveBeenCalled();
 }, 5000);
-
 
 
 test('Create event - name input - empty', () => {

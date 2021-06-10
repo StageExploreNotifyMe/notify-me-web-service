@@ -1,26 +1,27 @@
 import {useHistory} from "react-router-dom";
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import PagedList from "../util/PagedList";
 import DateDiv from "../util/DateDiv";
-import ReactTooltip from "react-tooltip";
+import {useSnackbar} from "notistack";
+import {Tooltip} from "@material-ui/core";
 
 const OrganizationLines = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
     const id = org.id;
     const history = useHistory();
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchData(activePage) {
         try {
             return await getBase("/line/organization/" + id + "?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the lines your organization was assigned to',
-                type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch the lines your organization was assigned to', {
+                variant: 'error',
+            });
         }
     }
 
@@ -34,18 +35,16 @@ const OrganizationLines = () => {
 
         return <div className="columns panel-block" key={props.key}>
             <div className="column is-2">{line.event.name}</div>
-            <div className="column is-2" data-tip="" data-for={"line-description-" + props.key}>
-                {line.line.name}
-                <ReactTooltip id={"line-description-" + props.key} place="top" type="dark" effect="solid">
-                    {line.line.description}
-                </ReactTooltip>
+            <div className="column is-2">
+                <Tooltip title={<span>{line.line.description}</span>}>
+                    <span>{line.line.name}</span>
+                </Tooltip>
             </div>
             <div className="column is-2"><DateDiv date={line.event.date}/></div>
             <div className="column is-3" data-tip="" data-for={"line-staffing-%-" + props.key}>
-                {Math.round((line.assignedUsers.length / line.line.numberOfRequiredPeople) * 100)}%
-                <ReactTooltip id={"line-staffing-%-" + props.key} place="top" type="dark" effect="solid">
-                    {line.assignedUsers.length}/{line.line.numberOfRequiredPeople}
-                </ReactTooltip>
+                <Tooltip title={<span>{line.assignedUsers.length}/{line.line.numberOfRequiredPeople}</span>}>
+                    <span>{Math.round((line.assignedUsers.length / line.line.numberOfRequiredPeople) * 100)}%</span>
+                </Tooltip>
             </div>
             <div className="column is-2">
                 <span className="is-clickable" onClick={() => assignLine(line)}>

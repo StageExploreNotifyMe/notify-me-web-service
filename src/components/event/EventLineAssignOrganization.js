@@ -1,9 +1,12 @@
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import React from "react";
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const EventLineAssignOrganization = (props) => {
+    const {enqueueSnackbar} = useSnackbar();
+
     const eventLine = JSON.parse(localStorage.getItem("event.line.assign"));
     if (eventLine === undefined || eventLine === null) return "";
 
@@ -13,10 +16,9 @@ const EventLineAssignOrganization = (props) => {
         try {
             return await getBase("/organization?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch organizations',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch organizations", {
+                variant: 'error',
+            });
         }
     }
 

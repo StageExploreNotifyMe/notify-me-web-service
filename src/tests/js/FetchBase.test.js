@@ -5,7 +5,7 @@ let timeout = 1000;
 function mockFetch() {
     let mockFn = jest.fn(() =>
         Promise.resolve({
-            json: () => Promise.resolve({ result: true }),
+            json: () => Promise.resolve({result: true}),
             ok: true
         })
     );
@@ -30,7 +30,7 @@ test('Fetch - get - url', async () => {
     expect(resp.result).toBe(true)
     expect(mockFn).toHaveBeenCalledWith("http://localhost:9090/test", {
         method: 'GET',
-        headers: {"Authorization": "",'Content-Type': 'application/json'}
+        headers: {"Authorization": "", 'Content-Type': 'application/json'}
     })
 }, timeout);
 
@@ -40,7 +40,7 @@ test('Fetch - post', async () => {
     expect(resp.result).toBe(true)
     expect(mockFn).toHaveBeenCalledWith("http://localhost:9090/test", {
         body: {test: true},
-        headers: {"Authorization": "",'Content-Type': 'application/json'},
+        headers: {"Authorization": "", 'Content-Type': 'application/json'},
         method: 'POST'
     })
 }, timeout);

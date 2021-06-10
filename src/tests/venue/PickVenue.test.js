@@ -1,8 +1,8 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {enableFetchMocks} from 'jest-fetch-mock'
 import {act} from "react-dom/test-utils";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import PickVenueToManage from "../../components/venue/PickVenueToManage";
 
 enableFetchMocks()
@@ -41,7 +41,7 @@ jest.mock('react-router-dom', () => ({
 
 function renderOrganizationDetails() {
     localStorage.setItem("user.id", "1");
-    const {container} = render(<PickVenueToManage/>);
+    const {container} = RenderComponent(PickVenueToManage);
     return {container};
 }
 
@@ -61,7 +61,7 @@ test('Pick Venue - Render', async () => {
 
 test('Pick Venue - no venues', async () => {
     await act(async () => {
-        mockFetch(false,[]);
+        mockFetch(false, []);
         const {container} = renderOrganizationDetails();
         await waitForLoadingSpinner(container)
         expect(screen.getByText(new RegExp("you appear to not be a part of any venue"))).toBeInTheDocument()

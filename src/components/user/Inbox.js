@@ -1,23 +1,24 @@
 import React, {useState} from 'react';
-import {toast} from "bulma-toast";
+
 import {getBase} from "../../js/FetchBase";
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
-
+import {useSnackbar} from "notistack";
 
 const Inbox = () => {
     let notificationDate = null;
     const [notification, setNotification] = useState(null)
     const [isDisplayingUrgent, setIsDisplayingUrgent] = useState(false)
+    const {enqueueSnackbar} = useSnackbar();
     let forceUpdateFnc;
 
     async function fetchNotifications(activePage) {
         try {
             return await getBase("/user/inbox/" + localStorage.getItem('user.id') + "/pending/" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch your notifications', type: 'is-danger'
-            })
+            enqueueSnackbar('Something went wrong while trying to fetch your notifications', {
+                variant: 'error',
+            });
         }
     }
 

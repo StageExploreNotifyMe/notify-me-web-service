@@ -1,9 +1,7 @@
-import {createMemoryHistory} from "history";
-import {fireEvent, render, screen} from "@testing-library/react";
-import {Router} from "react-router-dom";
+import {fireEvent, screen} from "@testing-library/react";
 import OrganizationLines from "../../components/organization/OrganizationLines";
 import {sleep} from "../../js/Sleep";
-import {waitForLoadingSpinner} from "../TestUtilities";
+import {RenderComponent, waitForLoadingSpinner} from "../TestUtilities";
 import {enableFetchMocks} from "jest-fetch-mock";
 import {act} from "react-dom/test-utils";
 
@@ -68,16 +66,10 @@ function mockFetch(simulateNetworkError = false, withLine = true) {
 }
 
 function renderAssignMembersToLine() {
-    const history = createMemoryHistory();
     const route = '/organization/memberassignment';
-    history.push(route);
     localStorage.setItem("organization.memberassignment.line", JSON.stringify(organizationLines));
-    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
-    const {container} = render(
-        <Router history={history}>
-            <OrganizationLines/>
-        </Router>,
-    );
+    localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
+    const {container} = RenderComponent(OrganizationLines, {}, [route]);
     expect(screen.getByText(new RegExp('Manage lines'))).toBeInTheDocument()
     return {container};
 }

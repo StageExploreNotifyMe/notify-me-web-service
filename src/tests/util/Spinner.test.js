@@ -1,6 +1,6 @@
-import {render} from '@testing-library/react';
 import Spinner from '../../components/util/Spinner';
 import {act} from "react-dom/test-utils";
+import {render} from "@testing-library/react";
 
 test('Render Spinner Component', () => {
     act(() => {

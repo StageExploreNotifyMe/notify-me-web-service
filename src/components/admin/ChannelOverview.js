@@ -1,11 +1,12 @@
 import {getBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import {useSnackbar} from 'notistack';
 
 const ChannelOverview = () => {
 
     const [loading, setLoading] = useState(true)
     const [channels, setChannels] = useState([])
+    const {enqueueSnackbar} = useSnackbar();
 
     async function fetchChannelsAmount() {
         try {
@@ -14,10 +15,9 @@ const ChannelOverview = () => {
             setChannels(result.notificationAmounts)
             return result
         } catch {
-            toast({
-                message: 'Something went wrong while fetching all channels',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while fetching all channels", {
+                severity: "error"
+            });
         }
     }
 

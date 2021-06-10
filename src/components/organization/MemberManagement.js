@@ -1,20 +1,21 @@
 import React from "react";
 import {getBase, postBase} from "../../js/FetchBase";
-import {toast} from "bulma-toast";
+
 import PagedList from "../util/PagedList";
+import {useSnackbar} from 'notistack';
 
 const MemberManagement = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
+    const {enqueueSnackbar} = useSnackbar();
     const id = org.id;
 
     async function fetchData(activePage) {
         try {
             return await getBase("/userorganization/" + id + "/users?page=" + activePage);
         } catch {
-            toast({
-                message: 'Something went wrong while trying to fetch the organization data',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to fetch the organization data", {
+                variant: 'error',
+            });
         }
     }
 
@@ -40,10 +41,9 @@ const MemberManagement = () => {
     function promoteMember(member, isDemotion, updateFnc) {
         let url = "/userorganization/" + member.id + "/" + (isDemotion ? "demote" : "promote")
         postBase(url, {}).then(() => updateFnc()).catch(() => {
-            toast({
-                message: 'Something went wrong while trying to promote/demote user',
-                type: 'is-danger'
-            })
+            enqueueSnackbar("Something went wrong while trying to promote/demote user", {
+                variant: 'error',
+            });
         })
     }
 

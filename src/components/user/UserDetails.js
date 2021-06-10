@@ -18,7 +18,9 @@ const UserDetails = () => {
             </div>
             <UnlockAccess request={['ANY']}>
                 <div className="column is-2">
-                    <button className="button is-link" onClick={() => history.push("/venue/select")}>Select other venue to manage</button>
+                    <button className="button is-link" onClick={() => history.push("/venue/select")}>Select other venue
+                        to manage
+                    </button>
                 </div>
             </UnlockAccess>
             <div className="column is-1">
