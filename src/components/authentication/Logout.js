@@ -5,9 +5,10 @@ import React from "react";
 const Logout = (props) => {
     localStorage.setItem("Authorization", "");
     localStorage.setItem("user.id", "");
-    localStorage.setItem("user", JSON.stringify({}));
-    localStorage.setItem("userorganization", JSON.stringify({}));
-    localStorage.setItem("organization", JSON.stringify({}));
+    ["currentEvent", "venue", "organization", "userorganization", "user", "editVenue"].forEach(key =>
+        localStorage.setItem(key, JSON.stringify({}))
+    );
+
     localStorage.setItem("IsLoggedIn", "false");
 
     const history = useHistory();
