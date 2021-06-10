@@ -5,6 +5,7 @@ import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
 import EventLines from "./EventLines";
+import UnlockAccess from "../authentication/UnlockAccess";
 
 
 const EventDetails = () => {
@@ -53,6 +54,7 @@ const EventDetails = () => {
                 </p>
             </div>
         </section>
+        <UnlockAccess request={['VENUE_MANAGER']}>
         <section className="section">
             <h2 className="title is-3">Change event status</h2>
             <div><p>{event.eventStatus}</p></div>
@@ -68,6 +70,7 @@ const EventDetails = () => {
                 </button>
             </div>
         </section>
+        </UnlockAccess>
 
         <section>
             <EventLines/>

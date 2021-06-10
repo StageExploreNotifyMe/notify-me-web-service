@@ -1,4 +1,4 @@
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import React from "react";
@@ -9,7 +9,8 @@ import DateDiv from "../util/DateDiv";
 import ReactTooltip from "react-tooltip";
 
 const OrganizationLines = () => {
-    let {id} = useParams();
+    const org = JSON.parse(localStorage.getItem("organization"));
+    const id = org.id;
     const history = useHistory();
 
     async function fetchData(activePage) {
@@ -25,7 +26,7 @@ const OrganizationLines = () => {
 
     function assignLine(line) {
         localStorage.setItem("organization.memberassignment.line", JSON.stringify(line));
-        history.push("/organization/" + line.organization.id + "/memberassignment/assign")
+        history.push("/organization/memberassignment/assign")
     }
 
     const RenderJoinRequests = (props) => {

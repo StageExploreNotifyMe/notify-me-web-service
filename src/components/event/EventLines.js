@@ -94,7 +94,7 @@ const EventLines = () => {
         let customText = null;
         if (staffingReminderText !== "") customText = staffingReminderText;
 
-        postBase("/line/" + modal.eventLine.id + "/staffingreminder", JSON.stringify({eventLineId: id, customText:customText})).then(() => {
+        postBase("/line/" + modal.eventLine.id + "/staffingreminder", JSON.stringify({eventLineId: modal.eventLine.id, customText:customText})).then(() => {
             toast({
                 message: 'Reminder send',
                 type: 'is-success'

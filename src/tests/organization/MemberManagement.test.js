@@ -74,9 +74,9 @@ function mockFetch(simulateNetworkError = false, noUsers = false) {
 
 function renderMemberManagement() {
     const history = createMemoryHistory();
-    const route = '/organization/1/membermanagement';
+    const route = '/organization/membermanagement';
     history.push(route);
-
+    localStorage.setItem("organization", JSON.stringify({"id": "1","name": "KdG"}));
     const {container} = render(
         <Router history={history}>
             <MemberManagement/>
@@ -124,7 +124,7 @@ test('MemberManagement - No users', async () => {
     await act(async () => {
         mockFetch(false, true);
         renderMemberManagement();
-        await sleep(20);
+        await sleep(30);
         expect(screen.getByText(new RegExp('No users'))).toBeInTheDocument()
     })
 }, 5000);

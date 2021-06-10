@@ -1,4 +1,4 @@
-import { enableFetchMocks } from 'jest-fetch-mock'
+import {enableFetchMocks} from 'jest-fetch-mock'
 import {fireEvent, render} from '@testing-library/react';
 import Organization from '../../components/user/Organization';
 import {act} from "react-dom/test-utils";

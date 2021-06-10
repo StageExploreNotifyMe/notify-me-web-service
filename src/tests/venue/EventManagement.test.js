@@ -88,6 +88,7 @@ jest.mock('react-router-dom', () => ({
 
 async function renderEventManagement(waitForRemoved = true) {
     localStorage.setItem("venue", JSON.stringify(venue));
+    localStorage.setItem("user", JSON.stringify({firstname: "Test",lastname: "Test", id: "1", roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"], userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}}));
     const {container} = render(<EventManagement/>);
     let spinner = container.querySelector(".loading");
     expect(spinner).toBeInTheDocument()

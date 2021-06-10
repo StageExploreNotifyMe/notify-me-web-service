@@ -28,7 +28,6 @@ const AdminCreateOrganization = () => {
             noName: noName,
             noUser: noUser
         }))
-        console.error(noName, noUser)
 
         return (!noName && ! noUser);
     }

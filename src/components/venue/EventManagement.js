@@ -4,6 +4,7 @@ import {getBase} from "../../js/FetchBase";
 import {toast} from "bulma-toast";
 import PagedList from "../util/PagedList";
 import VenueEvent from "./VenueEvent";
+import UnlockAccess from "../authentication/UnlockAccess";
 
 const EventManagement = () => {
     const venue = JSON.parse(localStorage.getItem("venue"));
@@ -28,24 +29,28 @@ const EventManagement = () => {
     }
 
     const RenderNoEvents = () => {
-        return <div className="panel-block">
+        return <UnlockAccess request={['VENUE_MANAGER']}>
+        <div className="panel-block">
             No events scheduled yet. Schedule an event now by clicking&nbsp;
             <span className="has-text-link is-clickable" onClick={() => history.push("/venue/events/create")}>
                 here
             </span>
             !
         </div>
+        </UnlockAccess>
     };
 
     return <div className="container mt-2">
         <div className="level">
             <div className="level-left"><h2 className="title is-2 level-item">Venue {venue.name}</h2></div>
             <div className="level-right">
+                <UnlockAccess request={['VENUE_MANAGER']}>
                 <button onClick={() => {
                     history.push("/venue/events/create")
                 }} className="button is-link level-item">
                     Create Event
                 </button>
+                </UnlockAccess>
             </div>
         </div>
         <div className="panel">
@@ -56,6 +61,6 @@ const EventManagement = () => {
                        IsEmptyComponent={RenderNoEvents}/>
         </div>
     </div>;
-}
+};
 
 export default EventManagement

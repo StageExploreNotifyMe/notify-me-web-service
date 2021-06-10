@@ -1,7 +1,6 @@
 import {fireEvent, render, screen} from '@testing-library/react';
 import {act} from "react-dom/test-utils";
 import Navbar from "../components/Navbar";
-import {sleep} from "../js/Sleep";
 
 const mockHistoryPush = jest.fn();
 
@@ -34,45 +33,19 @@ test('Navbar - navigate sign up', () => {
     })
 }, 5000);
 
-async function openModal(container, buttonText, querySelector) {
-    fireEvent.click(screen.queryByText(new RegExp(buttonText)));
-    await sleep(20);
-    let element = container.querySelector(querySelector);
-    expect(element).toBeInTheDocument()
-    return element;
-}
-
-async function closeModal(modalCloseButton) {
-    fireEvent.click(modalCloseButton);
-    await sleep(20);
-    expect(modalCloseButton).not.toBeInTheDocument()
-}
-
 test('Navbar - login', async () => {
     await act(async () => {
-        const {container} = RenderComponent();
-        let modalBackground = await openModal(container, "Log in", ".modal-background");
-        await closeModal(modalBackground);
-
-        let modalCloseButton = await openModal(container, "Log in", ".modal-close");
-        await closeModal(modalCloseButton);
+        RenderComponent();
+        fireEvent.click(screen.queryByText(/Log In/i));
+        expect(mockHistoryPush).toHaveBeenCalledWith("/login")
     })
 }, 5000);
 
-test('Navbar - logout - 1', async () => {
+test('Navbar - logout', async () => {
     await act(async () => {
-        const {container} = RenderComponent(true);
-        let modalBackground = await openModal(container, "Log out", ".modal-background");
-        await closeModal(modalBackground);
-    })
-}, 5000);
-
-test('Navbar - logout - 2', async () => {
-    await act(async () => {
-        const {container} = RenderComponent(true);
-
-        let modalCloseButton = await openModal(container, "Log out", ".modal-close");
-        await closeModal(modalCloseButton);
+        RenderComponent(true);
+        fireEvent.click(screen.queryByText(/Log out/i));
+        expect(mockHistoryPush).toHaveBeenCalledWith("/logout")
     })
 }, 5000);
 
