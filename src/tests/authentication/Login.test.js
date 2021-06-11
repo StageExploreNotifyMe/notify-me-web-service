@@ -30,7 +30,7 @@ function mockFetch(successfulLogin = true, roles= []) {
     })
 }
 
-test('Login - 1', async () => {
+test('Login - email', async () => {
     await act(async () => {
         mockFetch();
         const {container} = doRender();
@@ -39,14 +39,10 @@ test('Login - 1', async () => {
         fireEvent.change(emailInput, {target: {value: "test@user.com"}})
         await sleep(20);
         expect(emailInput.value).toBe("test@user.com")
-
-        fireEvent.click(container.querySelectorAll("button")[1]);
-        await sleep(20);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/")
     })
 }, 5000);
 
-test('Login - 2', async () => {
+test('Login - password', async () => {
     await act(async () => {
         mockFetch(true, ['LINE_MANAGER']);
         const {container} = doRender({onSuccess: mockOnSuccess});
@@ -55,20 +51,45 @@ test('Login - 2', async () => {
         fireEvent.change(passwordInput, {target: {value: "1234"}})
         await sleep(20);
         expect(passwordInput.value).toBe("1234")
+    })
+}, 5000);
 
-        fireEvent.click(container.querySelectorAll("button")[1]);
-        await sleep(20);
+test('Login - 2fa - 1', async () => {
+    await act(async () => {
+        mockFetch(true, ['LINE_MANAGER']);
+        const {container} = doRender({onSuccess: mockOnSuccess});
+        await do2FALogin(container);
         expect(mockHistoryPush).toHaveBeenCalledWith("/venue/select")
         expect(mockOnSuccess).toHaveBeenCalled()
     })
 }, 5000);
+
+test('Login - 2fa - 2', async () => {
+    await act(async () => {
+        mockFetch(true);
+        const {container} = doRender();
+        await do2FALogin(container);
+        expect(mockHistoryPush).toHaveBeenCalledWith("/")
+    })
+}, 5000);
+
+async function do2FALogin(container) {
+    let codeInput = container.querySelectorAll("input")[2];
+    fireEvent.change(codeInput, {target: {value: "1234"}})
+    await sleep(20);
+    expect(codeInput.value).toBe("1234")
+
+    fireEvent.click(container.querySelector("#loginButton"));
+    fireEvent.click(container.querySelector("#loginButton"));
+    await sleep(20);
+}
 
 test('Login - fail', async () => {
     await act(async () => {
         mockFetch(false, ['LINE_MANAGER']);
         const {container} = doRender({onSuccess: mockOnSuccess});
 
-        fireEvent.click(container.querySelectorAll("button")[1]);
+        fireEvent.click(container.querySelector("#loginButton"));
         await sleep(20);
         expect(screen.queryByText(new RegExp("Something went wrong"))).toBeInTheDocument()
     })

@@ -62,7 +62,7 @@ function App() {
                                           component={OrganizationJoinRequests}/>
                     <LoggedInBasedRouting path="/organization/membermanagement" roles={['ORGANIZATION_LEADER']}
                                           component={MemberManagement}/>
-                    <LoggedInBasedRouting path="/organization/memberassignment/assign" roles={['ORGANIZATION_LEADER']}
+                    <LoggedInBasedRouting path="/organization/linemanagement/memberassign" roles={['ORGANIZATION_LEADER']}
                                           component={AssignMembersToLine}/>
                     <LoggedInBasedRouting path="/organization/linemanagement" roles={['ORGANIZATION_LEADER']}
                                           component={OrganizationLines}/>

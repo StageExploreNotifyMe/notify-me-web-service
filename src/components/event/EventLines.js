@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import {getBase, postBase} from "../../js/FetchBase";
 
 import {useHistory} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import EventLineAssignOrganization from "./EventLineAssignOrganization";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
@@ -14,6 +12,7 @@ import {
     DialogActions,
     DialogTitle,
     Grid,
+    IconButton,
     Paper,
     Table,
     TableBody,
@@ -25,7 +24,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
-import {isClickable} from "../../style/StyleUtils";
+import EditIcon from "@material-ui/icons/Edit";
 
 const EventLines = () => {
     const event = JSON.parse(localStorage.getItem("currentEvent"));
@@ -77,10 +76,9 @@ const EventLines = () => {
             <TableCell className="column is-3">{eventLine.line.name}</TableCell>
             <TableCell className="column is-3">{
                 eventLine.organization === null ?
-                    <span className={classes.clickable} onClick={() => assignOrganizationToLine(eventLine)}>
-                        Unassigned
-                        <FontAwesomeIcon icon={faEdit}/>
-                    </span>
+                    <IconButton color={"secondary"} onClick={() => assignOrganizationToLine(eventLine)}> Unassigned
+                        <EditIcon/>
+                    </IconButton>
                     : eventLine.organization.name}
             </TableCell>
             <TableCell className="column is-2">{eventLine.assignedUsers.length}</TableCell>
@@ -224,9 +222,6 @@ function StaffingReminderDialog(props) {
 const useStyles = makeStyles((theme) => ({
     hidden: {
         display: "none"
-    },
-    clickable: {
-        ...isClickable
     },
     margin: {
         marginLeft: theme.spacing(2),

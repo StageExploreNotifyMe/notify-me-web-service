@@ -2,7 +2,16 @@ import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
 import {useHistory} from "react-router-dom";
 import {useSnackbar} from 'notistack';
-import {Button, Card, FormControl, IconButton, InputAdornment, TextField, Typography} from "@material-ui/core";
+import {
+    Button,
+    Container,
+    FormControl,
+    IconButton,
+    InputAdornment,
+    Paper,
+    TextField,
+    Typography
+} from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 import EmailIcon from "@material-ui/icons/Email";
 import {AccountCircle, Visibility, VisibilityOff} from "@material-ui/icons";
@@ -83,21 +92,23 @@ const Registration = () => {
         return true;
     }
 
-    return <Card variant={"outlined"}>
-        <Typography gutterBottom variant="h3" component="h1" align="center" className={classes.margin}>Register
-            now!</Typography>
-        <Typography gutterBottom variant="body1" component="div" align="center">
-            <FormControl>
-                <TextField id="firstNameInput"
-                           type="text"
-                           label={"Firstname"}
-                           onChange={e => {
-                               setRegisterDto(prevState => ({
-                                   ...prevState,
-                                   firstName: e.target.value
-                               }))
-                               setValidationState(prevState => ({
-                                   ...prevState,
+    return <Container maxWidth={"sm"}>
+        <Paper>
+            <Typography gutterBottom variant="h4" component="h1" align="center" className={classes.margin}>
+                Register now!
+            </Typography>
+            <Typography gutterBottom variant="body1" component="div" align="center">
+                <FormControl className={classes.inputWidth}>
+                    <TextField id="firstNameInput"
+                               type="text"
+                               label={"Firstname"}
+                               onChange={e => {
+                                   setRegisterDto(prevState => ({
+                                       ...prevState,
+                                       firstName: e.target.value
+                                   }))
+                                   setValidationState(prevState => ({
+                                       ...prevState,
                                    noFirstName: e.target.value === "",
                                    isFullyValid: true
                                }))
@@ -115,7 +126,7 @@ const Registration = () => {
             </FormControl>
         </Typography>
         <Typography gutterBottom variant="body1" component="div" align="center">
-            <FormControl>
+            <FormControl className={classes.inputWidth}>
                 <TextField
                     id="lastNameInput"
                     label={"Lastname"}
@@ -145,7 +156,7 @@ const Registration = () => {
 
         </Typography>
         <Typography gutterBottom variant="body1" component="div" align="center">
-            <FormControl>
+            <FormControl className={classes.inputWidth}>
                 <TextField id="emailInput"
                            type="text"
                            label={"Email"}
@@ -178,7 +189,7 @@ const Registration = () => {
 
         <Typography gutterBottom variant="body1" component="div" align="center">
 
-            <FormControl>
+            <FormControl className={classes.inputWidth}>
                 <TextField id="phoneInput"
                            type="text"
                            label={"Phone"}
@@ -209,7 +220,7 @@ const Registration = () => {
             </FormControl>
         </Typography>
         <Typography gutterBottom variant="body1" component="div" align="center">
-            <FormControl>
+            <FormControl className={classes.inputWidth}>
                 <TextField id="passwordInput"
                            label={"Password"}
                            type={`${registerDto.showPassword ? "text" : "password"}`}
@@ -253,9 +264,9 @@ const Registration = () => {
             </FormControl>
         </Typography>
         <Typography gutterBottom variant="body1" component="div" align="center">
-            <FormControl>
+            <FormControl className={classes.inputWidth}>
                 <TextField id="passwordRepeatInput"
-                           label={"Password"}
+                           label={"Repeat Password"}
                            type={`${registerDto.showPassword ? "text" : "password"}`}
                            value={registerDto.confirmPassword}
                            onChange={e => {
@@ -292,24 +303,27 @@ const Registration = () => {
                 </TextField>
             </FormControl>
         </Typography>
-        <Typography gutterBottom variant="body1" component="div" align="center">
-
-            <FormControl>
-                <Button color={"secondary"} onClick={
-                    (e) => submitEvent(e)
-                }
-                        disabled={!validationState.isFullyValid}>
-                    Register
-                </Button>
-            </FormControl>
-        </Typography>
-    </Card>
+            <Typography gutterBottom variant="body1" component="div" align="center">
+                <FormControl>
+                    <Button color={"secondary"} onClick={
+                        (e) => submitEvent(e)
+                    }
+                            disabled={!validationState.isFullyValid}>
+                        Register
+                    </Button>
+                </FormControl>
+            </Typography>
+        </Paper>
+    </Container>
 }
 
 
 const useStyles = makeStyles((theme) => ({
     margin: {
         margin: theme.spacing(1),
+    },
+    inputWidth: {
+        width: "90%",
     }
 }));
 
