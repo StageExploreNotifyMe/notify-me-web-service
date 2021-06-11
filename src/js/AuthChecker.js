@@ -1,5 +1,6 @@
 const grantPermission = (requestedRoles = []) => {
     if (requestedRoles.length === 0) return true;
+    if (localStorage.getItem('IsLoggedIn')!== 'true'){return requestedRoles.includes('NOT_LOGGED_IN')}
     const user = JSON.parse(localStorage.getItem('user'))
     if (user === null) {
         return requestedRoles.includes("NONE")

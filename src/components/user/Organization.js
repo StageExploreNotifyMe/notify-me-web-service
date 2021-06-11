@@ -76,7 +76,6 @@ const Organization = (props) => {
                 </TableHead>
                 <TableBody>
                     <TableRow>
-
                         <TableCell>
                             <Checkbox color="secondary"
                                       disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}

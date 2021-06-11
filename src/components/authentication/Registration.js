@@ -1,13 +1,17 @@
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEnvelope, faExclamationTriangle, faEye, faLock, faPhone} from "@fortawesome/free-solid-svg-icons";
 import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
 import {useHistory} from "react-router-dom";
 import {useSnackbar} from 'notistack';
+import {Button, Card, FormControl, IconButton, InputAdornment, TextField, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import EmailIcon from "@material-ui/icons/Email";
+import {AccountCircle, Visibility, VisibilityOff} from "@material-ui/icons";
+import PhoneIcon from '@material-ui/icons/Phone';
 
 
 const Registration = () => {
     const history = useHistory();
+    const classes = useStyles();
 
     const [registerDto, setRegisterDto] = useState({
         firstName: "",
@@ -39,8 +43,9 @@ const Registration = () => {
             mobileNumber: registerDto.phone,
             password: registerDto.password
         };
-        postBase("/authentication/register", JSON.stringify(body)).then(() => {
-            history.push("/");
+        postBase("/authentication/register", JSON.stringify(body)).then((resp) => {
+            history.push("/register/confirmed");
+            localStorage.setItem("user.id", resp.id);
             enqueueSnackbar("You have been successfully registered", {
                 severity: "success"
             });
@@ -67,7 +72,6 @@ const Registration = () => {
             }
         });
         validState.isFullyValid = isFullyValid;
-
         setValidationState(validState);
         return isFullyValid;
     }
@@ -79,198 +83,241 @@ const Registration = () => {
         return true;
     }
 
-    return <article className="container mt-2">
-        <h1 className="title is-1">Register now!</h1>
-        <section>
-            <form>
-                <label className="label">Name</label>
-                <div className="field is-grouped">
-                    <div className={`control ${validationState.noFirstName ? 'has-icons-right' : ''}`}>
-                        <input id="firstNameInput" className={`input ${validationState.noFirstName ? 'is-danger' : ''}`}
-                               type="text"
-                               placeholder="First name" value={registerDto.firstName}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       firstName: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       noFirstName: e.target.value === "",
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span
-                            className={`icon is-small is-right ${validationState.noFirstName ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.noFirstName ? '' : 'is-hidden'}`}>You cannot
-                            have an empty first name</p>
-                    </div>
+    return <Card variant={"outlined"}>
+        <Typography gutterBottom variant="h3" component="h1" align="center" className={classes.margin}>Register
+            now!</Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+            <FormControl>
+                <TextField id="firstNameInput"
+                           type="text"
+                           label={"Firstname"}
+                           onChange={e => {
+                               setRegisterDto(prevState => ({
+                                   ...prevState,
+                                   firstName: e.target.value
+                               }))
+                               setValidationState(prevState => ({
+                                   ...prevState,
+                                   noFirstName: e.target.value === "",
+                                   isFullyValid: true
+                               }))
+                           }}
+                           error={validationState.noFirstName}
+                           helperText={validationState.noFirstName === false ? " " : "You cannot have an empty first name"}
+                           InputProps={{
+                               startAdornment: (
+                                   <InputAdornment position="start">
+                                       <AccountCircle/>
+                                   </InputAdornment>
+                               ),
+                           }}
+                />
+            </FormControl>
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+            <FormControl>
+                <TextField
+                    id="lastNameInput"
+                    label={"Lastname"}
+                    type="text"
+                    onChange={e => {
+                        setRegisterDto(prevState => ({
+                            ...prevState,
+                            lastName: e.target.value
+                        }))
+                        setValidationState(prevState => ({
+                            ...prevState,
+                            noLastName: e.target.value === "",
+                            isFullyValid: true
+                        }))
+                    }}
+                    error={validationState.noLastName}
+                    helperText={validationState.noLastName === false ? " " : "You cannot have an empty last name"}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <AccountCircle/>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </FormControl>
 
-                    <div className={`control ${validationState.noLastName ? 'has-icons-right' : ''}`}>
-                        <input id="lastNameInput" className={`input ${validationState.noLastName ? 'is-danger' : ''}`}
-                               type="text"
-                               placeholder="Last name" value={registerDto.lastName}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       lastName: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       noLastName: e.target.value === "",
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span
-                            className={`icon is-small is-right ${validationState.noLastName ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.noLastName ? '' : 'is-hidden'}`}>You cannot have
-                            an empty last name</p>
-                    </div>
-                </div>
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+            <FormControl>
+                <TextField id="emailInput"
+                           type="text"
+                           label={"Email"}
+                           value={registerDto.email}
+                           onChange={e => {
+                               setRegisterDto(prevState => ({
+                                   ...prevState,
+                                   email: e.target.value
+                               }))
+                               setValidationState(prevState => ({
+                                   ...prevState,
+                                   noMail: !checkMailIsValid(e.target.value),
+                                   isFullyValid: true
+                               }))
+                           }
+                           }
+                           error={validationState.noMail}
+                           helperText={validationState.noMail === false ? " " : "You cannot have an empty e-mail"}
+                           InputProps={{
+                               startAdornment: (
+                                   <InputAdornment position="start">
+                                       <EmailIcon/>
+                                   </InputAdornment>
+                               ),
+                           }}
+                />
+            </FormControl>
+        </Typography>
 
-                <div className="field">
-                    <label className="label">Email</label>
-                    <div className={`control has-icons-left ${validationState.noMail ? 'has-icons-right' : ''}`}>
-                        <input id="emailInput" className={`input ${validationState.noMail ? 'is-danger' : ''}`}
-                               type="text"
-                               placeholder="Email" value={registerDto.email}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       email: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       noMail: !checkMailIsValid(e.target.value),
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span className="icon is-small is-left">
-                            <FontAwesomeIcon icon={faEnvelope}/>
-                        </span>
-                        <span
-                            className={`icon is-small is-right ${validationState.noMail ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.noMail ? '' : 'is-hidden'}`}>That is not a valid
-                            email</p>
-                    </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Mobile Number</label>
-                    <div className={`control has-icons-left ${validationState.noPhone ? 'has-icons-right' : ''}`}>
-                        <input id="phoneInput" className={`input ${validationState.noPhone ? 'is-danger' : ''}`}
-                               type="text"
-                               placeholder="Mobile Number" value={registerDto.phone}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       phone: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       noPhone: e.target.value === "",
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span className="icon is-small is-left">
-                            <FontAwesomeIcon icon={faPhone}/>
-                        </span>
-                        <span
-                            className={`icon is-small is-right ${validationState.noPhone ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.noPhone ? '' : 'is-hidden'}`}>Phone number
-                            cannot be empty</p>
-                    </div>
-                </div>
+        <Typography gutterBottom variant="body1" component="div" align="center">
 
-                <div className="field">
+            <FormControl>
+                <TextField id="phoneInput"
+                           type="text"
+                           label={"Phone"}
+                           value={registerDto.phone}
+                           onChange={e => {
+                               setRegisterDto(prevState => ({
+                                   ...prevState,
+                                   phone: e.target.value
+                               }))
+                               setValidationState(prevState => ({
+                                   ...prevState,
+                                   noPhone: e.target.value === "",
+                                   isFullyValid: true
+                               }))
+                           }
+                           }
+                           error={validationState.noPhone}
+                           helperText={validationState.noPhone === false ? " " : "You cannot have an empty phone number"}
+                           InputProps={{
+                               startAdornment: (
+                                   <InputAdornment position="start">
+                                       <PhoneIcon/>
+                                   </InputAdornment>
+                               ),
+                           }}
+                >
+                </TextField>
+            </FormControl>
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+            <FormControl>
+                <TextField id="passwordInput"
+                           label={"Password"}
+                           type={`${registerDto.showPassword ? "text" : "password"}`}
+                           value={registerDto.password}
+                           onChange={e => {
+                               setRegisterDto(prevState => ({
+                                   ...prevState,
+                                   password: e.target.value
+                               }))
+                               setValidationState(prevState => ({
+                                   ...prevState,
+                                   noPassword: e.target.value === "",
+                                   passwordsDontMatch: e.target.value !== registerDto.password,
+                                   isFullyValid: true
+                               }))
+                           }
+                           }
+                           error={validationState.noPassword}
+                           helperText={validationState.noPassword === false ? " " : "You cannot have an empty password"}
+                           InputProps={{
+                               endAdornment: (
+                                   <InputAdornment position="end">
+                                       <IconButton
+                                           aria-label="toggle password visibility"
+                                           onClick={() => setRegisterDto(prevState => ({
+                                               ...prevState,
+                                               showPassword: !registerDto.showPassword
+                                           }))}
+                                           onMouseDown={() => setRegisterDto(prevState => ({
+                                               ...prevState,
+                                               showPassword: !registerDto.showPassword
+                                           }))}
+                                       >
+                                           {registerDto.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                       </IconButton>
+                                   </InputAdornment>
+                               )
 
-                    <label className="label">
-                        Password
-                        <span id="togglePwVisibilitySpan" className="icon is-small is-clickable ml-2" onClick={() => {
-                            setRegisterDto(prevState => ({
-                                ...prevState,
-                                showPassword: !registerDto.showPassword,
-                            }))
-                        }}>
-                            <FontAwesomeIcon icon={faEye}/>
-                        </span>
-                    </label>
+                           }}>
 
-                    <div className={`control has-icons-left ${validationState.noPassword ? 'has-icons-right' : ''}`}>
-                        <input id="passwordInput" className={`input ${validationState.noPassword ? 'is-danger' : ''}`}
-                               type={`${registerDto.showPassword ? "text" : "password"}`}
-                               placeholder="Password" value={registerDto.password}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       password: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       noPassword: e.target.value === "",
-                                       passwordsDontMatch: e.target.value !== registerDto.password,
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span className="icon is-small is-left">
-                            <FontAwesomeIcon icon={faLock}/>
-                        </span>
-                        <span
-                            className={`icon is-small is-right ${registerDto.noPassword ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.noPassword ? '' : 'is-hidden'}`}>Password cannot
-                            be empty</p>
-                    </div>
-                    <p className="help">Re-enter your password</p>
-                    <div
-                        className={`control has-icons-left ${validationState.passwordsDontMatch ? 'has-icons-right' : ''}`}>
-                        <input id="passwordRepeatInput"
-                               className={`input ${validationState.passwordsDontMatch ? 'is-danger' : ''}`}
-                               type={`${registerDto.showPassword ? "text" : "password"}`} placeholder="Password"
-                               value={registerDto.confirmPassword}
-                               onChange={e => {
-                                   setRegisterDto(prevState => ({
-                                       ...prevState,
-                                       confirmPassword: e.target.value
-                                   }))
-                                   setValidationState(prevState => ({
-                                       ...prevState,
-                                       passwordsDontMatch: e.target.value !== registerDto.password,
-                                       isFullyValid: true
-                                   }))
-                               }}/>
-                        <span className="icon is-small is-left">
-                            <FontAwesomeIcon icon={faLock}/>
-                        </span>
-                        <span
-                            className={`icon is-small is-right ${validationState.passwordsDontMatch ? '' : 'is-hidden'}`}>
-                            <FontAwesomeIcon icon={faExclamationTriangle}/>
-                        </span>
-                        <p className={`help is-danger ${validationState.passwordsDontMatch ? '' : 'is-hidden'}`}>Passwords
-                            do not match</p>
-                    </div>
-                </div>
 
-                <div className="field">
-                    <div className="control">
-                        <button onClick={(e) => submitEvent(e)} className="button is-link"
-                                disabled={!validationState.isFullyValid}>
-                            Register
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </section>
-    </article>
+                </TextField>
+
+            </FormControl>
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+            <FormControl>
+                <TextField id="passwordRepeatInput"
+                           label={"Password"}
+                           type={`${registerDto.showPassword ? "text" : "password"}`}
+                           value={registerDto.confirmPassword}
+                           onChange={e => {
+                               setRegisterDto(prevState => ({
+                                   ...prevState,
+                                   confirmPassword: e.target.value
+                               }))
+                               setValidationState(prevState => ({
+                                   ...prevState,
+                                   passwordsDontMatch: e.target.value !== registerDto.password,
+                                   isFullyValid: true
+                               }))
+                           }
+                           }
+                           error={validationState.passwordsDontMatch}
+                           helperText={validationState.passwordsDontMatch === false ? " " : "Passwords do not match"}
+                           InputProps={{
+                               endAdornment: (
+                                   <InputAdornment position="end">
+                                       <IconButton
+                                           aria-label="toggle password visibility"
+                                           onClick={() => setRegisterDto(prevState => ({
+                                               ...prevState,
+                                               showPassword: !registerDto.showPassword
+                                           }))}
+                                           onMouseDown={() => setRegisterDto(prevState => ({
+                                               ...prevState,
+                                               showPassword: !registerDto.showPassword
+                                           }))}
+                                       >
+                                           {registerDto.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                       </IconButton>
+                                   </InputAdornment>
+                               )
+
+                           }}>
+                </TextField>
+            </FormControl>
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div" align="center">
+
+            <FormControl>
+                <Button color={"secondary"} onClick={
+                    (e) => submitEvent(e)
+                }
+                        disabled={!validationState.isFullyValid}>
+                    Register
+                < /Button>
+            </FormControl>
+        </Typography>
+    </Card>
 }
+
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        margin: theme.spacing(1),
+    }
+}));
+
 
 export default Registration

@@ -37,7 +37,7 @@ const Home = () => {
         spacing={2}
         className={classes.root}
     >
-        <NavigationCard cardData={{title: "User details", url: "/user", request: ['ANY']}}/>
+        <NavigationCard cardData={{title: "User details", url: "/user", request: ['NONE']}}/>
         <NavigationCard cardData={{
             title: "Organization details",
             url: "/organizations",
@@ -51,7 +51,7 @@ const Home = () => {
             }}/>
         <NavigationCard cardData={{title: "Line Management", url: "/venue/lines", request: ['VENUE_MANAGER']}}/>
         <NavigationCard cardData={{title: "Admin Page", url: "/admin", request: ['ADMIN']}}/>
-        <NavigationCard cardData={{title: "Log in", url: "/login", request: ['NONE']}}/>
+        <NavigationCard cardData={{title: "Log in", url: "/login", request: ['NOT_LOGGED_IN']}}/>
     </Grid>
 }
 const useStyles = makeStyles((theme) => ({

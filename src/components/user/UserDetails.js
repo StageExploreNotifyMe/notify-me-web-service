@@ -22,7 +22,7 @@ const UserDetails = () => {
                 </Button>
             </Grid>
             <Grid item>
-                <UnlockAccess request={['ANY']}>
+                <UnlockAccess request={['VENUE_MANAGER', 'LINE_MANAGER']}>
                     <Button color="secondary" onClick={() => history.push("/venue/select")}>Select other venue
                         to manage
                     </Button>

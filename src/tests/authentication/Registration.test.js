@@ -1,4 +1,4 @@
-import {fireEvent} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import Registration from "../../components/authentication/Registration";
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
@@ -35,7 +35,7 @@ let inputTimeout = 5;
 function renderComponent() {
     const {container} = RenderComponent(Registration);
     mockFetch();
-    let submitButton = container.querySelector("button.is-link");
+    let submitButton = container.querySelector(".MuiButtonBase-root");
     expect(submitButton).toBeInTheDocument()
     return {container, submitButton}
 }
@@ -51,8 +51,8 @@ function getInputFields(container) {
 test('Register - toggle PW visibility', async () => {
     await act(async () => {
         const {container} = renderComponent();
-
-        let showIcon = container.querySelector("#togglePwVisibilitySpan");
+        screen.debug()
+        let showIcon = container.querySelector(".MuiInputBase-inputAdornedEnd");
         const {passwordInput} = getInputFields(container);
         expect(passwordInput.type).toBe("password")
         fireEvent.click(showIcon);
@@ -162,5 +162,6 @@ test('Register - valid form', async () => {
         expect(passwordRepeatInput.value).toBe("1234")
 
         fireEvent.click(submitButton)
+        await sleep(inputTimeout)
     })
 }, testTimeout);

@@ -31,6 +31,7 @@ import LoggedInBasedRouting from "./authentication/LoggedInBasedRouting";
 import Navbar from "./Navbar";
 import PickVenueToManage from "./venue/PickVenueToManage";
 import PickOrganization from "./organization/PickOrganization";
+import ConfirmRegistration from "./authentication/ConfirmRegistration";
 
 function App() {
     const [, forceUpdate] = useState(0);
@@ -85,9 +86,9 @@ function App() {
                                           component={ManageLines}/>
                     <LoggedInBasedRouting path="/venue/select" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
                                           component={PickVenueToManage}/>
-                    <LoggedInBasedRouting path="/register" component={Registration}/>
                     <LoggedInBasedRouting path="/logout" component={Logout} onSuccess={forceUpdate}/>
                     <Route path="/login"><Login onSuccess={forceUpdate}/></Route>
+                    <Route path="/register/confirmed"><ConfirmRegistration/></Route>
                     <Route path="/register"><Registration/></Route>
                     <Route exact path="/"><Home/></Route>
                     <Route path="*">
