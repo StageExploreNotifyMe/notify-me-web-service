@@ -233,12 +233,9 @@ const Registration = () => {
                                endAdornment: (
                                    <InputAdornment position="end">
                                        <IconButton
+                                           id={"toggle-password-vis-icon-1"}
                                            aria-label="toggle password visibility"
                                            onClick={() => setRegisterDto(prevState => ({
-                                               ...prevState,
-                                               showPassword: !registerDto.showPassword
-                                           }))}
-                                           onMouseDown={() => setRegisterDto(prevState => ({
                                                ...prevState,
                                                showPassword: !registerDto.showPassword
                                            }))}
@@ -279,12 +276,9 @@ const Registration = () => {
                                endAdornment: (
                                    <InputAdornment position="end">
                                        <IconButton
+                                           id={"toggle-password-vis-icon-2"}
                                            aria-label="toggle password visibility"
                                            onClick={() => setRegisterDto(prevState => ({
-                                               ...prevState,
-                                               showPassword: !registerDto.showPassword
-                                           }))}
-                                           onMouseDown={() => setRegisterDto(prevState => ({
                                                ...prevState,
                                                showPassword: !registerDto.showPassword
                                            }))}
@@ -306,7 +300,7 @@ const Registration = () => {
                 }
                         disabled={!validationState.isFullyValid}>
                     Register
-                < /Button>
+                </Button>
             </FormControl>
         </Typography>
     </Card>

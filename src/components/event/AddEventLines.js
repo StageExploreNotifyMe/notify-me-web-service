@@ -67,7 +67,6 @@ const AddEventLines = () => {
 
     const RenderVenueLines = (props) => {
         const line = props.data
-        if (line === undefined) return "";
         return <TableRow key={line.id}>
             <TableCell padding="checkbox" align="center">
                 <Switch

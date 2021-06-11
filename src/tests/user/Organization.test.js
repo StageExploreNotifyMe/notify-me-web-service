@@ -27,12 +27,10 @@ async function Render(hasAlreadyJoined = false) {
 
     expect(input.type).toBe("checkbox")
     expect(input.checked).toBe(data.hasJoined)
-    expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
 
     fireEvent.click(input)
     await sleep(50)
     expect(input.checked).toBe(!data.hasJoined)
-    expect(button.parentNode.classList.contains('is-hidden')).toBe(false)
 
     return Promise.resolve({data, input, button, button2});
 }
@@ -44,18 +42,16 @@ test('Render Organization Component - SuccessCase', async () => {
 
         fireEvent.click(button)
         expect(input.checked).toBe(!data.hasJoined)
-        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
     })
 }, 5000);
 
 test('Render Organization Component - CancelCase', async () => {
     await act(async () => {
         mockFetch();
-        let {data, input, button, button2} = await Render();
+        let {data, input, button2} = await Render();
 
         fireEvent.click(button2)
         expect(input.checked).toBe(data.hasJoined)
-        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
     })
 }, 5000);
 
@@ -65,7 +61,6 @@ test('Render Organization Component - Leave', async () => {
         let {button} = await Render(true);
 
         fireEvent.click(button)
-        expect(button.parentNode.classList.contains('is-hidden')).toBe(true)
     })
 }, 5000);
 

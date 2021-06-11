@@ -113,7 +113,6 @@ const NotificationOverview = () => {
                     value={chosenType}
                     onChange={e => {
                         setChosenType(e.target.value)
-                        console.log(e)
                     }}
                 >
                     {notificationType.notificationTypes.map(t =>
@@ -226,7 +225,9 @@ const NotificationOverview = () => {
 
     return <Container>
         <Typography gutterBottom variant="h5" component="h2">
-            Overview Notifications</Typography>
+            Overview Notifications
+        </Typography>
+        <RenderDetailsModal/>
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
@@ -241,13 +242,10 @@ const NotificationOverview = () => {
                         <TableCell width={150}>Details</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    <RenderDetailsModal/>
+                <PagedList fetchDataFnc={fetchNotifications} RenderListItem={RenderNotifications}
+                           IsEmptyComponent={RenderNoNotifications}
+                           pageControls={{showButtons: false, sizeModifier: "is-medium"}} colspan={7}/>
 
-                    <PagedList fetchDataFnc={fetchNotifications} RenderListItem={RenderNotifications}
-                               IsEmptyComponent={RenderNoNotifications}
-                               pageControls={{showButtons: false, sizeModifier: "is-medium"}}/>
-                </TableBody>
             </Table>
         </TableContainer>
     </Container>

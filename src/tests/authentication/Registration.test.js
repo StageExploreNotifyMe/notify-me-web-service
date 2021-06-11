@@ -1,4 +1,4 @@
-import {fireEvent, screen} from '@testing-library/react';
+import {fireEvent} from '@testing-library/react';
 import Registration from "../../components/authentication/Registration";
 import {sleep} from "../../js/Sleep";
 import {act} from "react-dom/test-utils";
@@ -51,13 +51,16 @@ function getInputFields(container) {
 test('Register - toggle PW visibility', async () => {
     await act(async () => {
         const {container} = renderComponent();
-        screen.debug()
-        let showIcon = container.querySelector(".MuiInputBase-inputAdornedEnd");
         const {passwordInput} = getInputFields(container);
         expect(passwordInput.type).toBe("password")
+        let showIcon = container.querySelector("#toggle-password-vis-icon-1");
         fireEvent.click(showIcon);
-        await sleep(20);
+        await sleep(5);
         expect(passwordInput.type).toBe("text")
+        let showIcon2 = container.querySelector("#toggle-password-vis-icon-2");
+        fireEvent.click(showIcon2);
+        await sleep(5);
+        expect(passwordInput.type).toBe("password")
     })
 }, testTimeout);
 

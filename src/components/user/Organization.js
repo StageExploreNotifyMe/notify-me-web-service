@@ -1,16 +1,6 @@
 import React, {useState} from 'react';
 import {useSnackbar} from 'notistack';
-import {
-    Button,
-    Checkbox,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
-} from "@material-ui/core";
+import {Button, ButtonGroup, Checkbox, TableCell, TableRow} from "@material-ui/core";
 
 const Organization = (props) => {
 
@@ -64,42 +54,28 @@ const Organization = (props) => {
         });
     }
 
-    return (
-
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Organization</TableCell>
-                        <TableCell>Status</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>
-                            <Checkbox color="secondary"
-                                      disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}
-                                      checked={joinedState.joined} onChange={checkboxClicked}
-                            />
-                            {props.content.name}
-                        </TableCell>
-                        <TableCell>
-                            <div
-                                className={(props.content.status === "PENDING" || props.content.status === "DECLINED") ? "column is-2" : "is-hidden"}>
-                                {props.content.status}
-                            </div>
-                        </TableCell>
-                    </TableRow>
-
-                </TableBody>
-            </Table>
-            <div className={joinedState.showConfirmButtons ? "column is-2" : "is-hidden"}>
-                <Button color="secondary" onClick={() => confirmClicked(true)}>Save</Button>
-                <Button color="secondary" onClick={() => confirmClicked(false)}>Cancel</Button>
-            </div>
-        </TableContainer>
-
-
+    return (<TableRow>
+            <TableCell padding="checkbox">
+                <Checkbox color="secondary"
+                          disabled={joinedState.showConfirmButtons || joinedState.disableCheckbox}
+                          checked={joinedState.joined} onChange={checkboxClicked}
+                />
+            </TableCell>
+            <TableCell width={350}>
+                {props.content.name}
+            </TableCell>
+            <TableCell width={350}>
+                {props.content.status}
+            </TableCell>
+            <TableCell>
+                <ButtonGroup>
+                    <Button disabled={!joinedState.showConfirmButtons} color="secondary" variant={"contained"}
+                            onClick={() => confirmClicked(true)}>Save</Button>
+                    <Button disabled={!joinedState.showConfirmButtons} color="secondary"
+                            onClick={() => confirmClicked(false)}>Cancel</Button>
+                </ButtonGroup>
+            </TableCell>
+        </TableRow>
     )
 }
 

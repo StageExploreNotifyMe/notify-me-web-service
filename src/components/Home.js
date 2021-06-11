@@ -37,7 +37,7 @@ const Home = () => {
         spacing={2}
         className={classes.root}
     >
-        <NavigationCard cardData={{title: "User details", url: "/user", request: ['NONE']}}/>
+        <NavigationCard cardData={{title: "User details", url: "/user", request: ['ANY']}}/>
         <NavigationCard cardData={{
             title: "Organization details",
             url: "/organizations",

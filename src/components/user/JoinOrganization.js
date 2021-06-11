@@ -2,7 +2,17 @@ import Organization from "./Organization";
 import {getBase} from "../../js/FetchBase";
 import {useSnackbar} from 'notistack';
 import PagedList from "../util/PagedList";
-import {Container, Typography} from "@material-ui/core";
+import {
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@material-ui/core";
 import React from "react";
 
 const JoinOrganization = () => {
@@ -40,18 +50,26 @@ const JoinOrganization = () => {
         return <Organization className="panel-block" key={props.key} content={props.data}/>
     }
 
-    return <Container>
-        <article className="panel">
-            <div className="panel-heading has-text-centered-mobile">
-                <Typography variant="h4">
-                    Join Organizations
-                </Typography>
-            </div>
-            <section>
-                <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
-                           IsEmptyComponent={() => <p>No organizations found</p>}/>
-            </section>
-        </article>
+    return <Container maxWidth={"md"}>
+        <Typography variant="h4">
+            Join Organizations
+        </Typography>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell padding="checkbox"> </TableCell>
+                        <TableCell>Organization</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <PagedList fetchDataFnc={fetchOrganizations} RenderListItem={RenderOrganizations}
+                               IsEmptyComponent={() => <p>No organizations found</p>}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
     </Container>
 }
 

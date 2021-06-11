@@ -1,4 +1,4 @@
-import {fireEvent} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import {act} from "react-dom/test-utils";
 import {sleep} from "../../js/Sleep";
 import Login from "../../components/authentication/Login";
@@ -7,6 +7,7 @@ import {RenderComponent} from "../TestUtilities";
 
 enableFetchMocks();
 const mockHistoryPush = jest.fn();
+const mockOnSuccess = jest.fn();
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -15,16 +16,16 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
-function doRender() {
-    return RenderComponent(Login)
+function doRender(props) {
+    return RenderComponent(Login, props)
 }
 
-function mockFetch(successfulLogin = true) {
+function mockFetch(successfulLogin = true, roles= []) {
     fetch.enableMocks()
     fetch.resetMocks()
 
     fetch.mockResponse(() => {
-        if (successfulLogin) return Promise.resolve(JSON.stringify({jwt: "", userDto: {roles: [], id: ""}}))
+        if (successfulLogin) return Promise.resolve(JSON.stringify({jwt: "", userDto: {roles: roles, id: ""}}))
         return Promise.resolve();
     })
 }
@@ -47,8 +48,8 @@ test('Login - 1', async () => {
 
 test('Login - 2', async () => {
     await act(async () => {
-        mockFetch();
-        const {container} = doRender();
+        mockFetch(true, ['LINE_MANAGER']);
+        const {container} = doRender({onSuccess: mockOnSuccess});
 
         let passwordInput = container.querySelectorAll("input")[1];
         fireEvent.change(passwordInput, {target: {value: "1234"}})
@@ -57,7 +58,19 @@ test('Login - 2', async () => {
 
         fireEvent.click(container.querySelectorAll("button")[1]);
         await sleep(20);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/")
+        expect(mockHistoryPush).toHaveBeenCalledWith("/venue/select")
+        expect(mockOnSuccess).toHaveBeenCalled()
+    })
+}, 5000);
+
+test('Login - fail', async () => {
+    await act(async () => {
+        mockFetch(false, ['LINE_MANAGER']);
+        const {container} = doRender({onSuccess: mockOnSuccess});
+
+        fireEvent.click(container.querySelectorAll("button")[1]);
+        await sleep(20);
+        expect(screen.queryByText(new RegExp("Something went wrong"))).toBeInTheDocument()
     })
 }, 5000);
 

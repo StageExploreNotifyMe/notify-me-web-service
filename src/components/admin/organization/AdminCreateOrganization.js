@@ -112,12 +112,12 @@ const AdminCreateOrganization = () => {
                 (e) => submitEvent(e)
             }
                     disabled={validationState.noUser || validationState.noName}> Submit
-            < /Button>
+            </Button>
             <Button color={"secondary"} onClick={
                 () => history.goBack()
             }
                     className="button is-link is-light"> Cancel
-            < /Button>
+            </Button>
         </ButtonGroup>
     </Container>;
 }
