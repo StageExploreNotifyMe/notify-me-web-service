@@ -31,9 +31,9 @@ const AssignMembersToLine = () => {
             let fetchedLine = await lineProm
             setLine(fetchedLine);
             let users = await usersProm;
-            users.content.map(user => {
-                user.alreadyAssigned = (fetchedLine.assignedUsers.find(assignedUser => assignedUser.id === user.id) !== undefined);
-                return user
+            users.content.map(uo => {
+                uo.alreadyAssigned = (fetchedLine.assignedUsers.find(assignedUser => assignedUser.id === uo.user.id) !== undefined);
+                return uo
             });
 
             return users;

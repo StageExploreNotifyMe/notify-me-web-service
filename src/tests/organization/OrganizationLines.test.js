@@ -99,6 +99,6 @@ test('OrganizationLines - with data', async () => {
         let assignMembersButton = container.querySelectorAll("span")[3];
         expect(assignMembersButton).toBeInTheDocument();
         fireEvent.click(assignMembersButton);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/memberassignment/assign")
+        expect(mockHistoryPush).toHaveBeenCalledWith("/organization/linemanagement/memberassign")
     })
 }, 5000);

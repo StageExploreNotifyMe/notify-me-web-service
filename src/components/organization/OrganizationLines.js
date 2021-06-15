@@ -2,13 +2,12 @@ import {useHistory} from "react-router-dom";
 import {getBase} from "../../js/FetchBase";
 
 import React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import PagedList from "../util/PagedList";
 import DateDiv from "../util/DateDiv";
 import {useSnackbar} from "notistack";
 import {
     Container,
+    IconButton,
     Paper,
     Table,
     TableBody,
@@ -16,17 +15,16 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Tooltip, Typography
+    Tooltip,
+    Typography
 } from "@material-ui/core";
-import {makeStyles} from "@material-ui/styles";
-import {isClickable} from "../../style/StyleUtils";
+import EditIcon from "@material-ui/icons/Edit";
 
 const OrganizationLines = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
     const id = org.id;
     const history = useHistory();
     const {enqueueSnackbar} = useSnackbar();
-    const classes = useStyles();
 
     async function fetchData(activePage) {
         try {
@@ -40,7 +38,7 @@ const OrganizationLines = () => {
 
     function assignLine(line) {
         localStorage.setItem("organization.memberassignment.line", JSON.stringify(line));
-        history.push("/organization/memberassignment/assign")
+        history.push("/organization/linemanagement/memberassign")
     }
 
     const RenderJoinRequests = (props) => {
@@ -60,9 +58,9 @@ const OrganizationLines = () => {
                 </Tooltip>
             </TableCell>
             <TableCell>
-                <span className={classes.clickable} onClick={() => assignLine(line)}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
+                <IconButton color={"secondary"} onClick={() => assignLine(line)}>
+                    <EditIcon/>
+                </IconButton>
             </TableCell>
         </TableRow>;
     }
@@ -90,9 +88,5 @@ const OrganizationLines = () => {
         </TableContainer>
     </Container>
 };
-
-const useStyles = makeStyles((theme) => ({
-    clickable: {...isClickable}
-}));
 
 export default OrganizationLines
