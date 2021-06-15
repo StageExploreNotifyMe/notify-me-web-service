@@ -60,17 +60,33 @@ test("buttons", () => {
 
 test("RenderNotifications -success", async () => {
     await act(async () => {
-        mockFetch({...pageSettings, content: [request]})
-        const container = doRender();
-        await sleep(40)
-        expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
-        let notification = container.querySelectorAll(".MuiCardContent-root");
-        expect(notification[0]).toBeInTheDocument();
-        fireEvent.click(notification[0]);
-        await sleep(40);
+        await renderWithNotifications();
 
         let normalButton = screen.queryByText(/All/i)
         expect(normalButton).toBeInTheDocument()
         fireEvent.click(normalButton);
+        await sleep(20);
     })
 }, 5000)
+
+test("RenderNotifications - urgent", async () => {
+    await act(async () => {
+        await renderWithNotifications();
+
+        let urgentButton = screen.queryByText(/Urgent/i)
+        expect(urgentButton).toBeInTheDocument()
+        fireEvent.click(urgentButton);
+        await sleep(20);
+    })
+}, 5000)
+
+async function renderWithNotifications() {
+    mockFetch({...pageSettings, content: [request]})
+    const container = doRender();
+    await sleep(40)
+    expect(screen.queryByText(new RegExp(request.body))).toBeInTheDocument()
+    let notification = container.querySelectorAll(".MuiCardContent-root");
+    expect(notification[0]).toBeInTheDocument();
+    fireEvent.click(notification[0]);
+    await sleep(40);
+}

@@ -5,6 +5,7 @@ import {sleep} from "../../js/Sleep";
 import {RenderComponent} from "../TestUtilities";
 
 const mockHistoryPush = jest.fn();
+const mockOnSuccess = jest.fn();
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -13,8 +14,8 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
-function doRender() {
-    return RenderComponent(Logout);
+function doRender(props) {
+    return RenderComponent(Logout, props);
 }
 
 test('Logout - 1', async () => {
@@ -34,6 +35,17 @@ test('Logout - 2', async () => {
         fireEvent.click(button);
         await sleep(20);
         expect(mockHistoryPush).toHaveBeenCalledWith("/")
+    })
+}, 5000);
+
+test('Logout - 3', async () => {
+    await act(async () => {
+        const {container} = doRender({onSuccess: mockOnSuccess});
+        let button = container.querySelector("button");
+        fireEvent.click(button);
+        await sleep(20);
+        expect(mockHistoryPush).toHaveBeenCalledWith("/")
+        expect(mockOnSuccess).toHaveBeenCalled()
     })
 }, 5000);
 

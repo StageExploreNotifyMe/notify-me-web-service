@@ -54,7 +54,14 @@ function renderOrganizationDetails(withOrg = false) {
         roles: ["VENUE_MANAGER", "MEMBER", "ORGANIZATION_LEADER", "LINE_MANAGER", "ADMIN"],
         userPreferences: {id: "3", normalChannel: "EMAIL", urgentChannel: "SMS"}
     }));
-    if (withOrg) localStorage.setItem("organization", JSON.stringify({"id": "1", "name": "KdG"}));
+    if (withOrg) {
+        localStorage.setItem("organization", JSON.stringify({
+            "id": "1",
+            "name": "KdG"
+        }))
+    } else {
+        localStorage.setItem("organization", JSON.stringify({"id": undefined, "name": "KdG"}));
+    }
     const {container} = RenderComponent(PickOrganization);
     return {container};
 }

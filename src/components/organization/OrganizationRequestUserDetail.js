@@ -1,14 +1,11 @@
 import React, {useState} from "react";
 import {postBase} from "../../js/FetchBase";
-
-import Spinner from "../util/Spinner";
 import {faBan, faCheck} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useSnackbar} from "notistack";
 import {Button, ButtonGroup, TableCell, TableRow} from "@material-ui/core";
 
 const OrganizationRequestUserDetail = (props) => {
-    const [submitting, setSubmitting] = useState(false);
     const [chosenOption, setChosenOption] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
@@ -19,21 +16,17 @@ const OrganizationRequestUserDetail = (props) => {
             accepted: accepted
         };
         setChosenOption(accepted)
-
         postBase("/userorganization/request/process", JSON.stringify(body)).then(() => {
             setSubmitted(true)
         }).catch(() => {
             enqueueSnackbar('Something went wrong while trying to save changes for ' + props.request.user.firstname + ' ' + props.request.user.lastname, {
                 variant: 'error',
             });
-            setSubmitting(false);
+            setSubmitted(false)
         })
     }
 
     const RenderRequestActions = () => {
-        if (submitting) {
-            return <Spinner/>
-        }
         if (submitted) {
             return <>
                 {

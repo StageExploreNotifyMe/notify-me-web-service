@@ -2,14 +2,11 @@ import PagedList from "../../util/PagedList";
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {getBase} from "../../../js/FetchBase";
-
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {useSnackbar} from 'notistack';
 import {
     Button,
     Container,
-    Grid,
+    Grid, IconButton,
     Paper,
     Table,
     TableBody,
@@ -22,6 +19,7 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 import {isClickable} from "../../../style/StyleUtils";
+import EditIcon from "@material-ui/icons/Edit";
 
 const ManageLines = () => {
 
@@ -51,12 +49,12 @@ const ManageLines = () => {
             </TableCell>
             <TableCell>Required people: {line.numberOfRequiredPeople}</TableCell>
             <TableCell width={100} align="center">
-                <span className={classes.clickable} onClick={() => {
+                <IconButton className={classes.clickable} onClick={() => {
                     localStorage.setItem("editLine", JSON.stringify(line));
                     history.push("/venue/lines/edit");
                 }}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
+                   <EditIcon color={"secondary"}/>
+                </IconButton>
             </TableCell>
         </TableRow>
     }

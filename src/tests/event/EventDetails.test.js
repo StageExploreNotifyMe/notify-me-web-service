@@ -32,6 +32,7 @@ function mockFetch(simulateNetworkError = false, data = event) {
 }
 
 function renderComponent() {
+    localStorage.setItem('IsLoggedIn', "true")
     localStorage.setItem("currentEvent", JSON.stringify(event));
     localStorage.setItem("venue", JSON.stringify({name: "TestVenue", id: "1"}));
     localStorage.setItem("user", JSON.stringify({
@@ -110,8 +111,8 @@ test('Render addEventLines component - close dialog', async () => {
         let createdButton = screen.getByText(new RegExp("CANCELED"));
         expect(createdButton).toBeVisible()
         fireEvent.click(createdButton);
-        let closeDiagDiv = screen.getByText(canEvent.name);
-        expect(closeDiagDiv).toBeVisible()
+        screen.debug()
+        let closeDiagDiv = document.querySelector(".MuiBackdrop-root");
         fireEvent.click(closeDiagDiv)
         await sleep(20);
     })

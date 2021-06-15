@@ -89,6 +89,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 async function renderEventManagement(waitForRemoved = true) {
+    localStorage.setItem('IsLoggedIn', "true")
     localStorage.setItem("venue", JSON.stringify(venue));
     localStorage.setItem("user", JSON.stringify({
         firstname: "Test",

@@ -35,7 +35,7 @@ let inputTimeout = 5;
 function renderComponent() {
     const {container} = RenderComponent(Registration);
     mockFetch();
-    let submitButton = container.querySelector("button.is-link");
+    let submitButton = container.querySelector(".MuiButtonBase-root");
     expect(submitButton).toBeInTheDocument()
     return {container, submitButton}
 }
@@ -51,13 +51,16 @@ function getInputFields(container) {
 test('Register - toggle PW visibility', async () => {
     await act(async () => {
         const {container} = renderComponent();
-
-        let showIcon = container.querySelector("#togglePwVisibilitySpan");
         const {passwordInput} = getInputFields(container);
         expect(passwordInput.type).toBe("password")
+        let showIcon = container.querySelector("#toggle-password-vis-icon-1");
         fireEvent.click(showIcon);
-        await sleep(20);
+        await sleep(5);
         expect(passwordInput.type).toBe("text")
+        let showIcon2 = container.querySelector("#toggle-password-vis-icon-2");
+        fireEvent.click(showIcon2);
+        await sleep(5);
+        expect(passwordInput.type).toBe("password")
     })
 }, testTimeout);
 
@@ -162,5 +165,6 @@ test('Register - valid form', async () => {
         expect(passwordRepeatInput.value).toBe("1234")
 
         fireEvent.click(submitButton)
+        await sleep(inputTimeout)
     })
 }, testTimeout);

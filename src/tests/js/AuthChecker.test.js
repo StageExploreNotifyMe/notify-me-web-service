@@ -9,8 +9,9 @@ const user = {
     roles: []
 };
 
-function runTest(userRoles, requiredRoles, expectedAuth) {
+function runTest(userRoles, requiredRoles, expectedAuth, isLoggedIn = true) {
     localStorage.setItem("user", JSON.stringify({...user, roles: userRoles}));
+    localStorage.setItem("IsLoggedIn", isLoggedIn.toString());
     expect(AuthChecker(requiredRoles)).toBe(expectedAuth)
 }
 
@@ -19,17 +20,19 @@ test('Auth checker', async () => {
         for (let x of [
             [[], [], true],
             [[], ["ANY"], false],
+            [[], ["NOT_LOGGED_IN"], true, false],
             [['MEMBER'], ["ANY"], true],
             [['MEMBER'], ["NONE"], false],
             [[], ["NONE"], true],
             [["ADMIN"], ["MEMBER"], true],
             [["MEMBER"], ["MEMBER"], true],
             [["LINE_MANAGER"], ["MEMBER"], false],
+            [undefined, ["NONE"], true],
         ]) {
-            runTest(x[0], x[1], x[2]);
+            runTest(...x)
         }
 
-        localStorage.setItem("user", JSON.stringify({...user, roles: []}));
+        localStorage.setItem("user", JSON.stringify({...user, roles: undefined}));
         expect(AuthChecker()).toBe(true)
     })
 }, 5000);

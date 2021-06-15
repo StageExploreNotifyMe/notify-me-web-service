@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import {getBase, postBase} from "../../../js/FetchBase";
 import {useSnackbar} from 'notistack';
 import PagedList from "../../util/PagedList";
-import {Button, ButtonGroup, Container, List, ListItem, TextField, Typography} from "@material-ui/core";
+import {Button, ButtonGroup, Container, List, ListItem, Paper, TextField, Typography} from "@material-ui/core";
 
 const AdminCreateOrganization = () => {
     const history = useHistory();
@@ -43,7 +43,8 @@ const AdminCreateOrganization = () => {
 
     const RenderUsers = (props) => {
         const user = props.data;
-        return <List>
+        return <Paper>
+            <List>
             <ListItem button onClick={() => setOrganization(prevState => ({
                 ...prevState,
                 userId: user.id,
@@ -53,6 +54,7 @@ const AdminCreateOrganization = () => {
 
             </ListItem>
         </List>
+        </Paper>
     }
 
     function submitEvent(e) {
@@ -110,12 +112,12 @@ const AdminCreateOrganization = () => {
                 (e) => submitEvent(e)
             }
                     disabled={validationState.noUser || validationState.noName}> Submit
-            < /Button>
+            </Button>
             <Button color={"secondary"} onClick={
                 () => history.goBack()
             }
                     className="button is-link is-light"> Cancel
-            < /Button>
+            </Button>
         </ButtonGroup>
     </Container>;
 }

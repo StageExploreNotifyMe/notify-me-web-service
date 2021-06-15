@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Spinner from "../util/Spinner";
 import {Pagination} from "@material-ui/lab";
+import {Box, TableCell, TableRow, Typography} from "@material-ui/core";
 
 const PagedList = (props) => {
     const [page, setPage] = useState({
@@ -64,8 +65,35 @@ const PagedList = (props) => {
         if (loading || hasErrored) return "";
         if (page.content.length === 0) return "";
         if (page.totalPages === 1) return "";
-        return <Pagination count={page.totalPages} onChange={(e, page) => onPageChange(page - 1)} boundaryCount={1}
-                           color="primary"/>
+        if (props.colspan) {
+            return <TableRow>
+                <TableCell colSpan={props.colspan}>
+                    <Box my={2} display="flex" justifyContent="center">
+                        <Typography gutterBottom variant="body1" align={"center"} component="div">
+                            <Pagination
+                                count={page.totalPages}
+                                defaultPage={1}
+                                page={activePage + 1}
+                                onChange={(e, page) => onPageChange(page - 1)}
+                                boundaryCount={1}
+                                siblingCount={1}
+                                color="primary"
+                            />
+                        </Typography>
+                    </Box>
+                </TableCell>
+            </TableRow>
+        }
+
+        return <Pagination
+            count={page.totalPages}
+            defaultPage={1}
+            page={activePage + 1}
+            onChange={(e, page) => onPageChange(page - 1)}
+            boundaryCount={1}
+            siblingCount={1}
+            color="primary"
+        />
     }
 
     if (hasErrored) return "";

@@ -1,8 +1,7 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
-import {useHistory} from "react-router-dom";
+import EditIcon from '@material-ui/icons/Edit';import {useHistory} from "react-router-dom";
 import DateDiv from "../util/DateDiv";
-import {TableCell, TableRow} from "@material-ui/core";
+import {IconButton, TableCell, TableRow} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/styles";
 import {isClickable} from "../../style/StyleUtils";
@@ -25,9 +24,9 @@ const VenueEvent = (props) => {
             <DateDiv date={props.event.date}/>
         </TableCell>
         <TableCell width={100} align="center">
-                <span className={classes.clickable} onClick={() => navigateToEvent(props.event)}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </span>
+                <IconButton className={classes.clickable} onClick={() => navigateToEvent(props.event)}>
+                   <EditIcon color={"secondary"}/>
+                </IconButton>
         </TableCell>
     </TableRow>
 }
