@@ -14,14 +14,6 @@ const PagedList = (props) => {
     const [loading, setLoading] = useState(true);
     const [hasErrored, setHasErrored] = useState(false);
     const [activePage, setActivePage] = useState(0);
-    let pageControlSettings = {
-        showButtons: true,
-        sizeModifier: "is-medium"
-    }
-
-    if (props.pageControls !== undefined) {
-        pageControlSettings = props.pageControls
-    }
 
     async function internalFetchData() {
         try {

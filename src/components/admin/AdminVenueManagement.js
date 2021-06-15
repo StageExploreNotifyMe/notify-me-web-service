@@ -7,12 +7,16 @@ import {useSnackbar} from 'notistack';
 import {
     Button,
     Container,
-    IconButton, makeStyles,
+    Grid,
+    IconButton,
+    makeStyles,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
+    TableHead,
+    TableRow,
     Typography
 } from "@material-ui/core";
 import {isClickable} from "../../style/StyleUtils";
@@ -36,59 +40,70 @@ const AdminVenueManagement = () => {
 
     const RenderVenues = (props) => {
         let venue = props.data;
-        return <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableBody>
-                    <TableCell>{venue.name}</TableCell>
-                    <TableCell align={"right"}>
-                        <IconButton onClick={() => {
-                            localStorage.setItem("editVenue", JSON.stringify(venue));
-                            history.push("/admin/venue/edit")
-                        }}>
-                            <EditIcon color={"secondary"}/>
-                        </IconButton>
-                    </TableCell>
-                </TableBody>
-            </Table>
-        </TableContainer>
-
-
+        return <TableRow>
+            <TableCell>{venue.name}</TableCell>
+            <TableCell align={"right"}>
+                <IconButton onClick={() => {
+                    localStorage.setItem("editVenue", JSON.stringify(venue));
+                    history.push("/admin/venue/edit")
+                }}>
+                    <EditIcon color={"secondary"}/>
+                </IconButton>
+            </TableCell>
+        </TableRow>
     }
 
     const RenderNoVenues = () => {
-        return <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableBody>
-                    <TableCell> No venues known in the system yet. Create the first one now by clicking&nbsp;
-                        <span className={classes.clickable} onClick={() => history.push(createVenueLink)}>
+        return <TableRow>
+            <TableCell> No venues known in the system yet. Create the first one now by clicking&nbsp;
+                <span className={classes.clickable} onClick={() => history.push(createVenueLink)}>
                 here
             </span>
-                        !
-                    </TableCell>
-                </TableBody>
-            </Table>
-        </TableContainer>
+                !
+            </TableCell>
+        </TableRow>
 
     };
 
 
-    return <Container>
-        <Typography gutterBottom variant="h5" component="h2">Venue Management</Typography>
-        <Button color={"secondary"} onClick={() => {
-            history.push(createVenueLink)
-        }}>
-            Create venue
-        </Button>
-
-        <Typography gutterBottom variant="h6" component="h2">Venues</Typography>
-        <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
-                   IsEmptyComponent={RenderNoVenues}/>
+    return <Container maxWidth={"md"}>
+        <Grid container spacing={2} className={classes.margin}>
+            <Grid item xs={10}>
+                <Typography gutterBottom variant="h4" component="h2">Venue Management</Typography>
+            </Grid>
+            <Grid item xs={2}>
+                <Typography variant="body1" component="div" align={"right"}>
+                    <Button variant={"outlined"} color={"secondary"} onClick={() => {
+                        history.push(createVenueLink)
+                    }}> Create venue
+                    </Button>
+                </Typography>
+            </Grid>
+        </Grid>
+        <TableContainer component={Paper} className={classes.margin}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Venue Name</TableCell>
+                        <TableCell> </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
+                               IsEmptyComponent={RenderNoVenues}/>
+                </TableBody>
+            </Table>
+        </TableContainer>
     </Container>;
 };
 
 
 const useStyles = makeStyles((theme) => ({
-    clickable: {...isClickable}
+    clickable: {...isClickable},
+    margin: {
+        marginTop: theme.spacing(1),
+
+    }
 }));
 
 export default AdminVenueManagement

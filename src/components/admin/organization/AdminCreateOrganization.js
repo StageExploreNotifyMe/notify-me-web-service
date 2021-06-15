@@ -4,6 +4,7 @@ import {getBase, postBase} from "../../../js/FetchBase";
 import {useSnackbar} from 'notistack';
 import PagedList from "../../util/PagedList";
 import {Button, ButtonGroup, Container, List, ListItem, Paper, TextField, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 
 const AdminCreateOrganization = () => {
     const history = useHistory();
@@ -17,6 +18,7 @@ const AdminCreateOrganization = () => {
         noUser: false,
         noName: false
     })
+    const classes = useStyles();
 
     function isValidState() {
         let noName = organization.name === "";
@@ -43,18 +45,14 @@ const AdminCreateOrganization = () => {
 
     const RenderUsers = (props) => {
         const user = props.data;
-        return <Paper>
-            <List>
-            <ListItem button onClick={() => setOrganization(prevState => ({
-                ...prevState,
-                userId: user.id,
-                user: user
-            }))}
-            >                {user.firstname} {user.lastname}
+        return <ListItem button onClick={() => setOrganization(prevState => ({
+            ...prevState,
+            userId: user.id,
+            user: user
+        }))}
+        >                {user.firstname} {user.lastname}
 
-            </ListItem>
-        </List>
-        </Paper>
+        </ListItem>
     }
 
     function submitEvent(e) {
@@ -80,8 +78,9 @@ const AdminCreateOrganization = () => {
     }
 
     return <Container>
-        <Typography gutterBottom variant="h5" component="h2">Create Organization</Typography>
+        <Typography gutterBottom variant="h4" component="h2">Create Organization</Typography>
         <TextField
+            className={classes.margin}
             error={validationState.noName}
             helperText={validationState.noName === false ? "" : "An organization must have a name"}
             label={"Organization name"}
@@ -98,11 +97,15 @@ const AdminCreateOrganization = () => {
             }}>
         </TextField>
 
-        <Typography gutterBottom variant="h6" component="h2">Select the organization
+        <Typography className={classes.margin} gutterBottom variant="h5" component="h2">Select the organization
             leader{organization.user.firstname !== undefined ? (": " + organization.user.firstname + " " + organization.user.lastname) : ""}</Typography>
-        <PagedList fetchDataFnc={fetchUsers} RenderListItem={RenderUsers}
-                   IsEmptyComponent={() => <p>No users found</p>}
-                   pageControls={{showButtons: true, sizeModifier: "is-small"}}/>
+        <Paper>
+            <List>
+                <PagedList fetchDataFnc={fetchUsers} RenderListItem={RenderUsers}
+                           IsEmptyComponent={() => <ListItem>No users found</ListItem>}
+                           pageControls={{showButtons: true, sizeModifier: "is-small"}}/>
+            </List>
+        </Paper>
         <p className={`help is-danger ${validationState.noUser ? '' : 'is-hidden'}`}>
             Please select a user to be the organization leader
         </p>
@@ -121,5 +124,12 @@ const AdminCreateOrganization = () => {
         </ButtonGroup>
     </Container>;
 }
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1)
+    }
+}));
 
 export default AdminCreateOrganization

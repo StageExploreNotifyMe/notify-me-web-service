@@ -1,5 +1,5 @@
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import EditIcon from '@material-ui/icons/Edit';import {useHistory} from "react-router-dom";
+import EditIcon from '@material-ui/icons/Edit';
+import {useHistory} from "react-router-dom";
 import DateDiv from "../util/DateDiv";
 import {IconButton, TableCell, TableRow} from "@material-ui/core";
 import React from "react";

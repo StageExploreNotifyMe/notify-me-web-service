@@ -53,11 +53,11 @@ const Registration = () => {
             password: registerDto.password
         };
         postBase("/authentication/register", JSON.stringify(body)).then((resp) => {
-            history.push("/register/confirmed");
             localStorage.setItem("user.id", resp.id);
             enqueueSnackbar("You have been successfully registered", {
                 severity: "success"
             });
+            history.push("/register/confirmed");
         }).catch(() => {
             enqueueSnackbar("Something went wrong while trying to register you", {
                 variant: 'error',
@@ -305,7 +305,7 @@ const Registration = () => {
         </Typography>
             <Typography gutterBottom variant="body1" component="div" align="center">
                 <FormControl>
-                    <Button color={"secondary"} onClick={
+                    <Button  className={classes.margin} color={"secondary"} variant={"contained"} onClick={
                         (e) => submitEvent(e)
                     }
                             disabled={!validationState.isFullyValid}>
@@ -317,7 +317,6 @@ const Registration = () => {
     </Container>
 }
 
-
 const useStyles = makeStyles((theme) => ({
     margin: {
         margin: theme.spacing(1),
@@ -326,6 +325,5 @@ const useStyles = makeStyles((theme) => ({
         width: "90%",
     }
 }));
-
 
 export default Registration

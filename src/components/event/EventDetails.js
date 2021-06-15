@@ -74,7 +74,7 @@ const EventDetails = () => {
 
         <UnlockAccess request={['VENUE_MANAGER']}>
             <Typography gutterBottom variant="body1" component="p">
-                Event Status <Button variant="outlined" size={"small"}
+                Event Status <Button variant="outlined" color={"secondary"} size={"small"}
                                      onClick={() => setOpenEventStatusDiag(true)}>{event.eventStatus}</Button>
                 <EventStatusDialog selectedValue={event.eventStatus} open={openEventStatusDiag}
                                    onClose={setEventState}/>

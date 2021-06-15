@@ -12,7 +12,8 @@ const line = {
         "id": "1",
         "name": "Main Entrance Bar",
         "description": "The bar at the main entrance of the venue",
-        "venueDto": {"id": "1", "name": "Groenplaats"}
+        "venueDto": {"id": "1", "name": "Groenplaats"},
+        "numberOfRequiredPeople": 5
     },
     "event": {
         "id": "1",
@@ -43,7 +44,8 @@ const user = {
         "id": "1",
         "userPreferences": {"id": "1", "normalChannel": "EMAIL", "urgentChannel": "SMS"},
         "firstname": "John",
-        "lastname": "Doe"
+        "lastname": "Doe",
+        "roles": []
     },
     "organization": {"id": "1", "name": "KdG"},
     "role": "MEMBER",
