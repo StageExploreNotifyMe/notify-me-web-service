@@ -9,7 +9,7 @@ const OrganizationDetails = () => {
     const history = useHistory();
     const classes = useStyles();
     const org = JSON.parse(localStorage.getItem("organization"));
-    if (org.id === undefined) {
+    if (org === null) {
         history.push("/organizations");
     }
 
