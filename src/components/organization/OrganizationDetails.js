@@ -6,9 +6,12 @@ import {Button, Card, CardActions, CardContent, Container, Grid, Typography} fro
 import {makeStyles} from "@material-ui/styles";
 
 const OrganizationDetails = () => {
-    const org = JSON.parse(localStorage.getItem("organization"));
     const history = useHistory();
     const classes = useStyles();
+    const org = JSON.parse(localStorage.getItem("organization"));
+    if (org.id === undefined) {
+        history.push("/organizations");
+    }
 
     const OrganizationNavCard = (props) => {
         return (<Grid item xs={4}><Card>

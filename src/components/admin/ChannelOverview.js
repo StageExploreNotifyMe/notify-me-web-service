@@ -37,7 +37,7 @@ const ChannelOverview = () => {
     }, [loading]);
 
     const RenderChannels = () => {
-        if (loading) return <p>No channels</p>
+        if (loading) return <TableBody><TableCell colSpan={2}>No channels</TableCell></TableBody>
         return channels.map(c =>
             <TableBody>
                 <TableCell>{c[1]}</TableCell>
@@ -58,7 +58,6 @@ const ChannelOverview = () => {
                     </TableRow>
                 </TableHead>
                 <RenderChannels/>
-
             </Table>
         </TableContainer>
     </Container>

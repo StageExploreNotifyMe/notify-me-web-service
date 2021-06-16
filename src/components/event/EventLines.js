@@ -76,9 +76,12 @@ const EventLines = () => {
             <TableCell className="column is-3">{eventLine.line.name}</TableCell>
             <TableCell className="column is-3">{
                 eventLine.organization === null ?
-                    <IconButton color={"secondary"} onClick={() => assignOrganizationToLine(eventLine)}> Unassigned
-                        <EditIcon/>
-                    </IconButton>
+                    <>
+                        Unassigned
+                        <IconButton color={"secondary"} onClick={() => assignOrganizationToLine(eventLine)}>
+                            <EditIcon/>
+                        </IconButton>
+                    </>
                     : eventLine.organization.name}
             </TableCell>
             <TableCell className="column is-2">{eventLine.assignedUsers.length}</TableCell>
@@ -141,7 +144,7 @@ const EventLines = () => {
                 </Grid>
                 <Grid item xs={2}>
                     <Typography align={"right"} gutterBottom variant="body1" component="div">
-                        <Button variant="outlined" onClick={() => history.push("/venue/event/lines")}>
+                        <Button color={"secondary"} variant="outlined" onClick={() => history.push("/venue/event/lines")}>
                             Add
                         </Button>
                     </Typography>
@@ -158,7 +161,7 @@ const EventLines = () => {
                     </TableHead>
                     <TableBody>
                         <PagedList fetchDataFnc={fetchEventLines} RenderListItem={RenderEventLines}
-                                   IsEmptyComponent={() => <p>No lines assigned to this event.</p>}/>
+                                   IsEmptyComponent={() => <TableCell colSpan={4}>No lines assigned to this event.</TableCell>}/>
                     </TableBody>
                 </Table>
             </TableContainer>

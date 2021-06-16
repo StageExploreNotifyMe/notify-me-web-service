@@ -62,9 +62,9 @@ const PickVenueToManage = () => {
                     </TableHead>
                     <TableBody>
                         <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderVenues}
-                                   IsEmptyComponent={() => <TableCell>Something went wrong, you appear to not be a part
-                                       of
-                                       any venue</TableCell>}/>
+                                   IsEmptyComponent={() => <TableCell colSpan={2}>
+                                       Something went wrong, you appear to not be a part of any venue
+                                   </TableCell>}/>
                     </TableBody>
                 </Table>
             </TableContainer>

@@ -56,7 +56,7 @@ const EventLineAssignOrganization = (props) => {
             </Grid>
             <Grid item xs={2}>
                 <Typography align={"right"} gutterBottom variant="body1" component="div">
-                    <Button onClick={() => props.cancel()}>
+                    <Button variant={"outlined"} color={"secondary"} onClick={() => props.cancel()}>
                         Cancel
                     </Button>
                 </Typography>

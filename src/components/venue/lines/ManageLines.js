@@ -6,7 +6,8 @@ import {useSnackbar} from 'notistack';
 import {
     Button,
     Container,
-    Grid, IconButton,
+    Grid,
+    IconButton,
     Paper,
     Table,
     TableBody,
@@ -82,11 +83,13 @@ const ManageLines = () => {
                 </Typography>
             </Grid>
             <Grid item xs={5} sm={2}>
-                <Button variant="contained" color="primary" onClick={() => {
-                    history.push(createLineLink)
-                }} className="button is-link level-item">
-                    Create Line
-                </Button>
+                <Typography gutterBottom variant="body1" component="div" align={"right"}>
+                    <Button variant="contained" color="primary" onClick={() => {
+                        history.push(createLineLink)
+                    }} className="button is-link level-item">
+                        Create Line
+                    </Button>
+                </Typography>
             </Grid>
         </Grid>
 

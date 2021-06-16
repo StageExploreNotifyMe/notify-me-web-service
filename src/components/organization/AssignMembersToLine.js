@@ -5,7 +5,7 @@ import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
 import {
-    Container,
+    Container, Grid,
     Paper,
     Switch,
     Table,
@@ -16,6 +16,7 @@ import {
     TableRow,
     Typography
 } from "@material-ui/core";
+import {getRole} from "../../js/UserUtilFunctions";
 
 const AssignMembersToLine = () => {
     const org = JSON.parse(localStorage.getItem("organization"));
@@ -56,6 +57,7 @@ const AssignMembersToLine = () => {
                 />
             </TableCell>
             <TableCell>{user.user.firstname} {user.user.lastname}</TableCell>
+            <TableCell>{getRole(user.user)}</TableCell>
         </TableRow>
     }
 
@@ -75,24 +77,33 @@ const AssignMembersToLine = () => {
         }))
     }
 
-    return <Container maxWidth="xl">
-        <Typography gutterBottom variant="h3" component="h2">
-            Assign members
-        </Typography>
+    return <Container maxWidth="lg">
+            <Typography gutterBottom variant="h3" component="h2">
+                Assign members
+            </Typography>
 
-        <Container>
-            <Typography variant="subtitle2" component="p">
-                {line.event.name} - {line.line.name}
-            </Typography>
-            <Typography variant="subtitle1" component="p" align="right">
-                {dateArrayToDate(line.event.date).toLocaleDateString()} {dateArrayToDate(line.event.date).toLocaleTimeString()}
-            </Typography>
+            <Grid container spacing={3}
+                  direction="row"
+                  alignItems="center"
+            >
+                <Grid item sm={6}>
+                    <Typography variant="subtitle2" component="p">
+                        {line.event.name} - {line.line.name} - Required: {line.line.numberOfRequiredPeople}
+                    </Typography>
+                </Grid>
+                <Grid item sm={6}>
+                    <Typography variant="subtitle2" component="p" align="right">
+                        {dateArrayToDate(line.event.date).toLocaleDateString()} {dateArrayToDate(line.event.date).toLocaleTimeString()}
+                    </Typography>
+                </Grid>
+            </Grid>
 
             <TableContainer component={Paper}>
                 <Table className="panel">
                     <TableHead>
                         <TableCell>Is Assigned</TableCell>
                         <TableCell>Member</TableCell>
+                        <TableCell>Role</TableCell>
                     </TableHead>
                     <TableBody>
                         <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
@@ -100,7 +111,6 @@ const AssignMembersToLine = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Container>
     </Container>
 }
 

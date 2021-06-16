@@ -132,12 +132,12 @@ const UserPreferences = () => {
             }}>
                            </div>
             <div>
-            <FormControl style={{minWidth: 120}}>
-                <InputLabel>Language</InputLabel>
-                <Select>
-                    <LanguageDropdown/>
-                </Select>
-            </FormControl>
+            {/*<FormControl style={{minWidth: 120}}>*/}
+            {/*    <InputLabel>Language</InputLabel>*/}
+            {/*    <Select>*/}
+            {/*        <LanguageDropdown/>*/}
+            {/*    </Select>*/}
+            {/*</FormControl>*/}
             </div>
         </div>
 

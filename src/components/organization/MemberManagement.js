@@ -59,11 +59,11 @@ const MemberManagement = () => {
         })
     }
 
-    return <Container maxWidth="xl">
-        <Typography gutterBottom variant="h3" component="h2">
+    return <Container maxWidth="lg">
+        <Typography gutterBottom variant="h4" component="h2">
             Member Management {org.name}
         </Typography>
-        <Container>
+
         <TableContainer component={Paper}>
             <Table aria-label="simple table">
                 <TableHead>
@@ -79,7 +79,6 @@ const MemberManagement = () => {
                 </TableBody>
             </Table>
         </TableContainer>
-        </Container>
     </Container>
 };
 

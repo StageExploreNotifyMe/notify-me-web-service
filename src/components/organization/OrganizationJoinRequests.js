@@ -35,18 +35,18 @@ const OrganizationJoinRequests = () => {
         return <OrganizationRequestUserDetail key={props.id} request={props.data}/>
     }
 
-    return <Container maxWidth="xl">
-        <Typography gutterBottom variant="h3" component="h2">
+    return <Container maxWidth="lg">
+        <Typography gutterBottom variant="h4" component="h2">
             Open Join Requests {org.name}
         </Typography>
-        <Container>
-            <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell width={150}>Member</TableCell>
-                            <TableCell width={50}>Actions</TableCell>
-                        </TableRow>
+
+        <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell width={150}>Member</TableCell>
+                        <TableCell width={50}>Actions</TableCell>
+                    </TableRow>
                     </TableHead>
                     <TableBody>
                         <PagedList fetchDataFnc={fetchData} RenderListItem={RenderJoinRequests}
@@ -54,7 +54,6 @@ const OrganizationJoinRequests = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Container>
     </Container>
 
 };

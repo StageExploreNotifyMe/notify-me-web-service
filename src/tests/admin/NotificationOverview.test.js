@@ -27,7 +27,32 @@ let request = {
     userId: "1"
 }
 
-let event = {
+let request2 = {
+    body: "test user",
+    creationDate: [2021, 4, 28, 10, 59, 57, 509317000],
+    eventId: "",
+    id: "2",
+    title: "Request to join KdG ACCEPTED",
+    type: "USER_JOINED",
+    urgency: "NORMAL",
+    usedChannel: "EMAIL",
+    userId: ""
+}
+
+let request3 = {
+    body: "test user",
+    creationDate: [2021, 4, 28, 10, 59, 57, 509317000],
+    eventId: "500",
+    id: "3",
+    title: "Request to join KdG ACCEPTED",
+    type: "USER_JOINED",
+    urgency: "NORMAL",
+    usedChannel: "EMAIL",
+    userId: "500",
+    price: 0.5
+}
+
+let eventsDto = {
     event: ["2", "1", "3"]
 }
 
@@ -35,12 +60,33 @@ let notificationTypes = {
     notificationTypes: ["USER_CREATED", "USER_JOINED", "USER_ACCEPTED", "USER_DECLINED", "USER_PROMOTED", "USER_DEMOTED", "USER_CANCELED", "EVENT_CREATED", "EVENT_PUBLISHED", "EVENT_CONFIRMED", "EVENT_CANCELED", "WEEKLY_DIGEST", "STAFFING_REMINDER", "LINE_ASSIGNED", "LINE_CANCELED"]
 }
 
-function mockFetch(content = pageSettings, simulateNetworkError = false) {
+let user = {
+    "id": "1",
+    "userPreferences": {"id": "1", "normalChannel": "EMAIL", "urgentChannel": "SMS"},
+    "firstname": "John",
+    "lastname": "Doe"
+};
+
+let event = {
+    "id": "1",
+    "name": "Test Event",
+    "date": [2037, 5, 3, 8, 24],
+    "eventStatus": "CREATED",
+    "venue": {"id": "1", "name": "Groenplaats"}
+};
+
+let dataDto = {
+    notificationDtoPage: pageSettings,
+    userDtos: [user],
+    eventDtos: [event]
+};
+
+function mockFetch(content = dataDto, simulateNetworkError = false) {
     fetch.enableMocks();
     fetch.resetMocks();
     fetch.mockResponse(async request => {
         if (request.url.includes("/admin/eventId")) {
-            return Promise.resolve(JSON.stringify(event))
+            return Promise.resolve(JSON.stringify(eventsDto))
         } else if (request.url.includes("/admin/notificationTypes")) {
             return Promise.resolve(JSON.stringify(notificationTypes))
         } else if (request.url.includes("/admin/notifications")) {
@@ -64,7 +110,7 @@ test("dropdown", async () => {
 
 test("RenderNotification - fail", async () => {
     await act(async () => {
-        mockFetch(pageSettings, true)
+        mockFetch(dataDto, true)
         RenderComponent(NotificationOverview)
         await sleep(50)
         let notRendered = screen.getAllByText(/Something went wrong while fetching all notifications/i)
@@ -75,7 +121,7 @@ test("RenderNotification - fail", async () => {
 
 test("RenderNoNotification", async () => {
     await act(async () => {
-        mockFetch({...pageSettings, content: []})
+        mockFetch()
         RenderComponent(NotificationOverview)
         await sleep(50)
         let notRendered = screen.getAllByText(/No notifications in your overview/i)
@@ -85,7 +131,10 @@ test("RenderNoNotification", async () => {
 
 test("RenderNotification - success", async () => {
     await act(async () => {
-        mockFetch({...pageSettings, content: [request]})
+
+        let notifications = {...pageSettings, content: [request, request2]};
+        let dto = {...dataDto, notificationDtoPage: notifications};
+        mockFetch(dto)
         const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
         let button =container.querySelector(".MuiButtonBase-root")
@@ -96,7 +145,9 @@ test("RenderNotification - success", async () => {
 
 test("modalClose", async () => {
     await act(async () => {
-        mockFetch({...pageSettings, content: [request]})
+        let notifications = {...pageSettings, content: [request, request3]};
+        let dto = {notificationDtoPage: notifications, userDtos: [], eventDtos: []};
+        mockFetch(dto)
         const {container} = RenderComponent(NotificationOverview)
         await sleep(50)
         let button = container.querySelector(".MuiButtonBase-root")

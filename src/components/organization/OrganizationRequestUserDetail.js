@@ -39,7 +39,7 @@ const OrganizationRequestUserDetail = (props) => {
         }
 
         return <ButtonGroup color="secondary" aria-label="outlined primary button group">
-            <Button onClick={() => confirmClicked(true)}>Accept</Button>
+            <Button variant={"contained"} onClick={() => confirmClicked(true)}>Accept</Button>
             <Button onClick={() => confirmClicked(false)}>Reject</Button>
         </ButtonGroup>;
     }

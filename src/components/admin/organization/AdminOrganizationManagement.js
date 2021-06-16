@@ -13,19 +13,25 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Grid,
     IconButton,
     Paper,
     Table,
     TableBody,
     TableCell,
-    TableContainer, TextField,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
     Typography
 } from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 
 const AdminOrganizationManagement = () => {
     const history = useHistory();
     const createOrgLink = "/admin/organizationManagement/create";
     const {enqueueSnackbar} = useSnackbar();
+    const classes = useStyles();
 
     const [editingValues, setEditingValues] = useState({
         openModal: false,
@@ -47,21 +53,17 @@ const AdminOrganizationManagement = () => {
 
     const RenderOrganizations = (props) => {
         let org = props.data;
-        return <TableContainer component={Paper}>
-            <Table>
-                <TableBody key={org.id}>
-                    <TableCell>{org.name}</TableCell>
-                    <TableCell align={"right"}>
-                        <IconButton size={"small"} color={"secondary"} onClick={() => {
-                            setEditingValues({openModal: true, organization: org, updateFnc: props.update})
-                        }}>
-                            <EditIcon/>
-                        </IconButton>
-                    </TableCell>
+        return <TableRow key={org.id}>
+            <TableCell>{org.name}</TableCell>
+            <TableCell align={"right"}>
+                <IconButton size={"small"} color={"secondary"} onClick={() => {
+                    setEditingValues({openModal: true, organization: org, updateFnc: props.update})
+                }}>
+                    <EditIcon/>
+                </IconButton>
+            </TableCell>
 
-                </TableBody>
-            </Table>
-        </TableContainer>
+        </TableRow>
     }
 
     const RenderNoOrganizations = () => {
@@ -99,21 +101,37 @@ const AdminOrganizationManagement = () => {
 
     return <>
         <Container>
-            <Typography gutterBottom variant="h5" component="h2">Organization Management</Typography>
-            <div className="level-right">
-                <Button color={"secondary"} onClick={() => {
-                    history.push(createOrgLink)
-                }} className="button is-link level-item">
-                    Create Organization
-                </Button>
-            </div>
-            <Typography gutterBottom variant="h6" component="h2">Organizations</Typography>
-
-            <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderOrganizations}
-                       IsEmptyComponent={RenderNoOrganizations}/>
+            <Grid container spacing={2} className={classes.margin}>
+                <Grid item xs={10}>
+                    <Typography variant="h4" component="h2">Organization Management</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <Typography variant="body1" component="div" align={"right"}>
+                        <Button color={"secondary"} onClick={() => {
+                            history.push(createOrgLink)
+                        }} className="button is-link level-item">
+                            Create Organization
+                        </Button>
+                    </Typography>
+                </Grid>
+            </Grid>
+            <TableContainer component={Paper} className={classes.margin}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Organization Name</TableCell>
+                            <TableCell> </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <PagedList fetchDataFnc={fetchPageData} RenderListItem={RenderOrganizations}
+                                   IsEmptyComponent={RenderNoOrganizations}/>
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Container>
-        <section className={`modal ${editingValues.openModal ? "is-active" : ""}`}>
 
+        <section className={`modal ${editingValues.openModal ? "is-active" : ""}`}>
             <Dialog open={editingValues.openModal}
                     onClose={closeModal}>
                 <div>
@@ -144,7 +162,13 @@ const AdminOrganizationManagement = () => {
             </Dialog>
         </section>
     </>
-
 };
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1)
+    }
+}));
 
 export default AdminOrganizationManagement

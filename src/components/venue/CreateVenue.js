@@ -99,16 +99,24 @@ const CreateVenue = (props) => {
         const user = props.data;
         if (venueDto.users.filter(u => u.id === user.id).length !== 0) return "";
 
-        return <ListItem key={props.key} role="listitem" divider={true} button
-                         onClick={() => {
-                             setVenueDto(prevState => ({
-                                 ...prevState,
-                                 venueManagerIds: [...venueDto.venueManagerIds, user.id],
-                                 users: [...venueDto.users, user]
-                             }))
-                         }}>
+        return <ListItem key={props.key} role="listitem" divider={true} button onClick={() => addUser(user)}>
             {user.firstname} {user.lastname}
         </ListItem>
+    }
+
+    function addUser(user) {
+        let users = venueDto.users;
+        users.push(user);
+        users = new Set(users);
+        setVenueDto(prevState => ({
+            ...prevState,
+            venueManagerIds: [...venueDto.venueManagerIds, user.id],
+            users: [...users]
+        }))
+
+        if (users.length !== 0) {
+            setValidationState({...validationState, noUser: false})
+        }
     }
 
     const RenderSelectedUsers = () => {
@@ -119,7 +127,7 @@ const CreateVenue = (props) => {
         }
 
         return venueDto.users.map(user => {
-            if (!venueDto.users.includes(user)) return <ListItem key={user.id + "-duplicate"}></ListItem>
+            if (!venueDto.users.includes(user)) return <ListItem key={user.id + "-duplicate"}> </ListItem>
 
             return <ListItem key={user.id} divider={true} button onClick={() => removeUser(user)}>
                 <p>{user.firstname} {user.lastname}</p>

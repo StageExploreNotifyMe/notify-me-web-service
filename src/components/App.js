@@ -32,6 +32,7 @@ import Navbar from "./Navbar";
 import PickVenueToManage from "./venue/PickVenueToManage";
 import PickOrganization from "./organization/PickOrganization";
 import ConfirmRegistration from "./authentication/ConfirmRegistration";
+import {Container} from "@material-ui/core";
 
 function App() {
     const [, forceUpdate] = useState(0);
@@ -40,61 +41,64 @@ function App() {
         <>
             <Router>
                 <Navbar/>
-                <Switch>
-                    <LoggedInBasedRouting path="/user/join/organization" roles={['ANY']} component={JoinOrganization}/>
-                    <LoggedInBasedRouting path="/user/inbox" roles={['ANY']} component={Inbox}/>
-                    <LoggedInBasedRouting path="/user" component={UserDetails}/>
-                    <LoggedInBasedRouting path="/admin/channels" roles={['ADMIN']} component={ChannelOverview}/>
-                    <LoggedInBasedRouting path="/admin/organizationManagement/create" roles={['ADMIN']}
-                                          component={AdminCreateOrganization}/>
-                    <LoggedInBasedRouting path="/admin/organizationManagement" roles={['ADMIN']}
-                                          component={AdminOrganizationManagement}/>
-                    <LoggedInBasedRouting path="/admin/NotificationOverview" roles={['ADMIN']}
-                                          component={NotificationOverview}/>
-                    <LoggedInBasedRouting path="/admin/venueManagement" roles={['ADMIN']}
-                                          component={AdminVenueManagement}/>
-                    <LoggedInBasedRouting path="/admin/venue/create" roles={['ADMIN']} component={CreateVenue}
-                                          action={'create'}/>
-                    <LoggedInBasedRouting path="/admin/venue/edit" roles={['ADMIN']} component={CreateVenue}
-                                          action={'edit'}/>
-                    <LoggedInBasedRouting path="/admin" roles={['ADMIN']} component={AdminDetails}/>
-                    <LoggedInBasedRouting path="/organization/pendingrequests" roles={['ORGANIZATION_LEADER']}
-                                          component={OrganizationJoinRequests}/>
-                    <LoggedInBasedRouting path="/organization/membermanagement" roles={['ORGANIZATION_LEADER']}
-                                          component={MemberManagement}/>
-                    <LoggedInBasedRouting path="/organization/linemanagement/memberassign" roles={['ORGANIZATION_LEADER']}
-                                          component={AssignMembersToLine}/>
-                    <LoggedInBasedRouting path="/organization/linemanagement" roles={['ORGANIZATION_LEADER']}
-                                          component={OrganizationLines}/>
-                    <LoggedInBasedRouting path="/organizations" roles={['MEMBER', 'ORGANIZATION_LEADER']}
-                                          component={PickOrganization}/>
-                    <LoggedInBasedRouting path="/organization" roles={['MEMBER', 'ORGANIZATION_LEADER']}
-                                          component={OrganizationDetails}/>
-                    <LoggedInBasedRouting path="/venue/events/create" roles={['VENUE_MANAGER']}
-                                          component={CreateEvent}/>
-                    <LoggedInBasedRouting path="/venue/event/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
-                                          component={AddEventLines}/>
-                    <LoggedInBasedRouting path="/venue/event" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
-                                          component={EventDetails}/>
-                    <LoggedInBasedRouting path="/venue/events" roles={['LINE_MANAGER', 'VENUE_MANAGER']}
-                                          component={EventManagement}/>
-                    <LoggedInBasedRouting path="/venue/lines/edit" roles={['VENUE_MANAGER']} component={CreateLine}
-                                          action={"edit"}/>
-                    <LoggedInBasedRouting path="/venue/lines/create" roles={['VENUE_MANAGER']} component={CreateLine}
-                                          action={"create"}/>
-                    <LoggedInBasedRouting path="/venue/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
-                                          component={ManageLines}/>
-                    <LoggedInBasedRouting path="/venue/select" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
-                                          component={PickVenueToManage}/>
-                    <LoggedInBasedRouting path="/logout" component={Logout} onSuccess={forceUpdate}/>
-                    <Route path="/login"><Login onSuccess={forceUpdate}/></Route>
-                    <Route path="/register/confirmed"><ConfirmRegistration/></Route>
-                    <Route path="/register"><Registration/></Route>
-                    <Route exact path="/"><Home/></Route>
-                    <Route path="*">
-                        <div>404 placeholder</div>
-                    </Route>
-                </Switch>
+                <Container maxWidth={"xl"}>
+                    <Switch>
+                        <LoggedInBasedRouting path="/user/join/organization" roles={['LOGGED_IN']}
+                                              component={JoinOrganization}/>
+                        <LoggedInBasedRouting path="/user/inbox" roles={['ANY']} component={Inbox}/>
+                        <LoggedInBasedRouting path="/user" component={UserDetails}/>
+                        <LoggedInBasedRouting path="/admin/channels" roles={['ADMIN']} component={ChannelOverview}/>
+                        <LoggedInBasedRouting path="/admin/organizationManagement/create" roles={['ADMIN']}
+                                              component={AdminCreateOrganization}/>
+                        <LoggedInBasedRouting path="/admin/organizationManagement" roles={['ADMIN']}
+                                              component={AdminOrganizationManagement}/>
+                        <LoggedInBasedRouting path="/admin/NotificationOverview" roles={['ADMIN']}
+                                              component={NotificationOverview}/>
+                        <LoggedInBasedRouting path="/admin/venueManagement" roles={['ADMIN']}
+                                              component={AdminVenueManagement}/>
+                        <LoggedInBasedRouting path="/admin/venue/create" roles={['ADMIN']} component={CreateVenue}
+                                              action={'create'}/>
+                        <LoggedInBasedRouting path="/admin/venue/edit" roles={['ADMIN']} component={CreateVenue}
+                                              action={'edit'}/>
+                        <LoggedInBasedRouting path="/admin" roles={['ADMIN']} component={AdminDetails}/>
+                        <LoggedInBasedRouting path="/organization/pendingrequests" roles={['ORGANIZATION_LEADER']}
+                                              component={OrganizationJoinRequests}/>
+                        <LoggedInBasedRouting path="/organization/membermanagement" roles={['ORGANIZATION_LEADER']}
+                                              component={MemberManagement}/>
+                        <LoggedInBasedRouting path="/organization/linemanagement/memberassign" roles={['ORGANIZATION_LEADER']}
+                                              component={AssignMembersToLine}/>
+                        <LoggedInBasedRouting path="/organization/linemanagement" roles={['ORGANIZATION_LEADER']}
+                                              component={OrganizationLines}/>
+                        <LoggedInBasedRouting path="/organizations" roles={['MEMBER', 'ORGANIZATION_LEADER']}
+                                              component={PickOrganization}/>
+                        <LoggedInBasedRouting path="/organization" roles={['MEMBER', 'ORGANIZATION_LEADER']}
+                                              component={OrganizationDetails}/>
+                        <LoggedInBasedRouting path="/venue/events/create" roles={['VENUE_MANAGER']}
+                                              component={CreateEvent}/>
+                        <LoggedInBasedRouting path="/venue/event/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                                              component={AddEventLines}/>
+                        <LoggedInBasedRouting path="/venue/event" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                                              component={EventDetails}/>
+                        <LoggedInBasedRouting path="/venue/events" roles={['LINE_MANAGER', 'VENUE_MANAGER']}
+                                              component={EventManagement}/>
+                        <LoggedInBasedRouting path="/venue/lines/edit" roles={['VENUE_MANAGER']} component={CreateLine}
+                                              action={"edit"}/>
+                        <LoggedInBasedRouting path="/venue/lines/create" roles={['VENUE_MANAGER']} component={CreateLine}
+                                              action={"create"}/>
+                        <LoggedInBasedRouting path="/venue/lines" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                                              component={ManageLines}/>
+                        <LoggedInBasedRouting path="/venue/select" roles={['VENUE_MANAGER', 'LINE_MANAGER']}
+                                              component={PickVenueToManage}/>
+                        <LoggedInBasedRouting path="/logout" component={Logout} onSuccess={forceUpdate}/>
+                        <Route path="/login"><Login onSuccess={forceUpdate}/></Route>
+                        <Route path="/register/confirmed"><ConfirmRegistration/></Route>
+                        <Route path="/register"><Registration/></Route>
+                        <Route exact path="/"><Home/></Route>
+                        <Route path="*">
+                            <div>404 placeholder</div>
+                        </Route>
+                    </Switch>
+                </Container>
             </Router>
         </>
     );

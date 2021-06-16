@@ -138,7 +138,7 @@ const Login = (props) => {
                 </FormControl>
             </Typography>
             <Typography gutterBottom variant="body1" component="div" align="center">
-                <Button id={"loginButton"} className={classes.margin} onClick={onClick}>
+                <Button id={"loginButton"} color={"secondary"} variant={"contained"} className={classes.margin} onClick={onClick}>
                     {loginStep === 1 ? "Log in" : ""}
                     {loginStep === 2 ? "Verify code" : ""}
                 </Button>

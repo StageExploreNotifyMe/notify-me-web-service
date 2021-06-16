@@ -72,7 +72,7 @@ const CreateLine = (props) => {
     }
 
     return <Container maxWidth="lg">
-        <Typography gutterBottom variant="h3" component="h2">
+        <Typography gutterBottom variant="h4" component="h2">
             {isCreating ? "Create" : "Edit"} Line
         </Typography>
         <form>
