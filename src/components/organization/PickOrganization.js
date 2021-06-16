@@ -13,9 +13,12 @@ const PickOrganizationToManage = () => {
     const [data, setData] = useState([]);
     const {enqueueSnackbar} = useSnackbar();
 
-    const org = JSON.parse(localStorage.getItem("organization"));
-    if (org === null || org.id !== undefined) {
-        history.replace("/organization");
+    const orgString = localStorage.getItem("organization");
+    if (orgString !== null) {
+        const org = JSON.parse(orgString);
+        if (org.id !== undefined) {
+            history.replace("/organization");
+        }
     }
 
     async function fetchPageData() {
