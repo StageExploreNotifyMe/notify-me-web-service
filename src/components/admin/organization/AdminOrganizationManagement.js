@@ -100,14 +100,14 @@ const AdminOrganizationManagement = () => {
     }
 
     return <>
-        <Container>
+        <Container maxWidth={"md"}>
             <Grid container spacing={2} className={classes.margin}>
-                <Grid item xs={10}>
+                <Grid item xs={9}>
                     <Typography variant="h4" component="h2">Organization Management</Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Typography variant="body1" component="div" align={"right"}>
-                        <Button color={"secondary"} onClick={() => {
+                        <Button variant={"outlined"} color={"secondary"} onClick={() => {
                             history.push(createOrgLink)
                         }} className="button is-link level-item">
                             Create Organization

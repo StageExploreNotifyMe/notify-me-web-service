@@ -5,7 +5,8 @@ import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from 'notistack';
 import {
-    Container, Grid,
+    Container,
+    Grid,
     Paper,
     Switch,
     Table,
@@ -78,24 +79,27 @@ const AssignMembersToLine = () => {
     }
 
     return <Container maxWidth="lg">
-            <Typography gutterBottom variant="h3" component="h2">
-                Assign members
-            </Typography>
+        <Typography gutterBottom variant="h3" component="h2">
+            Assign members
+        </Typography>
+        <Typography gutterBottom variant="h6" component="h3">
+            {line.event.name} - {line.line.name}
+        </Typography>
 
-            <Grid container spacing={3}
-                  direction="row"
-                  alignItems="center"
-            >
-                <Grid item sm={6}>
-                    <Typography variant="subtitle2" component="p">
-                        {line.event.name} - {line.line.name} - Required: {line.line.numberOfRequiredPeople}
-                    </Typography>
-                </Grid>
-                <Grid item sm={6}>
-                    <Typography variant="subtitle2" component="p" align="right">
-                        {dateArrayToDate(line.event.date).toLocaleDateString()} {dateArrayToDate(line.event.date).toLocaleTimeString()}
-                    </Typography>
-                </Grid>
+        <Grid container spacing={3}
+              direction="row"
+              alignItems="center"
+        >
+            <Grid item sm={6}>
+                <Typography variant="subtitle1" component="p">
+                    Required: {line.line.numberOfRequiredPeople}
+                </Typography>
+            </Grid>
+            <Grid item sm={6}>
+                <Typography variant="subtitle1" component="p" align="right">
+                    {dateArrayToDate(line.event.date).toLocaleDateString()} {dateArrayToDate(line.event.date).toLocaleTimeString()}
+                </Typography>
+            </Grid>
             </Grid>
 
             <TableContainer component={Paper}>

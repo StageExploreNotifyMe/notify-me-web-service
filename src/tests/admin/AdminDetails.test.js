@@ -13,7 +13,6 @@ jest.mock('react-router-dom', () => ({
 
 test('User details page', () => {
     const {container} = RenderComponent(AdminDetails)
-    expect(screen.getByText(/Admin Details/i)).toBeInTheDocument()
 
     let notificationDetails = screen.getByText(/Notification details/i)
     expect(notificationDetails).toBeInTheDocument();

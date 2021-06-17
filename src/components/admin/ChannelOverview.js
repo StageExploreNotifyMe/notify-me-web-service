@@ -46,9 +46,8 @@ const ChannelOverview = () => {
         )
     }
 
-    return <Container>
-
-        <Typography gutterBottom variant="h5" component="h2">Overview Notifications</Typography>
+    return <Container maxWidth={"md"}>
+        <Typography gutterBottom variant="h4" component="h2">Overview Notifications</Typography>
         <TableContainer component={Paper}>
             <Table aria-label="simple table">
                 <TableHead>

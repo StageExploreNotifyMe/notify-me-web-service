@@ -33,19 +33,18 @@ const AdminDetails = () => {
         </Grid>);
     }
 
-    return<div>
-        <Typography gutterBottom variant="h5" component="h2">Admin Details</Typography>
-    <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="flex-start"
-        spacing={2}
-        className={classes.root}>
+    return <>
+        <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+            spacing={2}
+            className={classes.root}>
 
-        <AdminNavCard card={{
-            title: "Notification details",
-            link: "/admin/NotificationOverview",
+            <AdminNavCard card={{
+                title: "Notification details",
+                link: "/admin/NotificationOverview",
             body: "See all the information about all the notifications that have been send"
         }}/>
 
@@ -66,14 +65,13 @@ const AdminDetails = () => {
         }}/>
 
     </Grid>
-    </div>
+    </>
 }
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            margin: "0.5%",
-            maxWidth: "99%"
-        }
-    }));
-
+const useStyles = makeStyles((theme) => ({
+    root: {
+        margin: "0.5%",
+        maxWidth: "99%"
+    }
+}));
 
 export default AdminDetails
