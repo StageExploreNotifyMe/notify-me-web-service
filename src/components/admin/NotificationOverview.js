@@ -267,7 +267,7 @@ const NotificationOverview = () => {
     }
 
     return <Container>
-        <Typography gutterBottom variant="h5" component="h2">
+        <Typography gutterBottom variant="h4" component="h2">
             Overview Notifications
         </Typography>
         <RenderDetailsModal/>

@@ -6,6 +6,7 @@ import {getBase} from "../../js/FetchBase";
 import {dateArrayToDate} from "../../js/DateTime";
 import PagedList from "../util/PagedList";
 import {useSnackbar} from "notistack";
+import {makeStyles} from "@material-ui/styles";
 
 const Inbox = () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -14,6 +15,7 @@ const Inbox = () => {
     const [isDisplayingUrgent, setIsDisplayingUrgent] = useState(false)
     const {enqueueSnackbar} = useSnackbar();
     let forceUpdateFnc;
+    const classes = useStyles();
 
     async function fetchNotifications(activePage) {
         try {
@@ -74,18 +76,20 @@ const Inbox = () => {
 
     return <article>
         <Typography variant="h4">{user.firstname}'s Inbox</Typography>
-
-                 <Grid container
+        <Grid container
               alignItems="baseline"
         >
-            <Grid item xs={6} sm={3}>
+            <Grid item xs={6} sm={3} className={classes.margin}>
                 <Container>
-                <Tabs
-                    indicatorColor="primary"
-                    textColor="primary">
-                    <Tab label="ALL" value="1" onClick={() => confirmUrgent(false)}/>
-                    <Tab label="URGENT" value="2" onClick={() => confirmUrgent(true)}/>
-                </Tabs>
+                    <Tabs
+                        indicatorColor="primary"
+                        textColor="primary"
+                        value={isDisplayingUrgent}
+                        centered={true}
+                    >
+                        <Tab label="ALL" value={false} onClick={() => confirmUrgent(false)}/>
+                        <Tab label="URGENT" value={true} onClick={() => confirmUrgent(true)}/>
+                    </Tabs>
                 </Container>
             </Grid>
             <Grid container
@@ -109,7 +113,7 @@ const Inbox = () => {
                       alignItems="stretch"
                 >
                     <Container>
-                    <ShowFullNotification/>
+                        <ShowFullNotification/>
                     </Container>
 
                 </Grid>
@@ -118,5 +122,11 @@ const Inbox = () => {
         </Grid>
     </article>
 }
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        marginBottom: theme.spacing(1),
+    },
+}));
 
 export default Inbox
